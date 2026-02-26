@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Riesgos (CID + PXI)</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111a2e; --muted:#9bb0d7; --text:#eef3ff;
+      --border:rgba(255,255,255,.10);
+      --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --violet:#a855f7;
+    }
+    *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(1100px 650px at 15% 0%, rgba(110,231,255,.14), transparent 55%),
+        radial-gradient(900px 520px at 92% 10%, rgba(167,139,250,.14), transparent 50%),
+        var(--bg);
+      padding:26px;
+    }
+    .wrap{max-width:1200px; margin:0 auto;}
+    header{display:flex; gap:14px; align-items:flex-end; justify-content:space-between; margin-bottom:16px;}
+    h1{margin:0; font-size:26px; letter-spacing:.2px;}
+    .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border); border-radius:999px;
+      padding:8px 12px; background:rgba(0,0,0,.18);
+      white-space:nowrap;
+    }
+    .dot{width:10px;height:10px;border-radius:50%; background:#94a3b8;}
+    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px;}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:18px; padding:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+    }
+    .section-title{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px;}
+    .section-title h2{margin:0; font-size:16px;}
+    .hint{color:var(--muted); font-size:12px; line-height:1.35;}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px;}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-top:12px;}
+    label{display:block; color:var(--muted); font-size:12px; margin-bottom:6px;}
+    input, select, textarea{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.18); color:var(--text); outline:none;
+    }
+    textarea{min-height:86px; resize:vertical;}
+    input:focus, select:focus, textarea:focus{border-color: rgba(110,231,255,.50); box-shadow: 0 0 0 3px rgba(110,231,255,.12);}
+    .btns{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+    button{
+      cursor:pointer; border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text); padding:12px 14px; border-radius:12px; font-weight:700;
+    }
+    button.primary{
+      background: linear-gradient(90deg, rgba(110,231,255,.20), rgba(167,139,250,.18));
+    }
+    .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+    .box{
+      border:1px solid var(--border); border-radius:14px; padding:12px;
+      background:rgba(0,0,0,.16);
+    }
+    .box .t{color:var(--muted); font-size:12px;}
+    .box .v{margin-top:4px; font-size:22px; font-weight:900;}
+    .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
+    .bar{height:12px; border-radius:999px; background:rgba(255,255,255,.10); overflow:hidden; border:1px solid var(--border);}
+    .bar > div{height:100%; width:0%;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+    .divider{height:1px;background:rgba(255,255,255,.08); margin:14px 0;}
+    .small{font-size:12px; color:var(--muted);}
+    .ok{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--bad)} .vio{color:var(--violet)}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Calculadora de Riesgos</h1>
+        <div class="sub">
+          Basada en tu Excel: <span class="mono">CID</span> (Criticidad) + <span class="mono">PXI</span> (Probabilidad/Impacto).<br/>
+          Esta versión calcula igual que tus fórmulas (suma y multiplicación) y permite guardar registros en CSV.
+        </div>
+      </div>
+      <div class="pill">
+        <span class="dot" id="dot"></span>
+        <strong id="estado">Sin calcular</strong>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- IZQUIERDA: Inputs -->
+      <div class="card">
+        <div class="section-title">
+          <h2>Datos del riesgo</h2>
+          <div class="hint">Campos básicos para registrar y evidenciar.</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>ID / Folio (opcional)</label>
+            <input id="folio" placeholder="Ej. R-2026-001" />
+          </div>
+          <div>
+            <label>Área / Proceso</label>
+            <input id="area" placeholder="Ej. TI / Desarrollo" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Activo / Servicio (opcional)</label>
+            <input id="activo" placeholder="Ej. Aplicación X / API Y" />
+          </div>
+          <div>
+            <label>Responsable (opcional)</label>
+            <input id="responsable" placeholder="Ej. Dueño del proceso" />
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Descripción del riesgo</label>
+          <textarea id="desc" placeholder="Ej. Acceso no autorizado por credenciales débiles..."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2>Criticidad (CID)</h2>
+          <div class="hint">Tu Excel: <span class="mono">I5 = C5+E5+G5</span> y <span class="mono">K5 = IF(I5<=7…)</span></div>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label>Impacto confidencialidad</label>
+            <select id="cid_conf"></select>
+            <div class="small" id="cid_conf_txt"></div>
+          </div>
+          <div>
+            <label>Impacto integridad</label>
+            <select id="cid_int"></select>
+            <div class="small" id="cid_int_txt"></div>
+          </div>
+          <div>
+            <label>Impacto disponibilidad</label>
+            <select id="cid_disp"></select>
+            <div class="small" id="cid_disp_txt"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2>Análisis de riesgo (PXI)</h2>
+          <div class="hint">Tu Excel: <span class="mono">I9 = C9*E9</span></div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Probabilidad</label>
+            <select id="pxi_prob"></select>
+            <div class="small" id="pxi_prob_txt"></div>
+          </div>
+          <div>
+            <label>Impacto</label>
+            <select id="pxi_imp"></select>
+            <div class="small" id="pxi_imp_txt"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>¿Controles existentes?</label>
+            <select id="controles">
+              <option value="No">No</option>
+              <option value="Sí">Sí</option>
+            </select>
+            <div class="small">En tu Excel aparece como “No” por defecto.</div>
+          </div>
+          <div>
+            <label>Notas de controles (opcional)</label>
+            <input id="controles_notas" placeholder="Ej. MFA, hardening, monitoreo, etc." />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2>Análisis residual</h2>
+          <div class="hint">Tu Excel: <span class="mono">I13 = C13*E13</span></div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Probabilidad residual</label>
+            <select id="res_prob"></select>
+          </div>
+          <div>
+            <label>Impacto residual</label>
+            <select id="res_imp"></select>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" onclick="calcular()">Calcular</button>
+          <button onclick="limpiar()">Limpiar</button>
+          <button onclick="descargarCSV()">Guardar registro (CSV)</button>
+        </div>
+
+        <div class="hint" style="margin-top:10px;">
+          Para “tomar/guardar en Excel” cuando lo subas a web, este mismo front se conecta a un endpoint (Power Automate o API).
+        </div>
+      </div>
+
+      <!-- DERECHA: Resultados -->
+      <div class="card">
+        <div class="section-title">
+          <h2>Resultados</h2>
+          <div class="hint">Vista ejecutiva.</div>
+        </div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="t">Criticidad (CID)</div>
+            <div class="v" id="out_criticidad">—</div>
+            <div class="s" id="out_accion">Acción: —</div>
+          </div>
+          <div class="box">
+            <div class="t">Severidad (PXI)</div>
+            <div class="v" id="out_severidad">—</div>
+            <div class="s" id="out_controles">Controles existentes: —</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div class="small" style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <span>Indicador visual</span>
+            <span id="out_pct">0%</span>
+          </div>
+          <div class="bar"><div id="fill"></div></div>
+          <div class="hint" id="out_detalle" style="margin-top:10px;">—</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">
+          <h2>Residual</h2>
+          <div class="hint">Después de controles / tratamiento.</div>
+        </div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="t">Severidad residual</div>
+            <div class="v" id="out_residual">—</div>
+            <div class="s" id="out_residual_hint">—</div>
+          </div>
+          <div class="box">
+            <div class="t">Sugerencia</div>
+            <div class="v" style="font-size:14px;font-weight:800;" id="out_sugerencia">—</div>
+            <div class="s">Editable según tu política de aceptación.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="small">
+          <strong>Nota:</strong> Esta versión replica tus fórmulas. Si quieres los mismos rangos “Low/Medium/High” del Excel, los definimos aquí
+          (o los leemos desde Excel cuando lo conectemos en web).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Datos tomados de tus hojas CID y PXI =====
+    // CID (hoja "CID") - ejemplos que aparecen en tu tabla
+    const CID_CONF = [
+      {n:5, label:"Dato personal sensible"},
+      {n:4, label:"Dato personal"},
+      {n:3, label:"Confidencial"},
+      {n:2, label:"Uso interno"},
+      {n:1, label:"Público"}
+    ];
+
+    // En tu hoja CID: Integridad y Disponibilidad usan grado Alto/Medio/Bajo con factores (3/2/1).
+    // (Se puede ajustar si en tu archivo hay más filas; de momento es el set que se ve en la tabla.)
+    const CID_INTEGRIDAD = [
+      {n:3, label:"Alto"},
+      {n:2, label:"Medio"},
+      {n:1, label:"Bajo"}
+    ];
+    const CID_DISPONIBILIDAD = [
+      {n:3, label:"Alto"},
+      {n:2, label:"Medio"},
+      {n:1, label:"Bajo"}
+    ];
+
+    // PXI (hoja "PXI"): Impacto y Probabilidad con factor numérico y escenario
+    const PXI_IMPACTO = [
+      {n:3, label:"Alto", escenario:"Afectación en procesos principales. Operación severamente afectada y/o retraso ≥ 3 días hábiles."},
+      {n:2, label:"Medio", escenario:"Impacto ≤ 30% de capacidad operativa. Retraso ≥ 1 día y < 3 días hábiles."},
+      {n:1, label:"Bajo", escenario:"Impacto ≤ 10% de capacidad. Retrasos < 1 día hábil o (si regulatorio) observación."}
+    ];
+    const PXI_PROB = [
+      {n:3, label:"Alto", escenario:"Incidentes en ventana < 6 meses."},
+      {n:2, label:"Medio", escenario:"Incidentes en ventana 6 a 12 meses."},
+      {n:1, label:"Bajo", escenario:"Incidentes en ventana > 12 meses."}
+    ];
+
+    // ===== Helpers UI =====
+    function fillSelect(selId, arr, placeholder){
+      const sel = document.getElementById(selId);
+      sel.innerHTML = "";
+      if (placeholder){
+        const op = document.createElement("option");
+        op.value = "";
+        op.textContent = placeholder;
+        sel.appendChild(op);
+      }
+      arr.forEach(o=>{
+        const op = document.createElement("option");
+        op.value = o.n;
+        op.textContent = `${o.label} (${o.n})`;
+        sel.appendChild(op);
+      });
+      // default: primer valor real
+      if (!placeholder) sel.value = arr[0]?.n ?? "";
+    }
+
+    function setText(id, txt){ document.getElementById(id).textContent = txt || ""; }
+
+    function colorDot(kind){
+      const dot = document.getElementById("dot");
+      const fill = document.getElementById("fill");
+      const c = kind === "good" ? getComputedStyle(document.documentElement).getPropertyValue("--good")
+              : kind === "warn" ? getComputedStyle(document.documentElement).getPropertyValue("--warn")
+              : kind === "bad"  ? getComputedStyle(document.documentElement).getPropertyValue("--bad")
+              : getComputedStyle(document.documentElement).getPropertyValue("--violet");
+      dot.style.background = c.trim();
+      fill.style.background = c.trim();
+    }
+
+    // ===== Tu lógica (igual a tu Excel) =====
+    // I5 = C5 + E5 + G5
+    // K5 = IF(I5=0,"", IF(I5<=7,"Aceptar y registrar riesgo","Analizar riesgo"))
+    function accionCriticidad(crit){
+      if (crit === 0) return "";
+      return (crit <= 7) ? "Aceptar y registrar riesgo" : "Analizar riesgo";
+    }
+
+    // I9 = C9 * E9
+    function sugerenciaPorSeveridad(sev, controlesSiNo){
+      // Esto es un placeholder práctico (lo ajustamos a tu política).
+      if (sev >= 7) return "Tratar prioritaria (plan de acción + responsables + fecha).";
+      if (sev >= 4) return controlesSiNo === "Sí" ? "Monitorear y mejorar controles." : "Implementar controles básicos y monitorear.";
+      return "Aceptar / monitorear.";
+    }
+
+    function calcular(){
+      const conf = Number(document.getElementById("cid_conf").value || 0);
+      const inte = Number(document.getElementById("cid_int").value || 0);
+      const disp = Number(document.getElementById("cid_disp").value || 0);
+
+      const prob = Number(document.getElementById("pxi_prob").value || 0);
+      const imp  = Number(document.getElementById("pxi_imp").value  || 0);
+
+      const resProb = Number(document.getElementById("res_prob").value || 0);
+      const resImp  = Number(document.getElementById("res_imp").value  || 0);
+
+      const controles = document.getElementById("controles").value;
+
+      const criticidad = conf + inte + disp;        // I5
+      const accion = accionCriticidad(criticidad);  // K5
+      const severidad = prob * imp;                 // I9
+      const residual = resProb * resImp;            // I13
+
+      // UI resultados
+      document.getElementById("out_criticidad").textContent = criticidad ? criticidad.toFixed(2) : "0";
+      document.getElementById("out_accion").textContent = `Acción: ${accion || "—"}`;
+      document.getElementById("out_severidad").textContent = severidad ? severidad.toFixed(2) : "0";
+      document.getElementById("out_controles").textContent = `Controles existentes: ${controles}`;
+      document.getElementById("out_residual").textContent = residual ? residual.toFixed(2) : "0";
+
+      const sugi = sugerenciaPorSeveridad(severidad, controles);
+      document.getElementById("out_sugerencia").textContent = sugi;
+
+      // Estado y barra (solo visual)
+      let pct = 0;
+      // tu severidad PXI va 1..9 (3*3); lo normalizamos a %
+      pct = Math.round((severidad / 9) * 100);
+      pct = Math.max(0, Math.min(100, pct));
+      document.getElementById("out_pct").textContent = pct + "%";
+      document.getElementById("fill").style.width = pct + "%";
+
+      // color simple según severidad
+      if (severidad <= 2) { colorDot("good"); document.getElementById("estado").textContent = "Bajo"; }
+      else if (severidad <= 4) { colorDot("warn"); document.getElementById("estado").textContent = "Medio"; }
+      else if (severidad <= 6) { colorDot("bad"); document.getElementById("estado").textContent = "Alto"; }
+      else { colorDot("vio"); document.getElementById("estado").textContent = "Crítico"; }
+
+      const folio = document.getElementById("folio").value || "—";
+      const area  = document.getElementById("area").value || "—";
+      document.getElementById("out_detalle").textContent =
+        `Folio: ${folio} | Área: ${area} | CID: ${conf}+${inte}+${disp}=${criticidad} | PXI: ${prob}×${imp}=${severidad} | Residual: ${resProb}×${resImp}=${residual}`;
+      document.getElementById("out_residual_hint").textContent =
+        residual >= severidad ? "Residual no disminuye: revisar controles/tratamiento." : "Residual menor: controles/tratamiento reducen el riesgo.";
+    }
+
+    function limpiar(){
+      document.getElementById("folio").value="";
+      document.getElementById("area").value="";
+      document.getElementById("activo").value="";
+      document.getElementById("responsable").value="";
+      document.getElementById("desc").value="";
+      document.getElementById("controles").value="No";
+      document.getElementById("controles_notas").value="";
+
+      // reset selects
+      document.getElementById("cid_conf").value = CID_CONF[0].n;
+      document.getElementById("cid_int").value  = CID_INTEGRIDAD[0].n;
+      document.getElementById("cid_disp").value = CID_DISPONIBILIDAD[0].n;
+      document.getElementById("pxi_prob").value = PXI_PROB[0].n;
+      document.getElementById("pxi_imp").value  = PXI_IMPACTO[0].n;
+      document.getElementById("res_prob").value = PXI_PROB[0].n;
+      document.getElementById("res_imp").value  = PXI_IMPACTO[0].n;
+
+      // outputs
+      document.getElementById("out_criticidad").textContent="—";
+      document.getElementById("out_accion").textContent="Acción: —";
+      document.getElementById("out_severidad").textContent="—";
+      document.getElementById("out_controles").textContent="Controles existentes: —";
+      document.getElementById("out_residual").textContent="—";
+      document.getElementById("out_sugerencia").textContent="—";
+      document.getElementById("out_pct").textContent="0%";
+      document.getElementById("fill").style.width="0%";
+      document.getElementById("out_detalle").textContent="—";
+      document.getElementById("out_residual_hint").textContent="—";
+      document.getElementById("estado").textContent="Sin calcular";
+      document.getElementById("dot").style.background="#94a3b8";
+    }
+
+    function descargarCSV(){
+      // calcula antes para asegurar valores
+      calcular();
+
+      const now = new Date();
+      const iso = now.toISOString().slice(0,19).replace("T"," ");
+      const data = {
+        fecha: iso,
+        folio: document.getElementById("folio").value || "",
+        area: document.getElementById("area").value || "",
+        activo: document.getElementById("activo").value || "",
+        responsable: document.getElementById("responsable").value || "",
+        descripcion: (document.getElementById("desc").value || "").replace(/\n/g," "),
+        cid_conf: document.getElementById("cid_conf").value,
+        cid_int: document.getElementById("cid_int").value,
+        cid_disp: document.getElementById("cid_disp").value,
+        criticidad: document.getElementById("out_criticidad").textContent,
+        accion: document.getElementById("out_accion").textContent.replace("Acción: ",""),
+        pxi_prob: document.getElementById("pxi_prob").value,
+        pxi_imp: document.getElementById("pxi_imp").value,
+        severidad: document.getElementById("out_severidad").textContent,
+        controles: document.getElementById("controles").value,
+        controles_notas: document.getElementById("controles_notas").value || "",
+        residual_prob: document.getElementById("res_prob").value,
+        residual_imp: document.getElementById("res_imp").value,
+        severidad_residual: document.getElementById("out_residual").textContent,
+        sugerencia: document.getElementById("out_sugerencia").textContent
+      };
+
+      const headers = Object.keys(data);
+      const values = headers.map(h => `"${String(data[h]).replace(/"/g,'""')}"`);
+      const csv = headers.join(",") + "\n" + values.join(",") + "\n";
+
+      const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `registro_riesgo_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== Inicialización =====
+    function bindExplain(selId, arr, outId){
+      const sel = document.getElementById(selId);
+      function upd(){
+        const n = Number(sel.value || 0);
+        const found = arr.find(x => x.n === n);
+        if (!found) return setText(outId,"");
+        if (found.escenario) setText(outId, found.escenario);
+        else setText(outId, found.label);
+      }
+      sel.addEventListener("change", upd);
+      upd();
+    }
+
+    // cargar selects
+    fillSelect("cid_conf", CID_CONF, null);
+    fillSelect("cid_int",  CID_INTEGRIDAD, null);
+    fillSelect("cid_disp", CID_DISPONIBILIDAD, null);
+
+    fillSelect("pxi_prob", PXI_PROB, null);
+    fillSelect("pxi_imp",  PXI_IMPACTO, null);
+
+    // residual usa los mismos criterios PXI
+    fillSelect("res_prob", PXI_PROB, null);
+    fillSelect("res_imp",  PXI_IMPACTO, null);
+
+    // textos explicativos
+    bindExplain("cid_conf", CID_CONF, "cid_conf_txt");
+    bindExplain("cid_int",  CID_INTEGRIDAD, "cid_int_txt");
+    bindExplain("cid_disp", CID_DISPONIBILIDAD, "cid_disp_txt");
+
+    bindExplain("pxi_prob", PXI_PROB, "pxi_prob_txt");
+    bindExplain("pxi_imp",  PXI_IMPACTO, "pxi_imp_txt");
+
+    limpiar();
+  </script>
+</body>
+</html>

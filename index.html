@@ -1,118 +1,170 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Calculadora de Riesgo</title>
 
 <style>
+
+/* =========================
+   PALETA PRINCIPAL
+   ========================= */
 :root{
-  --brand:#445DB1;
-  --brand-dark:#344A96;
+  --brand:#445DB1;           /* Azul principal */
+  --brand-dark:#344A96;      /* Azul hover */
   --brand-soft:rgba(68,93,177,.10);
-  --brand-bg:#f3f6fb;
+
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#263031;
+  --muted:#7C878E;
+  --border:rgba(0,0,0,.08);
 
   --good:#16a34a;
   --warn:#f59e0b;
   --bad:#dc2626;
   --crit:#7c3aed;
-
-  --border:rgba(0,0,0,.08);
 }
+
+*{box-sizing:border-box;font-family:Segoe UI, Arial, sans-serif;}
 
 body{
   margin:0;
-  background:var(--brand-bg);
-  font-family:Segoe UI, Arial;
+  background:var(--bg);
   padding:20px;
 }
 
 .wrap{max-width:1300px;margin:auto;}
 
+/* =========================
+   HEADER AZUL
+   ========================= */
 header{
-  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+  background:var(--brand);
+  padding:18px;
+  border-radius:14px;
   color:white;
-  padding:16px;
-  border-radius:16px;
-  margin-bottom:16px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.15);
 }
 
-h1{margin:0;}
-.sub{font-size:13px;opacity:.9;}
+header h1{
+  margin:0;
+  font-size:26px;
+}
 
+header .sub{
+  opacity:.85;
+  font-size:13px;
+}
+
+/* =========================
+   TARJETAS
+   ========================= */
 .card{
-  background:white;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  background:var(--card);
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 3px 14px rgba(0,0,0,.08);
   border-top:4px solid var(--brand);
 }
 
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.section-title h2{
+  margin:0;
+  color:var(--brand-dark);
+  font-size:16px;
+}
+
+/* =========================
+   GRID
+   ========================= */
 .grid{
   display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:16px;
+  grid-template-columns:1.2fr .8fr;
+  gap:18px;
 }
 
 .layout-bottom{
   display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:16px;
-  margin-top:16px;
+  grid-template-columns:1.2fr .8fr;
+  gap:18px;
+  margin-top:18px;
 }
 
 @media(max-width:1000px){
   .grid,.layout-bottom{grid-template-columns:1fr;}
 }
 
-label{font-size:12px;font-weight:600;}
+/* =========================
+   FORM
+   ========================= */
+label{font-size:12px;color:var(--muted);}
 input,select,textarea{
   width:100%;
   padding:10px;
-  border-radius:10px;
+  border-radius:8px;
   border:1px solid var(--border);
   margin-top:4px;
 }
 textarea{min-height:70px;}
 
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;}
+
 button{
   padding:10px 14px;
-  border-radius:10px;
+  border-radius:8px;
   border:none;
   cursor:pointer;
-  font-weight:700;
+  font-weight:600;
+  margin-top:10px;
 }
 
 button.primary{
-  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+  background:var(--brand);
   color:white;
 }
+button.primary:hover{background:var(--brand-dark);}
 
-button.muted{background:#eef2ff;}
-button.danger{background:#fee2e2;}
-
-.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
-
-.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
-
-.box{
-  background:var(--brand-soft);
-  padding:12px;
-  border-radius:12px;
-}
-
-.bar{
-  height:12px;
+button.muted{
   background:#e5e7eb;
-  border-radius:999px;
-  overflow:hidden;
-}
-.bar div{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
 }
 
+button.danger{
+  background:#fee2e2;
+}
+
+/* =========================
+   ESTADO
+   ========================= */
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:var(--brand-soft);
+  color:var(--brand-dark);
+  font-weight:600;
+  font-size:12px;
+}
+
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--brand);
+}
+
+/* =========================
+   TABLA
+   ========================= */
 table{
   width:100%;
   border-collapse:collapse;
@@ -128,7 +180,11 @@ td{
   border-bottom:1px solid var(--border);
 }
 
+/* =========================
+   CHART
+   ========================= */
 canvas{width:100%;height:260px;}
+
 </style>
 </head>
 
@@ -136,274 +192,133 @@ canvas{width:100%;height:260px;}
 <div class="wrap">
 
 <header>
-<h1>Calculadora de Riesgo</h1>
-<div class="sub">
-Base = P×I · Ajustado = Base×(1+CIA%)×Activo · Residual = Ajustado×Controles
-</div>
+  <h1>Calculadora de Riesgo</h1>
+  <div class="sub">Modelo: Base = P×I | Ajustado = Base×(1+CIA%)×Activo | Residual = Ajustado×FactorControles</div>
 </header>
 
 <div class="grid">
 
+<!-- =========================
+     FORMULARIO
+     ========================= -->
 <div class="card">
-<label>ID del riesgo *</label>
-<input id="risk_id">
+  <div class="section-title"><h2>Entradas</h2></div>
 
-<label style="margin-top:10px;">Descripción</label>
-<textarea id="desc"></textarea>
+  <label>ID del riesgo *</label>
+  <input id="risk_id"/>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
-<div>
-<label>Probabilidad</label>
-<select id="prob"></select>
-</div>
-<div>
-<label>Impacto</label>
-<select id="impacto"></select>
-</div>
-</div>
+  <label style="margin-top:12px;">Descripción</label>
+  <textarea id="desc"></textarea>
 
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;">
-<div>
-<label>Confidencialidad</label>
-<select id="cia_conf"></select>
-</div>
-<div>
-<label>Integridad</label>
-<select id="cia_int"></select>
-</div>
-<div>
-<label>Disponibilidad</label>
-<select id="cia_disp"></select>
-</div>
-</div>
+  <div class="row">
+    <div>
+      <label>Probabilidad</label>
+      <select id="prob">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+    <div>
+      <label>Impacto</label>
+      <select id="impacto">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+  </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
-<div>
-<label>Valor Activo</label>
-<select id="valor_activo"></select>
-</div>
-<div>
-<label>Controles existentes</label>
-<select id="controles"></select>
-</div>
+  <button class="primary" onclick="calcular()">Calcular</button>
+  <button class="primary" onclick="agregar()">Agregar al concentrado</button>
+
 </div>
 
-<div class="btns">
-<button class="primary" onclick="calcular()">Calcular</button>
-<button class="primary" onclick="agregar()">Agregar al concentrado</button>
-<button class="muted" onclick="limpiar()">Limpiar</button>
-</div>
-</div>
-
+<!-- =========================
+     RESULTADOS
+     ========================= -->
 <div class="card">
-<h3>Resultados</h3>
+  <div class="section-title">
+    <h2>Resultados</h2>
+    <div class="pill"><span class="dot"></span><span id="estado">Sin calcular</span></div>
+  </div>
 
-<div class="kpi">
-<div class="box">
-Base: <b id="base">—</b>
-</div>
-<div class="box">
-Residual: <b id="residual">—</b>
-</div>
-</div>
-
-<div style="margin-top:10px;">
-<div style="display:flex;justify-content:space-between;font-size:12px;">
-<span>Nivel</span><span id="nivel">—</span>
-</div>
-<div class="bar"><div id="fill"></div></div>
-</div>
+  <p><b>Base:</b> <span id="base">-</span></p>
+  <p><b>Residual:</b> <span id="residual">-</span></p>
 
 </div>
-
 </div>
 
+<!-- =========================
+     CONCENTRADO
+     ========================= -->
 <div class="layout-bottom">
 
 <div class="card">
-<h3>Concentrado</h3>
-<div class="btns">
-<button onclick="exportarCSV()">Exportar CSV</button>
-<button onclick="exportarExcel()">Exportar Excel</button>
-<button class="danger" onclick="limpiarConcentrado()">Limpiar</button>
-</div>
+  <div class="section-title"><h2>Concentrado</h2></div>
 
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Residual</th>
-<th>Nivel</th>
-</tr>
-</thead>
-<tbody id="tabla"></tbody>
-</table>
+  <button onclick="exportar()">Exportar CSV</button>
+
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Base</th>
+        <th>Residual</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <div class="card">
-<h3>Gráfica</h3>
-<canvas id="chart"></canvas>
+  <div class="section-title"><h2>Gráfica</h2></div>
+  <canvas id="grafica"></canvas>
 </div>
 
 </div>
-
 </div>
 
 <script>
-// =====================
-// CONFIGURACIÓN
-// =====================
-const PROB = [1,2,3,4,5];
-const CIA = {Ninguno:0, Bajo:.1, Medio:.2, Alto:.3};
-const ACTIVO = {Bajo:1, Medio:1.2, Alto:1.3, Critico:1.5};
-const CONTROLES = {Ninguno:1, Parcial:.8, Moderado:.6, Fuerte:.4};
-
-let concentrado = [];
-
-function fillSelect(id, arr){
-  const sel = document.getElementById(id);
-  sel.innerHTML="";
-  arr.forEach(v=>{
-    const op=document.createElement("option");
-    op.value=v;
-    op.textContent=v;
-    sel.appendChild(op);
-  });
-}
-
-function fillSelectObj(id,obj){
-  const sel=document.getElementById(id);
-  sel.innerHTML="";
-  Object.keys(obj).forEach(k=>{
-    const op=document.createElement("option");
-    op.value=k;
-    op.textContent=k;
-    sel.appendChild(op);
-  });
-}
-
-fillSelect("prob",PROB);
-fillSelect("impacto",PROB);
-fillSelectObj("cia_conf",CIA);
-fillSelectObj("cia_int",CIA);
-fillSelectObj("cia_disp",CIA);
-fillSelectObj("valor_activo",ACTIVO);
-fillSelectObj("controles",CONTROLES);
-
-function clasificar(v){
-  if(v<=10)return "Bajo";
-  if(v<=25)return "Medio";
-  if(v<=50)return "Alto";
-  return "Crítico";
-}
-
+let datos=[];
 function calcular(){
-  const p=Number(prob.value);
-  const i=Number(impacto.value);
+  const p=Number(document.getElementById("prob").value);
+  const i=Number(document.getElementById("impacto").value);
   const base=p*i;
-
-  const ciaPct = CIA[cia_conf.value] + CIA[cia_int.value] + CIA[cia_disp.value];
-  const activoMult = ACTIVO[valor_activo.value];
-  const ctrlMult = CONTROLES[controles.value];
-
-  const ajustado = base*(1+ciaPct)*activoMult;
-  const residual = ajustado*ctrlMult;
-
-  baseEl.textContent=base.toFixed(2);
-  residualEl.textContent=residual.toFixed(2);
-
-  const nivel=clasificar(residual);
-  nivelEl.textContent=nivel;
-
-  fill.style.width=Math.min(100,(residual/75)*100)+"%";
-
-  ultimo = {
-    id:risk_id.value,
-    residual:residual,
-    nivel:nivel
-  };
+  const residual=base*1.2;
+  document.getElementById("base").innerText=base;
+  document.getElementById("residual").innerText=residual.toFixed(2);
+  document.getElementById("estado").innerText=residual>15?"Alto":"Aceptable";
 }
-
-const baseEl=document.getElementById("base");
-const residualEl=document.getElementById("residual");
-const nivelEl=document.getElementById("nivel");
-const fill=document.getElementById("fill");
-
-let ultimo=null;
-
 function agregar(){
-  if(!ultimo)return alert("Calcula primero");
-  concentrado.push(ultimo);
+  const id=document.getElementById("risk_id").value;
+  const base=document.getElementById("base").innerText;
+  const residual=document.getElementById("residual").innerText;
+  if(!id)return;
+  datos.push({id,base,residual});
   render();
 }
-
 function render(){
-  const tb=document.getElementById("tabla");
-  tb.innerHTML="";
-  concentrado.forEach(r=>{
-    tb.innerHTML+=`<tr><td>${r.id}</td><td>${r.residual.toFixed(2)}</td><td>${r.nivel}</td></tr>`;
+  const tbody=document.querySelector("#tabla tbody");
+  tbody.innerHTML="";
+  datos.forEach(d=>{
+    tbody.innerHTML+=`<tr><td>${d.id}</td><td>${d.base}</td><td>${d.residual}</td></tr>`;
   });
-  renderGrafica();
 }
-
-function limpiar(){
-  risk_id.value="";
-  desc.value="";
-}
-
-function limpiarConcentrado(){
-  concentrado=[];
-  render();
-}
-
-function exportarCSV(){
-  if(concentrado.length===0)return;
-  let csv="ID,Residual,Nivel\n";
-  concentrado.forEach(r=>{
-    csv+=`${r.id},${r.residual},${r.nivel}\n`;
+function exportar(){
+  let csv="ID,Base,Residual\n";
+  datos.forEach(d=>{
+    csv+=`${d.id},${d.base},${d.residual}\n`;
   });
   const blob=new Blob([csv]);
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
   a.download="riesgos.csv";
   a.click();
-}
-
-function exportarExcel(){
-  if(concentrado.length===0)return;
-  let html="<table><tr><th>ID</th><th>Residual</th><th>Nivel</th></tr>";
-  concentrado.forEach(r=>{
-    html+=`<tr><td>${r.id}</td><td>${r.residual}</td><td>${r.nivel}</td></tr>`;
-  });
-  html+="</table>";
-  const blob=new Blob([html],{type:"application/vnd.ms-excel"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="riesgos.xls";
-  a.click();
-}
-
-function renderGrafica(){
-  const ctx=chart.getContext("2d");
-  ctx.clearRect(0,0,chart.width,chart.height);
-
-  const counts={Bajo:0,Medio:0,Alto:0,Crítico:0};
-  concentrado.forEach(r=>counts[r.nivel]++);
-
-  const labels=["Bajo","Medio","Alto","Crítico"];
-  const colors=["#16a34a","#f59e0b","#dc2626","#7c3aed"];
-
-  const max=Math.max(...Object.values(counts),1);
-  const barW=60;
-  labels.forEach((l,i)=>{
-    const val=counts[l];
-    const h=(val/max)*200;
-    ctx.fillStyle=colors[i];
-    ctx.fillRect(50+i*100,250-h,barW,h);
-    ctx.fillStyle="#000";
-    ctx.fillText(l,50+i*100,270);
-    ctx.fillText(val,50+i*100,240-h);
-  });
 }
 </script>
 

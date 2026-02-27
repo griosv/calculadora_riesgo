@@ -7,50 +7,124 @@
 
   <style>
     :root{
-      /* Paleta inspirada en CONTPAQi */
-      --brand:#005EB8;
-      --brand-dark:#004A92;
-      --ink:#263031;
-      --muted:#7C878E;
+      /* ===== Paleta más azul (inspirada en el header de CONTPAQi ~ #4B63B4) ===== */
+      --brand:#4B63B4;          /* azul principal */
+      --brand-2:#2F4AA3;        /* azul más profundo */
+      --brand-dark:#233B86;     /* hover/bordes */
+      --brand-soft: rgba(75,99,180,.12);
+
+      --ink:#1F2A37;
+      --muted:#6B7280;
 
       /* UI */
-      --bg:#f4f6f8;
+      --bg:#eef3fb;            /* fondo más azulado */
       --card:#ffffff;
-      --text:#263031;
-      --border:rgba(0,0,0,.10);
+      --text:#1f2937;
+      --border:rgba(17,24,39,.10);
 
-      /* Estados */
-      --good:#16a34a;
-      --warn:#f59e0b;
-      --bad:#dc2626;
-      --crit:#7c3aed;
+      /* Estados (pedido) */
+      --good:#16a34a;  /* Bajo = verde */
+      --warn:#f59e0b;  /* Medio = ámbar */
+      --bad:#f97316;   /* Alto = naranja */
+      --crit:#dc2626;  /* Crítico = rojo */
     }
 
-    *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-    body{margin:0; min-height:100vh; color:var(--text); background:var(--bg); padding:20px;}
+    *{
+      box-sizing:border-box;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(75,99,180,.20), transparent 55%),
+        radial-gradient(900px 500px at 90% 10%, rgba(47,74,163,.18), transparent 50%),
+        linear-gradient(180deg, #eaf1ff 0%, var(--bg) 40%, #f7f9ff 100%);
+      padding:20px;
+    }
+
     .wrap{max-width:1280px; margin:0 auto;}
 
-    header{margin-bottom:12px;}
-    h1{margin:0; font-size:28px; color:var(--brand); letter-spacing:.2px;}
-    .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
+    /* Top bar estilo “sitio” */
+    .topbar{
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow: 0 12px 30px rgba(35,59,134,.18);
+      border:1px solid rgba(35,59,134,.18);
+      margin-bottom:14px;
+    }
+    .topbar-inner{
+      padding:16px 18px;
+      background: linear-gradient(90deg, var(--brand-dark), var(--brand));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand-left{
+      display:flex; align-items:center; gap:12px;
+      min-width: 260px;
+    }
+    .logo-badge{
+      width:40px; height:40px;
+      border-radius:12px;
+      background: rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.22);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900;
+      letter-spacing:.5px;
+    }
+    .title-wrap h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.2;
+      color:#fff;
+    }
+    .title-wrap .sub{
+      margin:3px 0 0;
+      opacity:.90;
+      font-size:12px;
+      line-height:1.35;
+      color:#fff;
+    }
+    .model-chip{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      font-size:12px;
+      opacity:.95;
+    }
+    .model-chip .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      white-space:nowrap;
+    }
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(0,94,184,.25);
+      border:1px solid rgba(75,99,180,.35);
       border-radius:999px;
       padding:8px 12px;
-      background: rgba(0,94,184,.06);
+      background: rgba(255,255,255,.65);
+      backdrop-filter: blur(6px);
       white-space:nowrap;
+      box-shadow: 0 6px 16px rgba(35,59,134,.10);
     }
     .dot{width:10px;height:10px;border-radius:50%; background:#94a3b8;}
-    .pill strong{font-size:13px;}
+    .pill strong{font-size:13px; color:var(--ink);}
 
     .card{
-      background:var(--card);
+      background: rgba(255,255,255,.92);
       border:1px solid var(--border);
-      border-radius:14px;
+      border-radius:16px;
       padding:16px;
-      box-shadow:0 2px 10px rgba(0,0,0,.06);
+      box-shadow:0 8px 24px rgba(17,24,39,.08);
+      backdrop-filter: blur(6px);
     }
 
     .top-form{
@@ -80,16 +154,18 @@
     input, select, textarea{
       width:100%;
       padding:11px 12px;
-      border-radius:10px;
+      border-radius:12px;
       border:1px solid var(--border);
       background:#fff;
       color:var(--text);
       outline:none;
+      box-shadow: 0 1px 0 rgba(17,24,39,.03);
     }
     textarea{min-height:88px; resize:vertical;}
+
     input:focus, select:focus, textarea:focus{
-      border-color: rgba(0,94,184,.65);
-      box-shadow: 0 0 0 3px rgba(0,94,184,.15);
+      border-color: rgba(75,99,180,.70);
+      box-shadow: 0 0 0 4px rgba(75,99,180,.18);
     }
 
     .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
@@ -99,50 +175,80 @@
       background:#fff;
       color:var(--ink);
       padding:10px 14px;
-      border-radius:10px;
-      font-weight:700;
+      border-radius:12px;
+      font-weight:800;
       font-size:13px;
+      transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
     }
+    button:active{transform: translateY(1px);}
+
     button.primary{
-      background: linear-gradient(90deg, rgba(0,94,184,.20), rgba(0,94,184,.08));
-      border-color: rgba(0,94,184,.35);
+      background: linear-gradient(180deg, rgba(75,99,180,.18), rgba(75,99,180,.06));
+      border-color: rgba(75,99,180,.45);
+      box-shadow: 0 10px 18px rgba(35,59,134,.10);
     }
     button.primary:hover{
-      background: linear-gradient(90deg, rgba(0,94,184,.30), rgba(0,94,184,.12));
-      border-color: rgba(0,94,184,.45);
+      border-color: rgba(75,99,180,.62);
+      background: linear-gradient(180deg, rgba(75,99,180,.26), rgba(75,99,180,.10));
+      box-shadow: 0 14px 24px rgba(35,59,134,.14);
     }
-    button.muted{background:#f3f4f6;}
+
+    button.muted{background:#f3f6ff; border-color: rgba(47,74,163,.20);}
     button.danger{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06);}
 
-    .divider{height:1px; background:rgba(0,0,0,.08); margin:14px 0;}
+    .divider{height:1px; background:rgba(17,24,39,.10); margin:14px 0;}
     .small{font-size:12px; color:var(--muted); line-height:1.35;}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
     .box{
-      border:1px solid var(--border);
-      border-radius:12px;
+      border:1px solid rgba(47,74,163,.16);
+      border-radius:14px;
       padding:12px;
-      background:#fff;
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
+      box-shadow: 0 10px 18px rgba(35,59,134,.06);
     }
     .box .t{color:var(--muted); font-size:12px;}
     .box .v{margin-top:4px; font-size:22px; font-weight:900; color:var(--ink);}
     .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
 
-    .bar{height:12px; border-radius:999px; background:rgba(0,0,0,.08); overflow:hidden; border:1px solid var(--border);}
+    .bar{
+      height:12px;
+      border-radius:999px;
+      background:rgba(17,24,39,.08);
+      overflow:hidden;
+      border:1px solid rgba(47,74,163,.18);
+    }
     .bar > div{height:100%; width:0%; background:var(--brand);}
 
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--border); border-radius:12px; background:#fff;}
-    th, td{padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:12px; vertical-align:top;}
-    th{background:rgba(0,94,184,.06); text-align:left; color:var(--ink); font-size:12px;}
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid rgba(47,74,163,.18);
+      border-radius:14px;
+      background:#fff;
+    }
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(17,24,39,.06); font-size:12px; vertical-align:top;}
+    th{
+      background: linear-gradient(180deg, rgba(75,99,180,.10), rgba(75,99,180,.05));
+      text-align:left;
+      color:var(--ink);
+      font-size:12px;
+    }
     tr:last-child td{border-bottom:none;}
+
     .tag{
       display:inline-flex; align-items:center; gap:6px;
-      padding:4px 8px; border-radius:999px; border:1px solid var(--border);
-      font-size:11px; white-space:nowrap;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:11px;
+      white-space:nowrap;
+      font-weight:700;
     }
 
     .layout-bottom{
@@ -153,7 +259,13 @@
     }
 
     canvas{width:100%; height:260px; display:block;}
-    .chartWrap{padding:12px; border:1px solid var(--border); border-radius:12px; background:#fff;}
+    .chartWrap{
+      padding:12px;
+      border:1px solid rgba(47,74,163,.18);
+      border-radius:14px;
+      background:#fff;
+      box-shadow: 0 10px 18px rgba(35,59,134,.06);
+    }
     .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
@@ -164,15 +276,16 @@
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid var(--border);
-      background:#fff;
+      border:1px solid rgba(47,74,163,.18);
+      background: rgba(75,99,180,.06);
       font-size:12px;
       color:var(--ink);
+      box-shadow: 0 8px 14px rgba(35,59,134,.06);
     }
     .chip .x{
       width:18px; height:18px; border-radius:50%;
       display:inline-flex; align-items:center; justify-content:center;
-      border:1px solid rgba(0,0,0,.12);
+      border:1px solid rgba(17,24,39,.12);
       background:#f3f4f6;
       font-weight:900;
       cursor:pointer;
@@ -183,20 +296,33 @@
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
       .layout-bottom{grid-template-columns:1fr;}
+      .brand-left{min-width:unset;}
+      .model-chip{justify-content:flex-start;}
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <header>
-      <h1>Calculadora de Riesgo</h1>
-      <div class="sub">
-        Modelo: <span class="mono">Base = P×I</span> ·
-        <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
-        <span class="mono">Residual = Ajustado×FactorControles</span>
+
+    <!-- Barra superior -->
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-left">
+          <div class="logo-badge">C</div>
+          <div class="title-wrap">
+            <h1>Calculadora de Riesgo</h1>
+            <div class="sub">Evaluación · Tratamiento · Concentrado · Gráficas</div>
+          </div>
+        </div>
+
+        <div class="model-chip">
+          <div class="chip mono">Base = P×I</div>
+          <div class="chip mono">Ajustado = Base×(1+CIA%)×Activo</div>
+          <div class="chip mono">Residual = Ajustado×FactorControles</div>
+        </div>
       </div>
-    </header>
+    </div>
 
     <!-- ID y descripción arriba -->
     <div class="card" style="margin-bottom:12px;">
@@ -297,7 +423,7 @@
 
             <div style="margin-top:10px;">
               <label>Lista de controles</label>
-              <select id="iso_catalogo" size="9"></select>
+              <select id="iso_catalogo" size="10"></select>
               <div class="btns" style="margin-top:10px;">
                 <button class="primary" type="button" onclick="agregarControlDesdeLista()">Agregar control</button>
               </div>
@@ -510,9 +636,10 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // ISO catálogo completo ISO/IEC 27001:2022 (93 controles)
+    // =========================
+    // ISO 27001:2022 - Catálogo completo (5.1 a 8.34)
+    // =========================
     const ISO_CATALOGO = [
-      // 5 Organizacionales
       { id:"5.1",  nombre:"Políticas de seguridad de la información" },
       { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
       { id:"5.3",  nombre:"Separación de funciones" },
@@ -551,17 +678,15 @@
       { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
       { id:"5.37", nombre:"Procedimientos operativos documentados" },
 
-      // 6 Personas
-      { id:"6.1", nombre:"Investigación" },
-      { id:"6.2", nombre:"Términos y condiciones de empleo" },
-      { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
-      { id:"6.4", nombre:"Proceso disciplinario" },
-      { id:"6.5", nombre:"Responsabilidades después de la terminación o cambio de empleo" },
-      { id:"6.6", nombre:"Acuerdos de confidencialidad o no divulgación" },
-      { id:"6.7", nombre:"Trabajo remoto" },
-      { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
+      { id:"6.1",  nombre:"Investigación" },
+      { id:"6.2",  nombre:"Términos y condiciones de empleo" },
+      { id:"6.3",  nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
+      { id:"6.4",  nombre:"Proceso disciplinario" },
+      { id:"6.5",  nombre:"Responsabilidades después de la terminación o cambio de empleo" },
+      { id:"6.6",  nombre:"Acuerdos de confidencialidad o no divulgación" },
+      { id:"6.7",  nombre:"Trabajo remoto" },
+      { id:"6.8",  nombre:"Informe de eventos de seguridad de la información" },
 
-      // 7 Físicos
       { id:"7.1",  nombre:"Perímetros de seguridad física" },
       { id:"7.2",  nombre:"Entrada física" },
       { id:"7.3",  nombre:"Asegurar oficinas, habitaciones e instalaciones" },
@@ -577,7 +702,6 @@
       { id:"7.13", nombre:"Mantenimiento de equipos" },
       { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
 
-      // 8 Tecnológicos
       { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
       { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
       { id:"8.3",  nombre:"Restricción de acceso a la información" },
@@ -659,8 +783,8 @@
       let color = "#94a3b8";
       if (kind === "good") color = styles.getPropertyValue("--good").trim();
       if (kind === "warn") color = styles.getPropertyValue("--warn").trim();
-      if (kind === "bad")  color = styles.getPropertyValue("--bad").trim();
-      if (kind === "crit") color = styles.getPropertyValue("--crit").trim();
+      if (kind === "bad")  color = styles.getPropertyValue("--bad").trim();   // Alto = naranja
+      if (kind === "crit") color = styles.getPropertyValue("--crit").trim();  // Crítico = rojo
 
       dot.style.background = color;
       fill.style.background = color;
@@ -893,10 +1017,10 @@
     }
 
     function nivelTag(nivel){
-      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.06);">Bajo</span>`;
-      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.06);">Medio</span>`;
-      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(220,38,38,.25); background:rgba(220,38,38,.06);">Alto</span>`;
-      return `<span class="tag" style="border-color:rgba(124,58,237,.25); background:rgba(124,58,237,.06);">Crítico</span>`;
+      if (nivel === "Bajo")   return `<span class="tag" style="border-color:rgba(22,163,74,.25);  background:rgba(22,163,74,.08);">Bajo</span>`;
+      if (nivel === "Medio")  return `<span class="tag" style="border-color:rgba(245,158,11,.28); background:rgba(245,158,11,.10);">Medio</span>`;
+      if (nivel === "Alto")   return `<span class="tag" style="border-color:rgba(249,115,22,.30); background:rgba(249,115,22,.10);">Alto</span>`;
+      return                  `<span class="tag" style="border-color:rgba(220,38,38,.28); background:rgba(220,38,38,.10);">Crítico</span>`;
     }
 
     function renderTabla(){
@@ -1105,10 +1229,10 @@
     // =========================
     function heatColor(base){
       const styles = getComputedStyle(document.documentElement);
-      if (base <= 5)  return styles.getPropertyValue("--good").trim();
-      if (base <= 10) return styles.getPropertyValue("--warn").trim();
-      if (base <= 15) return styles.getPropertyValue("--bad").trim();
-      return styles.getPropertyValue("--crit").trim();
+      if (base <= 5)  return styles.getPropertyValue("--good").trim();  // verde
+      if (base <= 10) return styles.getPropertyValue("--warn").trim();  // ámbar
+      if (base <= 15) return styles.getPropertyValue("--bad").trim();   // naranja (alto)
+      return styles.getPropertyValue("--crit").trim();                  // rojo (crítico)
     }
 
     function renderHeatmap(current){

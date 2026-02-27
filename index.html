@@ -7,87 +7,76 @@
 
   <style>
     :root{
-      /* Azules inspirados en CONTPAQi (aprox por referencia visual) */
-      --brand:#0066B3;       /* azul principal */
-      --brand-dark:#004C8C;  /* azul profundo */
-      --accent:#00B2E3;      /* acento turquesa */
-      --ink:#0f172a;
-      --muted:#64748b;
+      /* Azules estilo CONTPAQi (aprox. por referencia visual) */
+      --brand:#0057B8;        /* azul principal */
+      --brand-dark:#004A92;   /* azul oscuro */
+      --brand-ink:#0B2A4A;    /* azul tinta */
+      --brand-soft:#EAF2FF;   /* fondo azul claro */
+      --accent:#7FBBED;       /* azul claro (botón tipo “Quiero ser Distribuidor”) */
+
+      --ink:#1F2A37;
+      --muted:#6B7280;
 
       /* UI */
-      --bg:#eef5fb;
+      --bg:#F4F8FF;
       --card:#ffffff;
-      --text:#0f172a;
-      --border:rgba(2, 30, 72, .12);
+      --text:#111827;
+      --border:rgba(2, 6, 23, .10);
 
-      /* Estados */
-      --good:#16a34a;   /* Bajo */
-      --warn:#f59e0b;   /* Medio (ámbar) */
-      --alto:#f97316;   /* Alto (naranja) */
-      --bad:#dc2626;    /* Crítico (rojo) */
-
-      --shadow: 0 10px 30px rgba(0, 76, 140, .10);
-      --shadow2: 0 2px 10px rgba(0,0,0,.06);
+      /* Estados (ajuste pedido)
+         - Alto = NARANJA
+         - Crítico = ROJO
+      */
+      --low:#16a34a;     /* Bajo */
+      --med:#fbbf24;     /* Medio (amarillo/ámbar) */
+      --high:#f97316;    /* Alto (naranja) */
+      --crit:#dc2626;    /* Crítico (rojo) */
     }
 
     *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-    body{
-      margin:0; min-height:100vh; color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(0,178,227,.18), transparent 55%),
-        radial-gradient(900px 500px at 100% 10%, rgba(0,102,179,.20), transparent 55%),
-        linear-gradient(180deg, #e9f3fb, #f6fbff);
-      padding:18px;
-    }
-    .wrap{max-width:1280px; margin:0 auto;}
+    body{margin:0; min-height:100vh; color:var(--text); background: radial-gradient(1200px 500px at 10% 0%, rgba(0,87,184,.18), transparent 55%), var(--bg);}
 
-    /* Barra superior */
     .topbar{
+      height:56px;
       background: linear-gradient(90deg, var(--brand-dark), var(--brand));
-      border-radius:18px;
-      padding:14px 16px;
-      color:#fff;
-      box-shadow: var(--shadow);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.10);
     }
-    .brandLeft{display:flex; align-items:center; gap:12px;}
-    .logoMark{
-      width:40px;height:40px;border-radius:12px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.45), transparent 55%),
-                  linear-gradient(135deg, rgba(0,178,227,.95), rgba(255,255,255,.18));
-      border:1px solid rgba(255,255,255,.22);
+
+    .wrap{max-width:1280px; margin:0 auto; padding:18px 18px 28px;}
+    header{margin:14px 0 14px;}
+
+    .header-card{
+      display:flex; gap:14px; align-items:flex-start; justify-content:space-between;
+      background: linear-gradient(180deg, rgba(0,87,184,.10), rgba(255,255,255,.85));
+      border:1px solid rgba(0,87,184,.18);
+      border-radius:16px;
+      padding:16px;
     }
-    .brandText{line-height:1.05;}
-    .brandText .t1{font-weight:900; letter-spacing:.3px; font-size:16px;}
-    .brandText .t2{opacity:.88; font-size:12px;}
-    .topbar .cta{
-      border:none;
+    .brandlock{display:flex; flex-direction:column; gap:6px;}
+    h1{margin:0; font-size:26px; color:var(--brand); letter-spacing:.2px;}
+    .sub{margin:0; color:var(--muted); font-size:13px; line-height:1.35;}
+    .sub .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+
+    .cta{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .cta .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 12px;
       border-radius:999px;
-      padding:10px 14px;
-      font-weight:900;
-      color:#fff;
-      background: linear-gradient(90deg, rgba(0,178,227,.95), rgba(0,178,227,.70));
-      box-shadow: 0 8px 18px rgba(0,178,227,.25);
-      cursor:pointer;
+      border:1px solid rgba(0,87,184,.25);
+      background: rgba(0,87,184,.08);
+      color:var(--brand-ink);
+      font-size:12px;
       white-space:nowrap;
     }
-    .topbar .cta:hover{filter:brightness(1.03);}
-
-    header{margin:6px 0 12px;}
-    h1{margin:0; font-size:26px; color:var(--brand-dark); letter-spacing:.2px;}
-    .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(0,102,179,.22);
+      border:1px solid rgba(0,87,184,.22);
       border-radius:999px;
       padding:8px 12px;
-      background: rgba(0,102,179,.06);
+      background: rgba(0,87,184,.06);
       white-space:nowrap;
     }
     .dot{width:10px;height:10px;border-radius:50%; background:#94a3b8;}
@@ -96,9 +85,18 @@
     .card{
       background:var(--card);
       border:1px solid var(--border);
-      border-radius:18px;
+      border-radius:16px;
       padding:16px;
-      box-shadow: var(--shadow2);
+      box-shadow:0 10px 26px rgba(2,6,23,.06);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:0 0 auto 0;
+      height:4px;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      opacity:.95;
     }
 
     .top-form{
@@ -136,79 +134,69 @@
     }
     textarea{min-height:88px; resize:vertical;}
     input:focus, select:focus, textarea:focus{
-      border-color: rgba(0,102,179,.65);
-      box-shadow: 0 0 0 3px rgba(0,102,179,.14);
+      border-color: rgba(0,87,184,.65);
+      box-shadow: 0 0 0 3px rgba(0,87,184,.15);
     }
 
     .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
     button{
       cursor:pointer;
-      border:1px solid var(--border);
+      border:1px solid rgba(2,6,23,.12);
       background:#fff;
-      color:var(--ink);
+      color:var(--brand-ink);
       padding:10px 14px;
       border-radius:12px;
-      font-weight:900;
+      font-weight:800;
       font-size:13px;
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
     }
+    button:active{transform: translateY(1px);}
     button.primary{
-      color:#fff;
-      border-color: rgba(0,102,179,.35);
-      background: linear-gradient(90deg, var(--brand-dark), var(--brand));
-      box-shadow: 0 10px 22px rgba(0,102,179,.22);
+      background: linear-gradient(90deg, rgba(0,87,184,.18), rgba(127,187,237,.22));
+      border-color: rgba(0,87,184,.35);
+      box-shadow: 0 8px 18px rgba(0,87,184,.12);
     }
-    button.primary:hover{filter:brightness(1.03);}
-    button.accent{
-      color:#fff;
-      border-color: rgba(0,178,227,.35);
-      background: linear-gradient(90deg, rgba(0,178,227,.95), rgba(0,178,227,.70));
-      box-shadow: 0 10px 22px rgba(0,178,227,.18);
+    button.primary:hover{
+      background: linear-gradient(90deg, rgba(0,87,184,.25), rgba(127,187,237,.28));
+      border-color: rgba(0,87,184,.48);
     }
-    button.muted{background:#f1f5f9;}
-    button.danger{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06);}
+    button.muted{background:#F3F6FB;}
+    button.danger{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06); color:#7f1d1d;}
 
-    .divider{height:1px; background:rgba(2,30,72,.10); margin:14px 0;}
+    .divider{height:1px; background:rgba(2,6,23,.08); margin:14px 0;}
     .small{font-size:12px; color:var(--muted); line-height:1.35;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
     .box{
-      border:1px solid var(--border);
-      border-radius:16px;
+      border:1px solid rgba(0,87,184,.12);
+      border-radius:14px;
       padding:12px;
-      background:#fff;
+      background: linear-gradient(180deg, rgba(0,87,184,.05), rgba(255,255,255,.92));
     }
     .box .t{color:var(--muted); font-size:12px;}
-    .box .v{margin-top:4px; font-size:22px; font-weight:950; color:var(--ink);}
+    .box .v{margin-top:4px; font-size:22px; font-weight:900; color:var(--brand-ink);}
     .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
 
-    .bar{height:12px; border-radius:999px; background:rgba(2,30,72,.08); overflow:hidden; border:1px solid var(--border);}
+    .bar{height:12px; border-radius:999px; background:rgba(2,6,23,.08); overflow:hidden; border:1px solid rgba(2,6,23,.10);}
     .bar > div{height:100%; width:0%; background:var(--brand);}
 
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    /* Tabla con scroll vertical y horizontal */
-    .tableWrap{
+    /* Tabla: scroll vertical y horizontal */
+    .table-scroll{
+      overflow:auto;                 /* horizontal y vertical */
+      max-height:360px;              /* vertical */
+      border-radius:14px;
       border:1px solid var(--border);
-      border-radius:16px;
-      overflow:auto;              /* horizontal + vertical */
-      max-height:420px;           /* scroll vertical */
       background:#fff;
     }
-    table{
-      width:100%;
-      min-width:980px;            /* fuerza scroll horizontal si pantalla chica */
-      border-collapse:separate;
-      border-spacing:0;
-      background:#fff;
-    }
-    th, td{padding:10px 10px; border-bottom:1px solid rgba(2,30,72,.06); font-size:12px; vertical-align:top;}
-    th{
-      position:sticky; top:0; z-index:2;
-      background: linear-gradient(180deg, rgba(0,102,179,.10), rgba(0,102,179,.05));
-      text-align:left; color:var(--ink);
-    }
+    table{width:100%; min-width:980px; border-collapse:separate; border-spacing:0;}
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:12px; vertical-align:top; white-space:nowrap;}
+    th{position:sticky; top:0; z-index:1; background:linear-gradient(180deg, rgba(0,87,184,.10), rgba(255,255,255,.98)); text-align:left; color:var(--brand-ink); font-size:12px;}
     tr:last-child td{border-bottom:none;}
+    td.wrapcell{white-space:normal; min-width:260px;} /* para descripción */
     .tag{
       display:inline-flex; align-items:center; gap:6px;
       padding:4px 8px; border-radius:999px; border:1px solid var(--border);
@@ -223,27 +211,27 @@
     }
 
     canvas{width:100%; height:260px; display:block;}
-    .chartWrap{padding:12px; border:1px solid var(--border); border-radius:16px; background:#fff;}
+    .chartWrap{padding:12px; border:1px solid rgba(0,87,184,.12); border-radius:14px; background: linear-gradient(180deg, rgba(0,87,184,.04), #fff);}
     .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
 
-    /* ISO chips */
+    /* ISO seleccionados “chips” */
     .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid var(--border);
-      background:#fff;
+      border:1px solid rgba(0,87,184,.18);
+      background: rgba(0,87,184,.06);
       font-size:12px;
-      color:var(--ink);
+      color:var(--brand-ink);
     }
     .chip .x{
       width:18px; height:18px; border-radius:50%;
       display:inline-flex; align-items:center; justify-content:center;
-      border:1px solid rgba(0,0,0,.12);
-      background:#f1f5f9;
+      border:1px solid rgba(2,6,23,.12);
+      background:#fff;
       font-weight:900;
       cursor:pointer;
       user-select:none;
@@ -253,30 +241,30 @@
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
       .layout-bottom{grid-template-columns:1fr;}
+      .cta{justify-content:flex-start;}
     }
   </style>
 </head>
 
 <body>
+  <div class="topbar"></div>
+
   <div class="wrap">
-
-    <div class="topbar">
-      <div class="brandLeft">
-        <div class="logoMark" aria-hidden="true"></div>
-        <div class="brandText">
-          <div class="t1">Calculadora de Riesgo</div>
-          <div class="t2">Estilo azul CONTPAQi · 1 archivo HTML</div>
-        </div>
-      </div>
-      <button class="cta" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">Ir arriba</button>
-    </div>
-
     <header>
-      <h1>Calculadora de Riesgo</h1>
-      <div class="sub">
-        Modelo: <span class="mono">Base = P×I</span> ·
-        <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
-        <span class="mono">Residual = Ajustado×FactorControles</span>
+      <div class="header-card">
+        <div class="brandlock">
+          <h1>Calculadora de Riesgo</h1>
+          <p class="sub">
+            Modelo:
+            <span class="mono">Base = P×I</span> ·
+            <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
+            <span class="mono">Residual = Ajustado×FactorControles</span>
+          </p>
+        </div>
+        <div class="cta">
+          <div class="badge">Criterios: 5×5 + CIA + Activo + Controles</div>
+          <div class="badge">Exporta: CSV y Excel (.xls)</div>
+        </div>
       </div>
     </header>
 
@@ -390,7 +378,7 @@
             <label>Agregar control manual (opcional)</label>
             <input id="iso_manual" placeholder="Ej. 8.28 — Codificación segura / 5.15 — Control de acceso" />
             <div class="btns" style="margin-top:10px;">
-              <button class="accent" type="button" onclick="agregarControlManual()">Agregar manual</button>
+              <button type="button" onclick="agregarControlManual()">Agregar manual</button>
               <button class="muted" type="button" onclick="limpiarControlesISO()">Limpiar seleccionados</button>
             </div>
 
@@ -418,7 +406,7 @@
           <div class="hint">Resultados numéricos + clasificación.</div>
         </div>
 
-        <!-- Estatus adentro -->
+        <!-- Estatus aquí adentro -->
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
           <div class="pill">
             <span class="dot" id="dot"></span>
@@ -458,7 +446,7 @@
           </div>
           <div class="box">
             <div class="t">Acción prioritaria</div>
-            <div class="v" style="font-size:14px; font-weight:950;" id="accion_prior">—</div>
+            <div class="v" style="font-size:14px; font-weight:900;" id="accion_prior">—</div>
             <div class="s">Definida con base en residual</div>
           </div>
         </div>
@@ -487,7 +475,7 @@
       <div class="card">
         <div class="section-title">
           <h2>Concentrado de riesgos</h2>
-          <div class="hint">Se llena con “Agregar al concentrado”.</div>
+          <div class="hint">Se llena con “Agregar al concentrado”. (scroll vertical y horizontal)</div>
         </div>
 
         <div class="btns" style="margin-bottom:10px;">
@@ -496,7 +484,7 @@
           <button class="danger" type="button" onclick="limpiarConcentrado()">Limpiar concentrado</button>
         </div>
 
-        <div class="tableWrap">
+        <div class="table-scroll">
           <table id="tabla_concentrado">
             <thead>
               <tr>
@@ -528,10 +516,10 @@
           <div class="small" style="margin-bottom:6px;"><b>1) Conteo por nivel (concentrado)</b></div>
           <canvas id="chartNiveles" width="700" height="260"></canvas>
           <div class="chartLegend">
-            <div class="legendItem"><span class="swatch" style="background:var(--good)"></span> Bajo</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--warn)"></span> Medio</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--alto)"></span> Alto</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--bad)"></span> Crítico</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--low)"></span> Bajo</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--med)"></span> Medio</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--high)"></span> Alto</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--crit)"></span> Crítico</div>
           </div>
           <div class="small" style="margin-top:8px;" id="statsNiveles">—</div>
         </div>
@@ -592,17 +580,20 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // ISO catálogo completo (5.1 a 8.34)
+    // =========================
+    // ISO catálogo COMPLETO (lo que me pasaste) 5.1 a 8.34
+    // =========================
     const ISO_CATALOGO = [
-      { id:"5.1", nombre:"Políticas de seguridad de la información" },
-      { id:"5.2", nombre:"Funciones y responsabilidades de seguridad de la información" },
-      { id:"5.3", nombre:"Separación de funciones" },
-      { id:"5.4", nombre:"Responsabilidades de gestión" },
-      { id:"5.5", nombre:"Contacto con las autoridades" },
-      { id:"5.6", nombre:"Contacto con grupos de interés especial" },
-      { id:"5.7", nombre:"Inteligencia de amenazas" },
-      { id:"5.8", nombre:"Seguridad de la información en la gestión de proyectos" },
-      { id:"5.9", nombre:"Inventario de información y otros activos asociados" },
+      // 5.x
+      { id:"5.1",  nombre:"Políticas de seguridad de la información" },
+      { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
+      { id:"5.3",  nombre:"Separación de funciones" },
+      { id:"5.4",  nombre:"Responsabilidades de gestión" },
+      { id:"5.5",  nombre:"Contacto con las autoridades" },
+      { id:"5.6",  nombre:"Contacto con grupos de interés especial" },
+      { id:"5.7",  nombre:"Inteligencia de amenazas" },
+      { id:"5.8",  nombre:"Seguridad de la información en la gestión de proyectos" },
+      { id:"5.9",  nombre:"Inventario de información y otros activos asociados" },
       { id:"5.10", nombre:"Uso aceptable de la información y otros activos asociados" },
       { id:"5.11", nombre:"Devolución de activos" },
       { id:"5.12", nombre:"Clasificación de la información" },
@@ -632,6 +623,7 @@
       { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
       { id:"5.37", nombre:"Procedimientos operativos documentados" },
 
+      // 6.x
       { id:"6.1", nombre:"Investigación" },
       { id:"6.2", nombre:"Términos y condiciones de empleo" },
       { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
@@ -641,6 +633,7 @@
       { id:"6.7", nombre:"Trabajo remoto" },
       { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
 
+      // 7.x
       { id:"7.1", nombre:"Perímetros de seguridad física" },
       { id:"7.2", nombre:"Entrada física" },
       { id:"7.3", nombre:"Asegurar oficinas, habitaciones e instalaciones" },
@@ -656,15 +649,16 @@
       { id:"7.13", nombre:"Mantenimiento de equipos" },
       { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
 
-      { id:"8.1", nombre:"Dispositivos de punto final de usuario" },
-      { id:"8.2", nombre:"Derechos de acceso privilegiado" },
-      { id:"8.3", nombre:"Restricción de acceso a la información" },
-      { id:"8.4", nombre:"Acceso al código fuente" },
-      { id:"8.5", nombre:"Autenticación segura" },
-      { id:"8.6", nombre:"Gestión de la capacidad" },
-      { id:"8.7", nombre:"Protección contra malware" },
-      { id:"8.8", nombre:"Gestión de vulnerabilidades técnicas" },
-      { id:"8.9", nombre:"Gestión de la configuración" },
+      // 8.x
+      { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
+      { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
+      { id:"8.3",  nombre:"Restricción de acceso a la información" },
+      { id:"8.4",  nombre:"Acceso al código fuente" },
+      { id:"8.5",  nombre:"Autenticación segura" },
+      { id:"8.6",  nombre:"Gestión de la capacidad" },
+      { id:"8.7",  nombre:"Protección contra malware" },
+      { id:"8.8",  nombre:"Gestión de vulnerabilidades técnicas" },
+      { id:"8.9",  nombre:"Gestión de la configuración" },
       { id:"8.10", nombre:"Eliminación de información" },
       { id:"8.11", nombre:"Enmascaramiento de datos" },
       { id:"8.12", nombre:"Prevención de fuga de datos" },
@@ -729,16 +723,16 @@
     function getByN(arr, n){ return arr.find(x => x.n === n); }
     function getByKey(arr, k){ return arr.find(x => x.key === k); }
 
-    function setDotColorByNivel(nivel){
+    function setDotColor(kind){
       const dot = document.getElementById("dot");
       const fill = document.getElementById("fill");
       const styles = getComputedStyle(document.documentElement);
 
       let color = "#94a3b8";
-      if (nivel === "Bajo")   color = styles.getPropertyValue("--good").trim();
-      if (nivel === "Medio")  color = styles.getPropertyValue("--warn").trim();
-      if (nivel === "Alto")   color = styles.getPropertyValue("--alto").trim();
-      if (nivel === "Crítico")color = styles.getPropertyValue("--bad").trim();
+      if (kind === "low")  color = styles.getPropertyValue("--low").trim();
+      if (kind === "med")  color = styles.getPropertyValue("--med").trim();
+      if (kind === "high") color = styles.getPropertyValue("--high").trim();
+      if (kind === "crit") color = styles.getPropertyValue("--crit").trim();
 
       dot.style.background = color;
       fill.style.background = color;
@@ -781,7 +775,7 @@
     function agregarControlDesdeLista(){
       const sel = document.getElementById("iso_catalogo");
       const val = sel.value;
-      if (!val) return;
+      if (!val || val === "Sin resultados") return;
       agregarISO(val);
     }
 
@@ -831,10 +825,11 @@
 
     // =========================
     // Clasificación y recomendaciones
+    // (Alto = naranja / Crítico = rojo)
     // =========================
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return {
-        nivel:"Bajo", accion:"Aceptar / Revisar periódicamente",
+        nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"low",
         rec:[
           "Aceptar el riesgo y documentarlo en el registro de riesgos.",
           "Definir revisión periódica (por ejemplo, trimestral).",
@@ -842,7 +837,7 @@
         ]
       };
       if (scoreResidual <= 25) return {
-        nivel:"Medio", accion:"Monitorear / Revisar",
+        nivel:"Medio", accion:"Monitorear / Revisar", sem:"med",
         rec:[
           "Documentar el riesgo y asignar responsable.",
           "Definir mejoras rápidas a controles existentes (quick wins).",
@@ -850,16 +845,16 @@
         ]
       };
       if (scoreResidual <= 50) return {
-        nivel:"Alto", accion:"Mitigar (prioritario)",
+        nivel:"Alto", accion:"Mitigar (prioritario)", sem:"high",
         rec:[
           "Definir plan de tratamiento con acciones, responsables y fechas.",
-          "Integrar MFA, privilegios mínimos y segregación de funciones.",
+          "Fortalecer controles de acceso (MFA, privilegios mínimos, segregación).",
           "Implementar cifrado y monitoreo (logging, alertas).",
           "Mejorar continuidad (respaldos, pruebas de restauración, DR)."
         ]
       };
       return {
-        nivel:"Crítico", accion:"Acción inmediata (escalar)",
+        nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
         rec:[
           "Escalar de inmediato a dirección/gerencia y al responsable del SGSI.",
           "Aplicar controles compensatorios urgentes para reducir exposición.",
@@ -917,7 +912,7 @@
       document.getElementById("nivel").textContent = `Clasificación: ${c.nivel}`;
       document.getElementById("accion_prior").textContent = c.accion;
       document.getElementById("estado").textContent = c.accion;
-      setDotColorByNivel(c.nivel);
+      setDotColor(c.sem);
 
       const ul = document.getElementById("recs");
       ul.innerHTML = "";
@@ -971,10 +966,10 @@
     }
 
     function nivelTag(nivel){
-      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.06);">Bajo</span>`;
-      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.06);">Medio</span>`;
-      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(249,115,22,.25); background:rgba(249,115,22,.06);">Alto</span>`;
-      return `<span class="tag" style="border-color:rgba(220,38,38,.25); background:rgba(220,38,38,.06);">Crítico</span>`;
+      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.06); color:#14532d;">Bajo</span>`;
+      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(251,191,36,.35); background:rgba(251,191,36,.12); color:#78350f;">Medio</span>`;
+      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(249,115,22,.35); background:rgba(249,115,22,.12); color:#7c2d12;">Alto</span>`;
+      return `<span class="tag" style="border-color:rgba(220,38,38,.35); background:rgba(220,38,38,.10); color:#7f1d1d;">Crítico</span>`;
     }
 
     function renderTabla(){
@@ -990,13 +985,13 @@
         <tr>
           <td class="mono">${escapeHtml(r.id)}</td>
           <td>${escapeHtml(r.area || "—")}</td>
-          <td>${escapeHtml(r.desc || "—")}</td>
+          <td class="wrapcell">${escapeHtml(r.desc || "—")}</td>
           <td class="mono">${r.prob}</td>
           <td class="mono">${r.impacto}</td>
           <td class="mono">${r.residual.toFixed(2)}</td>
           <td>${nivelTag(r.nivel)}</td>
           <td>${escapeHtml(r.accion)}</td>
-          <td class="mono">${escapeHtml((r.iso || []).join("; ") || "—")}</td>
+          <td class="wrapcell mono">${escapeHtml((r.iso || []).join("; ") || "—")}</td>
         </tr>
       `).join("");
     }
@@ -1074,7 +1069,7 @@
           <style>
             table{border-collapse:collapse;}
             th,td{border:1px solid #ccc; padding:6px; font-family:Arial; font-size:12px;}
-            th{background:#EAF2FB;}
+            th{background:#EAF2FF;}
           </style>
         </head>
         <body>
@@ -1115,10 +1110,10 @@
       const styles = getComputedStyle(document.documentElement);
 
       const colors = {
-        Bajo: styles.getPropertyValue("--good").trim(),
-        Medio: styles.getPropertyValue("--warn").trim(),
-        Alto: styles.getPropertyValue("--alto").trim(),
-        Crítico: styles.getPropertyValue("--bad").trim(),
+        Bajo: styles.getPropertyValue("--low").trim(),
+        Medio: styles.getPropertyValue("--med").trim(),
+        Alto: styles.getPropertyValue("--high").trim(),
+        Crítico: styles.getPropertyValue("--crit").trim(),
       };
 
       const labels = ["Bajo","Medio","Alto","Crítico"];
@@ -1182,13 +1177,12 @@
     // Heatmap 5x5
     // =========================
     function heatColor(base){
-      // Mapa basado en Base=P*I (1..25)
-      // 1-5 Bajo, 6-10 Medio, 11-15 Alto (naranja), 16-25 Crítico (rojo)
+      // Mapa por base P×I (1..25)
       const styles = getComputedStyle(document.documentElement);
-      if (base <= 5)  return styles.getPropertyValue("--good").trim();
-      if (base <= 10) return styles.getPropertyValue("--warn").trim();
-      if (base <= 15) return styles.getPropertyValue("--alto").trim();
-      return styles.getPropertyValue("--bad").trim();
+      if (base <= 5)  return styles.getPropertyValue("--low").trim();
+      if (base <= 10) return styles.getPropertyValue("--med").trim();
+      if (base <= 15) return styles.getPropertyValue("--high").trim();
+      return styles.getPropertyValue("--crit").trim();
     }
 
     function renderHeatmap(current){
@@ -1223,7 +1217,7 @@
           const y = padT + (5-p)*cellH;
 
           ctx.fillStyle = heatColor(base);
-          ctx.globalAlpha = 0.18;
+          ctx.globalAlpha = 0.16;
           ctx.fillRect(x, y, cellW, cellH);
           ctx.globalAlpha = 1;
 
@@ -1255,7 +1249,7 @@
 
         ctx.beginPath();
         ctx.arc(x, y, Math.min(cellW, cellH)*0.20, 0, Math.PI*2);
-        ctx.fillStyle = "rgba(0,0,0,.75)";
+        ctx.fillStyle = "rgba(11,42,74,.85)";
         ctx.fill();
 
         ctx.beginPath();
@@ -1294,8 +1288,7 @@
       document.getElementById("out_detalle").textContent = "—";
       document.getElementById("recs").innerHTML = "";
       document.getElementById("estado").textContent = "Sin calcular";
-      document.getElementById("dot").style.background = "#94a3b8";
-      document.getElementById("fill").style.background = getComputedStyle(document.documentElement).getPropertyValue("--brand").trim();
+      setDotColor("none");
       ultimoResultado = null;
       renderHeatmap(null);
     }

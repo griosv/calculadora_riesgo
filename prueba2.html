@@ -28,7 +28,7 @@
 
     *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
     body{margin:0; min-height:100vh; color:var(--text); background:var(--bg); padding:20px;}
-    .wrap{max-width:1260px; margin:0 auto;}
+    .wrap{max-width:1280px; margin:0 auto;}
 
     header{
       display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
@@ -109,7 +109,6 @@
     button.primary{
       background: linear-gradient(90deg, rgba(0,94,184,.20), rgba(0,94,184,.08));
       border-color: rgba(0,94,184,.35);
-      color: var(--ink);
     }
     button.primary:hover{
       background: linear-gradient(90deg, rgba(0,94,184,.30), rgba(0,94,184,.12));
@@ -139,7 +138,6 @@
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    /* Tabla concentrado */
     table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--border); border-radius:12px; background:#fff;}
     th, td{padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:12px; vertical-align:top;}
     th{background:rgba(0,94,184,.06); text-align:left; color:var(--ink); font-size:12px;}
@@ -199,7 +197,7 @@
         <div>
           <label>ID del riesgo *</label>
           <input id="risk_id" placeholder="Ej. R-2026-001" />
-          <div class="small">Sugerencia: usa un folio único.</div>
+          <div class="small">Usa un folio único.</div>
         </div>
         <div>
           <label>Área / Proceso (opcional)</label>
@@ -209,7 +207,7 @@
 
       <div>
         <label>Descripción del riesgo (opcional)</label>
-        <textarea id="desc" placeholder="Ej. Acceso no autorizado a información sensible por falta de MFA..."></textarea>
+        <textarea id="desc" placeholder="Ej. Acceso no autorizado por falta de MFA..."></textarea>
       </div>
     </div>
 
@@ -273,29 +271,29 @@
 
         <div class="divider"></div>
 
-        <!-- ISO listbox multi-selección -->
+        <!-- ISO listbox multi -->
         <div class="section-title">
           <h2>Controles ISO/IEC 27001:2022</h2>
-          <div class="hint">ListBox multi-selección (puedes elegir varios).</div>
+          <div class="hint">ListBox multi-selección (elige varios).</div>
         </div>
 
         <div class="row">
           <div>
             <label>Buscar control</label>
-            <input id="iso_search" placeholder="Ej. 8.8 o 'vulnerabilidad' o 'acceso'..." />
-            <div class="small">Tip: escribe “5.”, “6.”, “7.” u “8.” para filtrar por sección.</div>
+            <input id="iso_search" placeholder="Ej. 8.8 o 'vulnerabilidad'..." />
+            <div class="small">Tip: “5.”, “6.”, “7.” u “8.” filtra por sección.</div>
           </div>
           <div>
             <label>ListBox (selección múltiple)</label>
             <select id="iso_list" multiple size="9"></select>
-            <div class="small">En Windows: Ctrl para seleccionar varios. En Mac: Cmd.</div>
+            <div class="small">Windows: Ctrl. Mac: Cmd.</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
         <div class="section-title">
-          <h2>Cargar lista de controles (opcional)</h2>
+          <h2>Cargar lista ISO (opcional)</h2>
           <div class="hint">Pega JSON: [{ "id":"8.8","nombre":"..." }, ...]</div>
         </div>
 
@@ -320,8 +318,7 @@
         </div>
 
         <div class="small" style="margin-top:10px;">
-          Nota: “Agregar al concentrado” guarda el resultado actual en esta computadora (memoria del navegador).
-          Si cierras/recargas, se pierde (luego lo conectamos a Excel/BD si quieres).
+          “Agregar al concentrado” guarda en memoria del navegador (por ahora). Luego lo conectamos a Excel/Power Automate.
         </div>
       </div>
 
@@ -329,7 +326,7 @@
       <div class="card">
         <div class="section-title">
           <h2>Resultados</h2>
-          <div class="hint">Resultados numéricos, clasificación y recomendaciones.</div>
+          <div class="hint">Resultados numéricos + clasificación.</div>
         </div>
 
         <div class="kpi">
@@ -365,7 +362,7 @@
           <div class="box">
             <div class="t">Acción prioritaria</div>
             <div class="v" style="font-size:14px; font-weight:900;" id="accion_prior">—</div>
-            <div class="s">Definida con base en el residual</div>
+            <div class="s">Definida con base en residual</div>
           </div>
         </div>
 
@@ -382,7 +379,7 @@
 
         <div class="section-title">
           <h2>Recomendaciones</h2>
-          <div class="hint">Sugerencias generales (ajustables a tu SGSI/política).</div>
+          <div class="hint">Sugerencias generales.</div>
         </div>
         <ul id="recs"></ul>
 
@@ -390,7 +387,7 @@
 
         <div class="section-title">
           <h2>ISO seleccionados</h2>
-          <div class="hint">Controles seleccionados en el ListBox.</div>
+          <div class="hint">Controles elegidos en el ListBox.</div>
         </div>
         <div class="box">
           <div class="t">Lista</div>
@@ -399,7 +396,7 @@
       </div>
     </div>
 
-    <!-- Abajo: concentrado + gráfica -->
+    <!-- Abajo: concentrado + export + gráficas -->
     <div class="layout-bottom">
       <div class="card">
         <div class="section-title">
@@ -409,16 +406,19 @@
 
         <div class="btns" style="margin-bottom:10px;">
           <button class="muted" type="button" onclick="exportarCSV()">Exportar CSV</button>
+          <button class="muted" type="button" onclick="exportarExcelXLS()">Exportar Excel (.xls)</button>
           <button class="danger" type="button" onclick="limpiarConcentrado()">Limpiar concentrado</button>
         </div>
 
         <div style="overflow:auto;">
-          <table>
+          <table id="tabla_concentrado">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Área</th>
                 <th>Descripción</th>
+                <th>Prob</th>
+                <th>Impacto</th>
                 <th>Residual</th>
                 <th>Nivel</th>
                 <th>Acción</th>
@@ -426,7 +426,7 @@
               </tr>
             </thead>
             <tbody id="tbl_body">
-              <tr><td colspan="7" class="small">Aún no has agregado riesgos al concentrado.</td></tr>
+              <tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>
             </tbody>
           </table>
         </div>
@@ -434,19 +434,28 @@
 
       <div class="card">
         <div class="section-title">
-          <h2>Gráfica por nivel</h2>
-          <div class="hint">Cuenta cuántos riesgos son Bajo/Medio/Alto/Crítico.</div>
+          <h2>Gráficas</h2>
+          <div class="hint">Nivel del concentrado + mapa de calor 5×5 (evaluación).</div>
         </div>
 
-        <div class="chartWrap">
-          <canvas id="chart" width="700" height="260"></canvas>
+        <div class="chartWrap" style="margin-bottom:12px;">
+          <div class="small" style="margin-bottom:6px;"><b>1) Conteo por nivel (concentrado)</b></div>
+          <canvas id="chartNiveles" width="700" height="260"></canvas>
           <div class="chartLegend">
             <div class="legendItem"><span class="swatch" style="background:var(--good)"></span> Bajo</div>
             <div class="legendItem"><span class="swatch" style="background:var(--warn)"></span> Medio</div>
             <div class="legendItem"><span class="swatch" style="background:var(--bad)"></span> Alto</div>
             <div class="legendItem"><span class="swatch" style="background:var(--crit)"></span> Crítico</div>
           </div>
-          <div class="small" style="margin-top:8px;" id="chart_stats">—</div>
+          <div class="small" style="margin-top:8px;" id="statsNiveles">—</div>
+        </div>
+
+        <div class="chartWrap">
+          <div class="small" style="margin-bottom:6px;"><b>2) Mapa de calor 5×5 (Probabilidad × Impacto)</b></div>
+          <canvas id="chartHeatmap" width="700" height="320"></canvas>
+          <div class="small" style="margin-top:8px;">
+            Marca: <b>riesgo actual</b> (último calculado). Si no calculas, no se marca nada.
+          </div>
         </div>
       </div>
     </div>
@@ -473,7 +482,6 @@
       { n: 5, label: "5 - Catastrófico (>$10M pérdida)", detalle: "Impacto extremo. Afecta continuidad." },
     ];
 
-    // Para replicar +90% con Alto/Alto/Alto:
     // Ninguno=0%, Bajo=10%, Medio=20%, Alto=30%
     const CIA = [
       { key: "Ninguno", label: "Ninguno", pct: 0.00 },
@@ -498,11 +506,7 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // =========================
-    // ISO listbox (ejemplos)
-    // =========================
-    // Nota: ISO tiene derechos de autor; aquí hay ejemplos.
-    // Puedes cargar tu lista completa con JSON en el campo "iso_json".
+    // ISO listbox (ejemplos; puedes cargar tu lista completa con JSON)
     let ISO_CONTROLES = [
       { id: "5.1",  nombre: "Políticas de seguridad de la información" },
       { id: "5.7",  nombre: "Inteligencia de amenazas" },
@@ -520,10 +524,10 @@
     // Estado
     // =========================
     let ultimoResultado = null;
-    let concentrado = []; // registros calculados
+    let concentrado = [];
 
     // =========================
-    // Helpers UI
+    // Helpers
     // =========================
     function fillSelectByN(selId, arr){
       const sel = document.getElementById(selId);
@@ -577,21 +581,17 @@
     }
 
     // =========================
-    // ISO ListBox (multi)
+    // ISO ListBox
     // =========================
     function renderISOList(filtro=""){
       const sel = document.getElementById("iso_list");
       const q = (filtro || "").toLowerCase().trim();
 
-      // Guardar selección actual
       const seleccion = new Set([...sel.selectedOptions].map(o => o.value));
 
       sel.innerHTML = "";
       ISO_CONTROLES
-        .filter(c => {
-          if (!q) return true;
-          return c.id.toLowerCase().includes(q) || c.nombre.toLowerCase().includes(q);
-        })
+        .filter(c => !q || c.id.toLowerCase().includes(q) || c.nombre.toLowerCase().includes(q))
         .forEach(c => {
           const op = document.createElement("option");
           op.value = c.id;
@@ -603,7 +603,7 @@
       if (sel.options.length === 0){
         const op = document.createElement("option");
         op.value = "";
-        op.textContent = "Sin resultados (cambia el filtro o carga ISO desde JSON)";
+        op.textContent = "Sin resultados (cambia filtro o carga JSON)";
         sel.appendChild(op);
       }
 
@@ -612,8 +612,7 @@
 
     function obtenerISOSeleccionados(){
       const sel = document.getElementById("iso_list");
-      const ids = [...sel.selectedOptions].map(o=>o.value).filter(Boolean);
-      return ids;
+      return [...sel.selectedOptions].map(o=>o.value).filter(Boolean);
     }
 
     function actualizarPreviewISO(){
@@ -662,33 +661,24 @@
     // Clasificación y recomendaciones
     // =========================
     function clasificar(scoreResidual){
-      // Umbrales sugeridos (ajustables)
       if (scoreResidual <= 10) return {
-        nivel:"Bajo",
-        accion:"Aceptar / Revisar periódicamente",
-        sem:"good",
+        nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"good",
         rec:[
           "Aceptar el riesgo y documentarlo en el registro de riesgos.",
           "Definir revisión periódica (por ejemplo, trimestral).",
           "Mantener evidencias mínimas de monitoreo."
         ]
       };
-
       if (scoreResidual <= 25) return {
-        nivel:"Medio",
-        accion:"Monitorear / Revisar",
-        sem:"warn",
+        nivel:"Medio", accion:"Monitorear / Revisar", sem:"warn",
         rec:[
           "Documentar el riesgo y asignar responsable.",
           "Definir mejoras rápidas a controles existentes (quick wins).",
           "Monitorear indicadores y revisar en comité o seguimiento mensual."
         ]
       };
-
       if (scoreResidual <= 50) return {
-        nivel:"Alto",
-        accion:"Mitigar (prioritario)",
-        sem:"bad",
+        nivel:"Alto", accion:"Mitigar (prioritario)", sem:"bad",
         rec:[
           "Definir plan de tratamiento con acciones, responsables y fechas.",
           "Fortalecer controles de acceso (MFA, privilegios mínimos, segregación).",
@@ -696,11 +686,8 @@
           "Mejorar continuidad (respaldos, pruebas de restauración, DR)."
         ]
       };
-
       return {
-        nivel:"Crítico",
-        accion:"Acción inmediata (escalar)",
-        sem:"crit",
+        nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
         rec:[
           "Escalar de inmediato a dirección/gerencia y al responsable del SGSI.",
           "Aplicar controles compensatorios urgentes para reducir exposición.",
@@ -733,7 +720,7 @@
       const activo = getByKey(VALOR_ACTIVO, document.getElementById("valor_activo").value);
       const ctrl = getByKey(CONTROLES_EXISTENTES, document.getElementById("controles").value);
 
-      const base = p * i; // 1..25
+      const base = p * i;
       const ciaPct = (ciaC?.pct || 0) + (ciaI?.pct || 0) + (ciaD?.pct || 0);
       const multActivo = activo?.mult || 1.0;
       const factorCtrl = ctrl?.factor ?? 1.0;
@@ -741,23 +728,19 @@
       const ajustado = base * (1 + ciaPct) * multActivo;
       const residual = ajustado * factorCtrl;
 
-      // Detalles
       const pObj = getByN(PROBABILIDAD, p);
       const iObj = getByN(IMPACTO, i);
       document.getElementById("prob_det").textContent = pObj?.detalle || "";
       document.getElementById("impacto_det").textContent = iObj?.detalle || "";
 
-      // Scores
       document.getElementById("score_base").textContent = base.toFixed(2);
       document.getElementById("score_ajustado").textContent = ajustado.toFixed(2);
       document.getElementById("score_residual").textContent = residual.toFixed(2);
 
-      // Modificadores
       document.getElementById("mod_cia").textContent = `+${Math.round(ciaPct*100)}%`;
       document.getElementById("mod_activo").textContent = `${multActivo.toFixed(1)}x`;
       document.getElementById("mod_controles").textContent = `${factorCtrl.toFixed(1)}`;
 
-      // Clasificación y recomendaciones
       const c = clasificar(residual);
       document.getElementById("nivel").textContent = `Clasificación: ${c.nivel}`;
       document.getElementById("accion_prior").textContent = c.accion;
@@ -772,20 +755,17 @@
         ul.appendChild(li);
       });
 
-      // Indicador visual
       const max = 75;
       const pct = Math.max(0, Math.min(100, Math.round((residual / max) * 100)));
       document.getElementById("pct").textContent = pct + "%";
       document.getElementById("fill").style.width = pct + "%";
 
-      // ISO seleccionados
       actualizarPreviewISO();
       const isoIds = obtenerISOSeleccionados();
 
       document.getElementById("out_detalle").textContent =
         `ID: ${id} | Área: ${area || "—"} | Base: ${p}×${i}=${base.toFixed(2)} | CIA: +${Math.round(ciaPct*100)}% | Activo: ${multActivo.toFixed(1)}x | Controles: ${factorCtrl.toFixed(1)} | Residual: ${residual.toFixed(2)} | ISO: ${isoIds.join(", ") || "—"}`;
 
-      // Guardar último resultado (para “Agregar al concentrado”)
       ultimoResultado = {
         id, area, desc,
         prob: p, impacto: i,
@@ -796,10 +776,13 @@
         accion: c.accion,
         iso: isoIds
       };
+
+      // Actualiza heatmap (marca último calculado)
+      renderHeatmap(ultimoResultado);
     }
 
     // =========================
-    // Concentrado + gráfica
+    // Concentrado
     // =========================
     function agregarAlConcentrado(){
       if (!ultimoResultado){
@@ -807,16 +790,15 @@
         return;
       }
 
-      // Evitar duplicados por ID (si quieres permitir, quita esto)
       const ya = concentrado.some(r => r.id === ultimoResultado.id);
       if (ya){
-        if (!confirm("Ya existe un riesgo con ese ID en el concentrado. ¿Deseas reemplazarlo?")) return;
+        if (!confirm("Ya existe un riesgo con ese ID. ¿Deseas reemplazarlo?")) return;
         concentrado = concentrado.filter(r => r.id !== ultimoResultado.id);
       }
 
       concentrado.push({ ...ultimoResultado });
       renderTabla();
-      renderGrafica();
+      renderNiveles();
     }
 
     function nivelTag(nivel){
@@ -829,11 +811,10 @@
     function renderTabla(){
       const tbody = document.getElementById("tbl_body");
       if (concentrado.length === 0){
-        tbody.innerHTML = `<tr><td colspan="7" class="small">Aún no has agregado riesgos al concentrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>`;
         return;
       }
 
-      // Orden por residual desc
       const rows = [...concentrado].sort((a,b)=> b.residual - a.residual);
 
       tbody.innerHTML = rows.map(r => `
@@ -841,6 +822,8 @@
           <td class="mono">${escapeHtml(r.id)}</td>
           <td>${escapeHtml(r.area || "—")}</td>
           <td>${escapeHtml(r.desc || "—")}</td>
+          <td class="mono">${r.prob}</td>
+          <td class="mono">${r.impacto}</td>
           <td class="mono">${r.residual.toFixed(2)}</td>
           <td>${nivelTag(r.nivel)}</td>
           <td>${escapeHtml(r.accion)}</td>
@@ -849,103 +832,16 @@
       `).join("");
     }
 
-    function contarPorNivel(){
-      const c = { Bajo:0, Medio:0, Alto:0, Crítico:0 };
-      concentrado.forEach(r => {
-        if (r.nivel === "Bajo") c.Bajo++;
-        else if (r.nivel === "Medio") c.Medio++;
-        else if (r.nivel === "Alto") c.Alto++;
-        else c.Crítico++;
-      });
-      return c;
-    }
-
-    function renderGrafica(){
-      const canvas = document.getElementById("chart");
-      const ctx = canvas.getContext("2d");
-      const counts = contarPorNivel();
-
-      const styles = getComputedStyle(document.documentElement);
-      const colors = {
-        Bajo: styles.getPropertyValue("--good").trim(),
-        Medio: styles.getPropertyValue("--warn").trim(),
-        Alto: styles.getPropertyValue("--bad").trim(),
-        Crítico: styles.getPropertyValue("--crit").trim(),
-      };
-
-      const labels = ["Bajo","Medio","Alto","Crítico"];
-      const data = labels.map(l => counts[l]);
-
-      // limpiar
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-
-      // márgenes
-      const padL = 40, padR = 16, padT = 18, padB = 34;
-      const w = canvas.width - padL - padR;
-      const h = canvas.height - padT - padB;
-
-      const maxVal = Math.max(1, ...data);
-      // ejes
-      ctx.strokeStyle = "rgba(0,0,0,.15)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(padL, padT);
-      ctx.lineTo(padL, padT + h);
-      ctx.lineTo(padL + w, padT + h);
-      ctx.stroke();
-
-      // ticks y grid
-      ctx.fillStyle = "rgba(0,0,0,.55)";
-      ctx.font = "12px Arial";
-
-      const steps = Math.min(5, maxVal);
-      for (let s=0; s<=steps; s++){
-        const val = Math.round((maxVal/steps)*s);
-        const y = padT + h - (h * (val/maxVal));
-        ctx.strokeStyle = "rgba(0,0,0,.06)";
-        ctx.beginPath();
-        ctx.moveTo(padL, y);
-        ctx.lineTo(padL + w, y);
-        ctx.stroke();
-        ctx.fillStyle = "rgba(0,0,0,.55)";
-        ctx.fillText(String(val), 8, y+4);
-      }
-
-      // barras
-      const gap = 18;
-      const barW = (w - gap*(labels.length-1)) / labels.length;
-
-      labels.forEach((lab, idx)=>{
-        const x = padL + idx*(barW+gap);
-        const val = counts[lab];
-        const barH = h * (val/maxVal);
-        const y = padT + h - barH;
-
-        ctx.fillStyle = colors[lab];
-        ctx.fillRect(x, y, barW, barH);
-
-        // valor arriba
-        ctx.fillStyle = "rgba(0,0,0,.70)";
-        ctx.font = "12px Arial";
-        ctx.fillText(String(val), x + (barW/2) - 3, y - 6);
-
-        // etiqueta abajo
-        ctx.fillStyle = "rgba(0,0,0,.65)";
-        ctx.fillText(lab, x + 6, padT + h + 22);
-      });
-
-      const total = concentrado.length;
-      document.getElementById("chart_stats").textContent =
-        `Total: ${total} | Bajo: ${counts.Bajo} | Medio: ${counts.Medio} | Alto: ${counts.Alto} | Crítico: ${counts["Crítico"]}`;
-    }
-
     function limpiarConcentrado(){
       if (!confirm("¿Seguro que deseas borrar todo el concentrado?")) return;
       concentrado = [];
       renderTabla();
-      renderGrafica();
+      renderNiveles();
     }
 
+    // =========================
+    // Exportar (CSV + Excel .xls)
+    // =========================
     function exportarCSV(){
       if (concentrado.length === 0){
         alert("No hay datos para exportar.");
@@ -982,6 +878,243 @@
       URL.revokeObjectURL(url);
     }
 
+    // Exporta como .xls (HTML table) compatible con Excel
+    function exportarExcelXLS(){
+      if (concentrado.length === 0){
+        alert("No hay datos para exportar.");
+        return;
+      }
+
+      const tabla = document.getElementById("tabla_concentrado").outerHTML;
+
+      const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8">
+          <!--[if gte mso 9]><xml>
+            <x:ExcelWorkbook>
+              <x:ExcelWorksheets>
+                <x:ExcelWorksheet>
+                  <x:Name>Riesgos</x:Name>
+                  <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+                </x:ExcelWorksheet>
+              </x:ExcelWorksheets>
+            </x:ExcelWorkbook>
+          </xml><![endif]-->
+          <style>
+            table{border-collapse:collapse;}
+            th,td{border:1px solid #ccc; padding:6px; font-family:Arial; font-size:12px;}
+            th{background:#EAF2FB;}
+          </style>
+        </head>
+        <body>
+          <h3>Concentrado de riesgos</h3>
+          ${tabla}
+        </body></html>
+      `;
+
+      const blob = new Blob([html], {type:"application/vnd.ms-excel;charset=utf-8;"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "concentrado_riesgos.xls";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================
+    // Gráfica 1: niveles (barras)
+    // =========================
+    function contarPorNivel(){
+      const c = { Bajo:0, Medio:0, Alto:0, Crítico:0 };
+      concentrado.forEach(r => {
+        if (r.nivel === "Bajo") c.Bajo++;
+        else if (r.nivel === "Medio") c.Medio++;
+        else if (r.nivel === "Alto") c.Alto++;
+        else c.Crítico++;
+      });
+      return c;
+    }
+
+    function renderNiveles(){
+      const canvas = document.getElementById("chartNiveles");
+      const ctx = canvas.getContext("2d");
+      const counts = contarPorNivel();
+      const styles = getComputedStyle(document.documentElement);
+
+      const colors = {
+        Bajo: styles.getPropertyValue("--good").trim(),
+        Medio: styles.getPropertyValue("--warn").trim(),
+        Alto: styles.getPropertyValue("--bad").trim(),
+        Crítico: styles.getPropertyValue("--crit").trim(),
+      };
+
+      const labels = ["Bajo","Medio","Alto","Crítico"];
+      const data = labels.map(l => counts[l]);
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      const padL = 40, padR = 16, padT = 18, padB = 34;
+      const w = canvas.width - padL - padR;
+      const h = canvas.height - padT - padB;
+
+      const maxVal = Math.max(1, ...data);
+
+      // Ejes
+      ctx.strokeStyle = "rgba(0,0,0,.15)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padL, padT);
+      ctx.lineTo(padL, padT + h);
+      ctx.lineTo(padL + w, padT + h);
+      ctx.stroke();
+
+      // Grid
+      ctx.font = "12px Arial";
+      const steps = Math.min(5, maxVal);
+      for (let s=0; s<=steps; s++){
+        const val = Math.round((maxVal/steps)*s);
+        const y = padT + h - (h * (val/maxVal));
+        ctx.strokeStyle = "rgba(0,0,0,.06)";
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(padL + w, y);
+        ctx.stroke();
+        ctx.fillStyle = "rgba(0,0,0,.55)";
+        ctx.fillText(String(val), 8, y+4);
+      }
+
+      // Barras
+      const gap = 18;
+      const barW = (w - gap*(labels.length-1)) / labels.length;
+
+      labels.forEach((lab, idx)=>{
+        const x = padL + idx*(barW+gap);
+        const val = counts[lab];
+        const barH = h * (val/maxVal);
+        const y = padT + h - barH;
+
+        ctx.fillStyle = colors[lab];
+        ctx.fillRect(x, y, barW, barH);
+
+        ctx.fillStyle = "rgba(0,0,0,.70)";
+        ctx.fillText(String(val), x + (barW/2) - 3, y - 6);
+
+        ctx.fillStyle = "rgba(0,0,0,.65)";
+        ctx.fillText(lab, x + 6, padT + h + 22);
+      });
+
+      const total = concentrado.length;
+      document.getElementById("statsNiveles").textContent =
+        `Total: ${total} | Bajo: ${counts.Bajo} | Medio: ${counts.Medio} | Alto: ${counts.Alto} | Crítico: ${counts["Crítico"]}`;
+    }
+
+    // =========================
+    // Gráfica 2: Heatmap 5x5 (P x I)
+    // =========================
+    // Color por "base" (P*I): 1-5 Bajo, 6-10 Medio, 11-15 Alto, 16-25 Crítico (ajustable)
+    function heatColor(base){
+      const styles = getComputedStyle(document.documentElement);
+      if (base <= 5)  return styles.getPropertyValue("--good").trim();
+      if (base <= 10) return styles.getPropertyValue("--warn").trim();
+      if (base <= 15) return styles.getPropertyValue("--bad").trim();
+      return styles.getPropertyValue("--crit").trim();
+    }
+
+    function renderHeatmap(current){
+      const canvas = document.getElementById("chartHeatmap");
+      const ctx = canvas.getContext("2d");
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      const padL = 70, padR = 14, padT = 20, padB = 55;
+      const w = canvas.width - padL - padR;
+      const h = canvas.height - padT - padB;
+
+      const cellW = w / 5;
+      const cellH = h / 5;
+
+      // Títulos de ejes
+      ctx.fillStyle = "rgba(0,0,0,.75)";
+      ctx.font = "13px Arial";
+      ctx.fillText("Impacto (1 → 5)", padL + 10, padT - 4);
+
+      // Etiqueta vertical (simple)
+      ctx.save();
+      ctx.translate(18, padT + h/2);
+      ctx.rotate(-Math.PI/2);
+      ctx.font = "13px Arial";
+      ctx.fillStyle = "rgba(0,0,0,.75)";
+      ctx.fillText("Probabilidad (1 → 5)", 0, 0);
+      ctx.restore();
+
+      // Dibujar celdas
+      for (let p=1; p<=5; p++){
+        for (let i=1; i<=5; i++){
+          const base = p*i;
+          const x = padL + (i-1)*cellW;
+          const y = padT + (5-p)*cellH; // prob 5 arriba
+
+          ctx.fillStyle = heatColor(base);
+          ctx.globalAlpha = 0.18;
+          ctx.fillRect(x, y, cellW, cellH);
+          ctx.globalAlpha = 1;
+
+          ctx.strokeStyle = "rgba(0,0,0,.10)";
+          ctx.strokeRect(x, y, cellW, cellH);
+
+          // texto base
+          ctx.fillStyle = "rgba(0,0,0,.55)";
+          ctx.font = "12px Arial";
+          ctx.fillText(String(base), x + 6, y + 16);
+        }
+      }
+
+      // Ejes labels
+      ctx.fillStyle = "rgba(0,0,0,.60)";
+      ctx.font = "12px Arial";
+      for (let i=1; i<=5; i++){
+        const x = padL + (i-1)*cellW + cellW/2 - 3;
+        ctx.fillText(String(i), x, padT + h + 22);
+      }
+      for (let p=1; p<=5; p++){
+        const y = padT + (5-p)*cellH + cellH/2 + 4;
+        ctx.fillText(String(p), padL - 18, y);
+      }
+
+      // Marca del riesgo actual
+      if (current && current.prob && current.impacto){
+        const p = current.prob;
+        const i = current.impacto;
+        const x = padL + (i-1)*cellW + cellW/2;
+        const y = padT + (5-p)*cellH + cellH/2;
+
+        ctx.beginPath();
+        ctx.arc(x, y, Math.min(cellW, cellH)*0.20, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(0,0,0,.75)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x, y, Math.min(cellW, cellH)*0.28, 0, Math.PI*2);
+        ctx.strokeStyle = "rgba(255,255,255,.95)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(0,0,0,.75)";
+        ctx.font = "12px Arial";
+        const label = `ID: ${current.id} (P${p}×I${i})`;
+        ctx.fillText(label, padL, canvas.height - 18);
+      } else {
+        ctx.fillStyle = "rgba(0,0,0,.55)";
+        ctx.font = "12px Arial";
+        ctx.fillText("Calcula un riesgo para marcar su posición.", padL, canvas.height - 18);
+      }
+    }
+
     // =========================
     // Limpieza
     // =========================
@@ -1004,6 +1137,8 @@
       setDotColor("none");
       document.getElementById("iso_sel_preview").textContent = "—";
       ultimoResultado = null;
+
+      renderHeatmap(null);
     }
 
     function limpiarFormulario(){
@@ -1029,7 +1164,7 @@
     }
 
     // =========================
-    // Init
+    // INIT
     // =========================
     fillSelectByN("prob", PROBABILIDAD);
     fillSelectByN("impacto", IMPACTO);
@@ -1056,13 +1191,12 @@
       actualizarPreviewISO();
     });
 
-    // ISO init
     renderISOList("");
     actualizarPreviewISO();
 
-    // concentrado init
     renderTabla();
-    renderGrafica();
+    renderNiveles();
+    renderHeatmap(null);
     limpiarResultados();
   </script>
 </body>

@@ -30,10 +30,7 @@
     body{margin:0; min-height:100vh; color:var(--text); background:var(--bg); padding:20px;}
     .wrap{max-width:1280px; margin:0 auto;}
 
-    header{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
-      margin-bottom:12px;
-    }
+    header{margin-bottom:12px;}
     h1{margin:0; font-size:28px; color:var(--brand); letter-spacing:.2px;}
     .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
 
@@ -161,6 +158,27 @@
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
 
+    /* ISO seleccionados “chips” */
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:12px;
+      color:var(--ink);
+    }
+    .chip .x{
+      width:18px; height:18px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      border:1px solid rgba(0,0,0,.12);
+      background:#f3f4f6;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+
     @media (max-width: 1020px){
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
@@ -172,17 +190,11 @@
 <body>
   <div class="wrap">
     <header>
-      <div>
-        <h1>Calculadora de Riesgo</h1>
-        <div class="sub">
-          Modelo: <span class="mono">Base = P×I</span> ·
-          <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
-          <span class="mono">Residual = Ajustado×FactorControles</span>
-        </div>
-      </div>
-      <div class="pill">
-        <span class="dot" id="dot"></span>
-        <strong id="estado">Sin calcular</strong>
+      <h1>Calculadora de Riesgo</h1>
+      <div class="sub">
+        Modelo: <span class="mono">Base = P×I</span> ·
+        <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
+        <span class="mono">Residual = Ajustado×FactorControles</span>
       </div>
     </header>
 
@@ -271,42 +283,41 @@
 
         <div class="divider"></div>
 
-        <!-- ISO listbox multi -->
+        <!-- ISO: lista + agregar + manual -->
         <div class="section-title">
           <h2>Controles ISO/IEC 27001:2022</h2>
-          <div class="hint">ListBox multi-selección (elige varios).</div>
+          <div class="hint">Elige de la lista o agrega uno manual.</div>
         </div>
 
         <div class="row">
           <div>
             <label>Buscar control</label>
             <input id="iso_search" placeholder="Ej. 8.8 o 'vulnerabilidad'..." />
-            <div class="small">Tip: “5.”, “6.”, “7.” u “8.” filtra por sección.</div>
+            <div class="small">Tip: escribe “5.”, “6.”, “7.” u “8.” para filtrar por sección.</div>
+
+            <div style="margin-top:10px;">
+              <label>Lista de controles</label>
+              <select id="iso_catalogo" size="9"></select>
+              <div class="btns" style="margin-top:10px;">
+                <button class="primary" type="button" onclick="agregarControlDesdeLista()">Agregar control</button>
+              </div>
+            </div>
           </div>
+
           <div>
-            <label>ListBox (selección múltiple)</label>
-            <select id="iso_list" multiple size="9"></select>
-            <div class="small">Windows: Ctrl. Mac: Cmd.</div>
+            <label>Agregar control manual (opcional)</label>
+            <input id="iso_manual" placeholder="Ej. 8.28 — Codificación segura / 5.15 — Control de acceso" />
+            <div class="btns" style="margin-top:10px;">
+              <button type="button" onclick="agregarControlManual()">Agregar manual</button>
+              <button class="muted" type="button" onclick="limpiarControlesISO()">Limpiar seleccionados</button>
+            </div>
+
+            <div class="box" style="margin-top:10px;">
+              <div class="t">Controles seleccionados</div>
+              <div class="small">Da clic en “×” para quitar un control.</div>
+              <div class="chips" id="iso_chips"></div>
+            </div>
           </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title">
-          <h2>Cargar lista ISO (opcional)</h2>
-          <div class="hint">Pega JSON: [{ "id":"8.8","nombre":"..." }, ...]</div>
-        </div>
-
-        <textarea id="iso_json" placeholder='Ejemplo:
-[
-  {"id":"8.8","nombre":"Gestión de vulnerabilidades"},
-  {"id":"8.13","nombre":"Respaldos"},
-  {"id":"8.15","nombre":"Registro (logging)"}
-]'></textarea>
-
-        <div class="btns">
-          <button type="button" onclick="cargarISODesdeJSON()">Cargar ISO desde JSON</button>
-          <button type="button" class="muted" onclick="limpiarISOSeleccion()">Limpiar selección ISO</button>
         </div>
 
         <div class="divider"></div>
@@ -316,10 +327,6 @@
           <button class="primary" type="button" onclick="agregarAlConcentrado()">Agregar al concentrado</button>
           <button class="muted" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
         </div>
-
-        <div class="small" style="margin-top:10px;">
-          “Agregar al concentrado” guarda en memoria del navegador (por ahora). Luego lo conectamos a Excel/Power Automate.
-        </div>
       </div>
 
       <!-- Resultados -->
@@ -327,6 +334,14 @@
         <div class="section-title">
           <h2>Resultados</h2>
           <div class="hint">Resultados numéricos + clasificación.</div>
+        </div>
+
+        <!-- Estatus ahora aquí adentro -->
+        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+          <div class="pill">
+            <span class="dot" id="dot"></span>
+            <strong id="estado">Sin calcular</strong>
+          </div>
         </div>
 
         <div class="kpi">
@@ -382,17 +397,6 @@
           <div class="hint">Sugerencias generales.</div>
         </div>
         <ul id="recs"></ul>
-
-        <div class="divider"></div>
-
-        <div class="section-title">
-          <h2>ISO seleccionados</h2>
-          <div class="hint">Controles elegidos en el ListBox.</div>
-        </div>
-        <div class="box">
-          <div class="t">Lista</div>
-          <div class="s" id="iso_sel_preview">—</div>
-        </div>
       </div>
     </div>
 
@@ -454,7 +458,7 @@
           <div class="small" style="margin-bottom:6px;"><b>2) Mapa de calor 5×5 (Probabilidad × Impacto)</b></div>
           <canvas id="chartHeatmap" width="700" height="320"></canvas>
           <div class="small" style="margin-top:8px;">
-            Marca: <b>riesgo actual</b> (último calculado). Si no calculas, no se marca nada.
+            Marca: <b>riesgo actual</b> (último calculado).
           </div>
         </div>
       </div>
@@ -506,18 +510,18 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // ISO listbox (ejemplos; puedes cargar tu lista completa con JSON)
-    let ISO_CONTROLES = [
-      { id: "5.1",  nombre: "Políticas de seguridad de la información" },
-      { id: "5.7",  nombre: "Inteligencia de amenazas" },
-      { id: "5.15", nombre: "Control de acceso (política)" },
-      { id: "5.23", nombre: "Seguridad para uso de servicios en la nube" },
-      { id: "6.3",  nombre: "Concientización, educación y capacitación" },
-      { id: "7.4",  nombre: "Monitoreo de seguridad física" },
-      { id: "8.8",  nombre: "Gestión de vulnerabilidades" },
-      { id: "8.9",  nombre: "Gestión de configuración" },
-      { id: "8.13", nombre: "Respaldos (backups)" },
-      { id: "8.15", nombre: "Registro (logging)" },
+    // ISO catálogo base (puedes ampliar manualmente aquí)
+    const ISO_CATALOGO = [
+      { id:"5.1",  nombre:"Políticas de seguridad de la información" },
+      { id:"5.7",  nombre:"Inteligencia de amenazas" },
+      { id:"5.15", nombre:"Control de acceso (política)" },
+      { id:"5.23", nombre:"Seguridad para uso de servicios en la nube" },
+      { id:"6.3",  nombre:"Concientización, educación y capacitación" },
+      { id:"7.4",  nombre:"Monitoreo de seguridad física" },
+      { id:"8.8",  nombre:"Gestión de vulnerabilidades" },
+      { id:"8.9",  nombre:"Gestión de configuración" },
+      { id:"8.13", nombre:"Respaldos (backups)" },
+      { id:"8.15", nombre:"Registro (logging)" },
     ];
 
     // =========================
@@ -525,6 +529,7 @@
     // =========================
     let ultimoResultado = null;
     let concentrado = [];
+    let isoSeleccionados = []; // array de strings
 
     // =========================
     // Helpers
@@ -581,80 +586,79 @@
     }
 
     // =========================
-    // ISO ListBox
+    // ISO UI
     // =========================
-    function renderISOList(filtro=""){
-      const sel = document.getElementById("iso_list");
+    function renderCatalogoISO(filtro=""){
+      const sel = document.getElementById("iso_catalogo");
       const q = (filtro || "").toLowerCase().trim();
-
-      const seleccion = new Set([...sel.selectedOptions].map(o => o.value));
-
       sel.innerHTML = "";
-      ISO_CONTROLES
+
+      ISO_CATALOGO
         .filter(c => !q || c.id.toLowerCase().includes(q) || c.nombre.toLowerCase().includes(q))
-        .forEach(c => {
+        .forEach(c=>{
           const op = document.createElement("option");
-          op.value = c.id;
+          op.value = `${c.id} — ${c.nombre}`;
           op.textContent = `${c.id} — ${c.nombre}`;
-          if (seleccion.has(c.id)) op.selected = true;
           sel.appendChild(op);
         });
 
       if (sel.options.length === 0){
         const op = document.createElement("option");
         op.value = "";
-        op.textContent = "Sin resultados (cambia filtro o carga JSON)";
+        op.textContent = "Sin resultados";
         sel.appendChild(op);
       }
-
-      actualizarPreviewISO();
     }
 
-    function obtenerISOSeleccionados(){
-      const sel = document.getElementById("iso_list");
-      return [...sel.selectedOptions].map(o=>o.value).filter(Boolean);
+    function agregarControlDesdeLista(){
+      const sel = document.getElementById("iso_catalogo");
+      const val = sel.value;
+      if (!val) return;
+      agregarISO(val);
     }
 
-    function actualizarPreviewISO(){
-      const ids = obtenerISOSeleccionados();
-      const preview = document.getElementById("iso_sel_preview");
-      if (ids.length === 0){
-        preview.textContent = "—";
+    function agregarControlManual(){
+      const txt = document.getElementById("iso_manual").value.trim();
+      if (!txt) return;
+      agregarISO(txt);
+      document.getElementById("iso_manual").value = "";
+    }
+
+    function agregarISO(item){
+      const limpio = item.trim();
+      if (!limpio) return;
+      if (!isoSeleccionados.includes(limpio)){
+        isoSeleccionados.push(limpio);
+        renderISOChips();
+      }
+    }
+
+    function quitarISO(item){
+      isoSeleccionados = isoSeleccionados.filter(x => x !== item);
+      renderISOChips();
+    }
+
+    function limpiarControlesISO(){
+      isoSeleccionados = [];
+      renderISOChips();
+    }
+
+    function renderISOChips(){
+      const wrap = document.getElementById("iso_chips");
+      wrap.innerHTML = "";
+
+      if (isoSeleccionados.length === 0){
+        wrap.innerHTML = `<span class="small">—</span>`;
         return;
       }
-      const items = ids.map(id => {
-        const c = ISO_CONTROLES.find(x=>x.id===id);
-        return c ? `<span class="mono">${escapeHtml(c.id)}</span> — ${escapeHtml(c.nombre)}` : `<span class="mono">${escapeHtml(id)}</span>`;
+
+      isoSeleccionados.forEach(item=>{
+        const div = document.createElement("div");
+        div.className = "chip";
+        div.innerHTML = `<span class="mono">${escapeHtml(item)}</span> <span class="x" title="Quitar">×</span>`;
+        div.querySelector(".x").addEventListener("click", ()=>quitarISO(item));
+        wrap.appendChild(div);
       });
-      preview.innerHTML = items.join("<br/>");
-    }
-
-    function limpiarISOSeleccion(){
-      const sel = document.getElementById("iso_list");
-      [...sel.options].forEach(o=>o.selected=false);
-      actualizarPreviewISO();
-    }
-
-    function cargarISODesdeJSON(){
-      const txt = document.getElementById("iso_json").value.trim();
-      if (!txt) return;
-
-      try{
-        const arr = JSON.parse(txt);
-        if (!Array.isArray(arr)) throw new Error("El JSON debe ser un arreglo.");
-        const normalizados = arr
-          .filter(x => x && typeof x.id === "string" && typeof x.nombre === "string")
-          .map(x => ({ id: x.id.trim(), nombre: x.nombre.trim() }))
-          .filter(x => x.id && x.nombre);
-
-        if (normalizados.length === 0) throw new Error("No encontré objetos válidos {id, nombre}.");
-
-        ISO_CONTROLES = normalizados;
-        renderISOList(document.getElementById("iso_search").value);
-        alert("Lista ISO cargada correctamente.");
-      }catch(e){
-        alert("Error al cargar JSON: " + e.message);
-      }
     }
 
     // =========================
@@ -760,11 +764,9 @@
       document.getElementById("pct").textContent = pct + "%";
       document.getElementById("fill").style.width = pct + "%";
 
-      actualizarPreviewISO();
-      const isoIds = obtenerISOSeleccionados();
-
+      const isoTxt = isoSeleccionados.join("; ");
       document.getElementById("out_detalle").textContent =
-        `ID: ${id} | Área: ${area || "—"} | Base: ${p}×${i}=${base.toFixed(2)} | CIA: +${Math.round(ciaPct*100)}% | Activo: ${multActivo.toFixed(1)}x | Controles: ${factorCtrl.toFixed(1)} | Residual: ${residual.toFixed(2)} | ISO: ${isoIds.join(", ") || "—"}`;
+        `ID: ${id} | Área: ${area || "—"} | Base: ${p}×${i}=${base.toFixed(2)} | CIA: +${Math.round(ciaPct*100)}% | Activo: ${multActivo.toFixed(1)}x | Controles: ${factorCtrl.toFixed(1)} | Residual: ${residual.toFixed(2)} | ISO: ${isoTxt || "—"}`;
 
       ultimoResultado = {
         id, area, desc,
@@ -774,10 +776,9 @@
         residual: Number(residual.toFixed(2)),
         nivel: c.nivel,
         accion: c.accion,
-        iso: isoIds
+        iso: [...isoSeleccionados]
       };
 
-      // Actualiza heatmap (marca último calculado)
       renderHeatmap(ultimoResultado);
     }
 
@@ -827,7 +828,7 @@
           <td class="mono">${r.residual.toFixed(2)}</td>
           <td>${nivelTag(r.nivel)}</td>
           <td>${escapeHtml(r.accion)}</td>
-          <td class="mono">${escapeHtml((r.iso || []).join(", ") || "—")}</td>
+          <td class="mono">${escapeHtml((r.iso || []).join("; ") || "—")}</td>
         </tr>
       `).join("");
     }
@@ -840,7 +841,7 @@
     }
 
     // =========================
-    // Exportar (CSV + Excel .xls)
+    // Exportar CSV y Excel .xls
     // =========================
     function exportarCSV(){
       if (concentrado.length === 0){
@@ -878,7 +879,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Exporta como .xls (HTML table) compatible con Excel
     function exportarExcelXLS(){
       if (concentrado.length === 0){
         alert("No hay datos para exportar.");
@@ -927,7 +927,7 @@
     }
 
     // =========================
-    // Gráfica 1: niveles (barras)
+    // Gráfica niveles
     // =========================
     function contarPorNivel(){
       const c = { Bajo:0, Medio:0, Alto:0, Crítico:0 };
@@ -964,7 +964,6 @@
 
       const maxVal = Math.max(1, ...data);
 
-      // Ejes
       ctx.strokeStyle = "rgba(0,0,0,.15)";
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -973,7 +972,6 @@
       ctx.lineTo(padL + w, padT + h);
       ctx.stroke();
 
-      // Grid
       ctx.font = "12px Arial";
       const steps = Math.min(5, maxVal);
       for (let s=0; s<=steps; s++){
@@ -988,7 +986,6 @@
         ctx.fillText(String(val), 8, y+4);
       }
 
-      // Barras
       const gap = 18;
       const barW = (w - gap*(labels.length-1)) / labels.length;
 
@@ -1014,9 +1011,8 @@
     }
 
     // =========================
-    // Gráfica 2: Heatmap 5x5 (P x I)
+    // Heatmap 5x5
     // =========================
-    // Color por "base" (P*I): 1-5 Bajo, 6-10 Medio, 11-15 Alto, 16-25 Crítico (ajustable)
     function heatColor(base){
       const styles = getComputedStyle(document.documentElement);
       if (base <= 5)  return styles.getPropertyValue("--good").trim();
@@ -1038,12 +1034,10 @@
       const cellW = w / 5;
       const cellH = h / 5;
 
-      // Títulos de ejes
       ctx.fillStyle = "rgba(0,0,0,.75)";
       ctx.font = "13px Arial";
       ctx.fillText("Impacto (1 → 5)", padL + 10, padT - 4);
 
-      // Etiqueta vertical (simple)
       ctx.save();
       ctx.translate(18, padT + h/2);
       ctx.rotate(-Math.PI/2);
@@ -1052,12 +1046,11 @@
       ctx.fillText("Probabilidad (1 → 5)", 0, 0);
       ctx.restore();
 
-      // Dibujar celdas
       for (let p=1; p<=5; p++){
         for (let i=1; i<=5; i++){
           const base = p*i;
           const x = padL + (i-1)*cellW;
-          const y = padT + (5-p)*cellH; // prob 5 arriba
+          const y = padT + (5-p)*cellH;
 
           ctx.fillStyle = heatColor(base);
           ctx.globalAlpha = 0.18;
@@ -1067,14 +1060,12 @@
           ctx.strokeStyle = "rgba(0,0,0,.10)";
           ctx.strokeRect(x, y, cellW, cellH);
 
-          // texto base
           ctx.fillStyle = "rgba(0,0,0,.55)";
           ctx.font = "12px Arial";
           ctx.fillText(String(base), x + 6, y + 16);
         }
       }
 
-      // Ejes labels
       ctx.fillStyle = "rgba(0,0,0,.60)";
       ctx.font = "12px Arial";
       for (let i=1; i<=5; i++){
@@ -1086,7 +1077,6 @@
         ctx.fillText(String(p), padL - 18, y);
       }
 
-      // Marca del riesgo actual
       if (current && current.prob && current.impacto){
         const p = current.prob;
         const i = current.impacto;
@@ -1135,9 +1125,7 @@
       document.getElementById("recs").innerHTML = "";
       document.getElementById("estado").textContent = "Sin calcular";
       setDotColor("none");
-      document.getElementById("iso_sel_preview").textContent = "—";
       ultimoResultado = null;
-
       renderHeatmap(null);
     }
 
@@ -1157,8 +1145,9 @@
       document.getElementById("controles").value = "No Especificado";
 
       document.getElementById("iso_search").value = "";
-      limpiarISOSeleccion();
-      renderISOList("");
+      renderCatalogoISO("");
+      document.getElementById("iso_manual").value = "";
+      limpiarControlesISO();
 
       limpiarResultados();
     }
@@ -1184,15 +1173,11 @@
     });
 
     document.getElementById("iso_search").addEventListener("input", (e)=>{
-      renderISOList(e.target.value);
+      renderCatalogoISO(e.target.value);
     });
 
-    document.getElementById("iso_list").addEventListener("change", ()=>{
-      actualizarPreviewISO();
-    });
-
-    renderISOList("");
-    actualizarPreviewISO();
+    renderCatalogoISO("");
+    renderISOChips();
 
     renderTabla();
     renderNiveles();

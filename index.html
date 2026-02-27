@@ -7,127 +7,50 @@
 
   <style>
     :root{
-      /* === Paleta base CONTPAQi (extendida) === */
-      --brand:#005EB8;          /* principal */
-      --brand-dark:#004A92;     /* profundo */
-      --brand-darker:#003B73;   /* extra profundo */
-      --brand-700:#0A4FA3;
-      --brand-600:#0B63C7;
-      --brand-500:#1C77D8;
-      --brand-400:#3B8BE3;
-      --brand-300:#6AA7EE;
-      --brand-200:#9CC4F7;
-      --brand-100:#D7E9FF;
-      --brand-50:#F1F7FF;
-
-      --ink:#0F172A;
-      --text:#111827;
-      --muted:#64748B; /* más limpio */
-      --muted2:#94A3B8;
+      /* Paleta inspirada en CONTPAQi */
+      --brand:#005EB8;
+      --brand-dark:#004A92;
+      --ink:#263031;
+      --muted:#7C878E;
 
       /* UI */
-      --bg:#EEF4FF;
+      --bg:#f4f6f8;
       --card:#ffffff;
-      --border:rgba(15,23,42,.10);
-      --shadow: 0 10px 30px rgba(2, 56, 124, .12);
-      --shadow2: 0 6px 18px rgba(2, 56, 124, .10);
+      --text:#263031;
+      --border:rgba(0,0,0,.10);
 
       /* Estados */
       --good:#16a34a;
       --warn:#f59e0b;
       --bad:#dc2626;
       --crit:#7c3aed;
-
-      /* Extras UI */
-      --ring: rgba(0,94,184,.22);
-      --glass: rgba(255,255,255,.60);
     }
 
     *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-    body{
-      margin:0; min-height:100vh; color:var(--text); background: var(--bg); padding:20px;
-      background-image:
-        radial-gradient(1200px 600px at 10% -10%, rgba(0,94,184,.20), transparent 60%),
-        radial-gradient(900px 500px at 90% 0%, rgba(28,119,216,.18), transparent 55%),
-        radial-gradient(900px 500px at 60% 110%, rgba(0,74,146,.12), transparent 55%),
-        linear-gradient(180deg, rgba(241,247,255,1), rgba(238,244,255,1));
-    }
+    body{margin:0; min-height:100vh; color:var(--text); background:var(--bg); padding:20px;}
     .wrap{max-width:1280px; margin:0 auto;}
 
-    /* Header tipo “hero” */
-    header{
-      position:relative;
-      margin-bottom:14px;
-      padding:18px 18px 16px;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.45);
-      background:
-        linear-gradient(135deg, rgba(0,94,184,1), rgba(0,74,146,1) 50%, rgba(0,59,115,1));
-      box-shadow: var(--shadow);
-      color:#fff;
-    }
-    header:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(900px 400px at 20% 20%, rgba(255,255,255,.22), transparent 55%),
-        radial-gradient(700px 350px at 80% 10%, rgba(255,255,255,.14), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.10), transparent);
-      pointer-events:none;
-    }
-    header:after{
-      content:"";
-      position:absolute; left:-10%; right:-10%; bottom:-60px; height:120px;
-      background: radial-gradient(60% 120px at 50% 0%, rgba(255,255,255,.18), transparent 70%);
-      transform: rotate(-2deg);
-      pointer-events:none;
-    }
-
-    h1{
-      margin:0;
-      font-size:28px;
-      letter-spacing:.2px;
-      color:#fff;
-      position:relative;
-      text-shadow: 0 6px 18px rgba(0,0,0,.18);
-    }
-    .sub{
-      margin:8px 0 0;
-      color:rgba(255,255,255,.88);
-      font-size:13px;
-      line-height:1.35;
-      position:relative;
-    }
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+    header{margin-bottom:12px;}
+    h1{margin:0; font-size:28px; color:var(--brand); letter-spacing:.2px;}
+    .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(255,255,255,.35);
+      border:1px solid rgba(0,94,184,.25);
       border-radius:999px;
       padding:8px 12px;
-      background: rgba(255,255,255,.12);
+      background: rgba(0,94,184,.06);
       white-space:nowrap;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 6px 16px rgba(0,0,0,.10);
     }
     .dot{width:10px;height:10px;border-radius:50%; background:#94a3b8;}
-    .pill strong{font-size:13px; color:#fff;}
+    .pill strong{font-size:13px;}
 
     .card{
       background:var(--card);
       border:1px solid var(--border);
-      border-radius:16px;
+      border-radius:14px;
       padding:16px;
-      box-shadow: var(--shadow2);
-      position:relative;
-      overflow:hidden;
-    }
-    .card:before{
-      content:"";
-      position:absolute; left:0; top:0; height:4px; width:100%;
-      background: linear-gradient(90deg, var(--brand), var(--brand-500), var(--brand-dark));
-      opacity:.95;
+      box-shadow:0 2px 10px rgba(0,0,0,.06);
     }
 
     .top-form{
@@ -147,140 +70,79 @@
       display:flex; justify-content:space-between; align-items:baseline; gap:10px;
       margin-bottom:10px;
     }
-    .section-title h2{
-      margin:0; font-size:16px; color:var(--ink);
-      display:flex; align-items:center; gap:8px;
-    }
-    .section-title h2:before{
-      content:"";
-      width:10px; height:10px; border-radius:3px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-500));
-      box-shadow: 0 4px 10px rgba(0,94,184,.22);
-    }
+    .section-title h2{margin:0; font-size:16px; color:var(--ink);}
     .hint{color:var(--muted); font-size:12px; line-height:1.35;}
 
     .row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
     .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;}
-    label{display:block; color:var(--ink); font-size:12px; margin-bottom:6px; font-weight:700;}
+    label{display:block; color:var(--ink); font-size:12px; margin-bottom:6px;}
 
     input, select, textarea{
       width:100%;
       padding:11px 12px;
-      border-radius:12px;
-      border:1px solid rgba(15,23,42,.12);
-      background: linear-gradient(180deg, #fff, #fbfdff);
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
       color:var(--text);
       outline:none;
-      transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
     }
     textarea{min-height:88px; resize:vertical;}
     input:focus, select:focus, textarea:focus{
-      border-color: rgba(0,94,184,.55);
-      box-shadow: 0 0 0 4px var(--ring);
+      border-color: rgba(0,94,184,.65);
+      box-shadow: 0 0 0 3px rgba(0,94,184,.15);
     }
 
-    /* Botones más “enterprise” */
     .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
     button{
       cursor:pointer;
-      border:1px solid rgba(15,23,42,.10);
+      border:1px solid var(--border);
       background:#fff;
       color:var(--ink);
       padding:10px 14px;
-      border-radius:12px;
-      font-weight:800;
+      border-radius:10px;
+      font-weight:700;
       font-size:13px;
-      transition: transform .06s ease, box-shadow .15s ease, background .15s ease;
     }
-    button:hover{transform: translateY(-1px); box-shadow: 0 10px 18px rgba(2,56,124,.12);}
-    button:active{transform: translateY(0px); box-shadow:none;}
-
     button.primary{
-      color:#fff;
-      border-color: rgba(0,94,184,.45);
-      background:
-        linear-gradient(135deg, var(--brand), var(--brand-500));
-      box-shadow: 0 12px 22px rgba(0,94,184,.18);
+      background: linear-gradient(90deg, rgba(0,94,184,.20), rgba(0,94,184,.08));
+      border-color: rgba(0,94,184,.35);
     }
     button.primary:hover{
-      background: linear-gradient(135deg, var(--brand-600), var(--brand-dark));
-      border-color: rgba(0,94,184,.60);
+      background: linear-gradient(90deg, rgba(0,94,184,.30), rgba(0,94,184,.12));
+      border-color: rgba(0,94,184,.45);
     }
-    button.muted{
-      background: linear-gradient(180deg, #f8fbff, #eef5ff);
-      border-color: rgba(0,94,184,.18);
-      color: var(--brand-dark);
-    }
-    button.danger{
-      border-color: rgba(220,38,38,.25);
-      background: rgba(220,38,38,.08);
-      color: #991b1b;
-    }
+    button.muted{background:#f3f4f6;}
+    button.danger{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06);}
 
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(0,94,184,.18), transparent);
-      margin:14px 0;
-    }
+    .divider{height:1px; background:rgba(0,0,0,.08); margin:14px 0;}
     .small{font-size:12px; color:var(--muted); line-height:1.35;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
     .box{
-      border:1px solid rgba(15,23,42,.10);
-      border-radius:14px;
+      border:1px solid var(--border);
+      border-radius:12px;
       padding:12px;
-      background:
-        radial-gradient(500px 180px at 10% 0%, rgba(0,94,184,.10), transparent 60%),
-        linear-gradient(180deg, #fff, #fbfdff);
-      box-shadow: 0 10px 18px rgba(2,56,124,.06);
+      background:#fff;
     }
     .box .t{color:var(--muted); font-size:12px;}
     .box .v{margin-top:4px; font-size:22px; font-weight:900; color:var(--ink);}
     .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
 
-    .bar{
-      height:12px; border-radius:999px;
-      background: rgba(2,56,124,.08);
-      overflow:hidden;
-      border:1px solid rgba(15,23,42,.08);
-    }
-    .bar > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, var(--brand), var(--brand-500), var(--brand-dark));
-    }
+    .bar{height:12px; border-radius:999px; background:rgba(0,0,0,.08); overflow:hidden; border:1px solid var(--border);}
+    .bar > div{height:100%; width:0%; background:var(--brand);}
 
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border:1px solid rgba(15,23,42,.10);
-      border-radius:14px;
-      background:#fff;
-      box-shadow: 0 10px 18px rgba(2,56,124,.06);
-    }
-    th, td{padding:10px 10px; border-bottom:1px solid rgba(15,23,42,.06); font-size:12px; vertical-align:top;}
-    th{
-      background:
-        linear-gradient(180deg, rgba(0,94,184,.12), rgba(0,94,184,.06));
-      text-align:left;
-      color:var(--ink);
-      font-size:12px;
-    }
+    table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--border); border-radius:12px; background:#fff;}
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:12px; vertical-align:top;}
+    th{background:rgba(0,94,184,.06); text-align:left; color:var(--ink); font-size:12px;}
     tr:last-child td{border-bottom:none;}
-
     .tag{
       display:inline-flex; align-items:center; gap:6px;
-      padding:4px 8px; border-radius:999px;
-      border:1px solid rgba(15,23,42,.10);
+      padding:4px 8px; border-radius:999px; border:1px solid var(--border);
       font-size:11px; white-space:nowrap;
-      background: rgba(241,247,255,.8);
-      color: var(--brand-dark);
-      font-weight:800;
     }
 
     .layout-bottom{
@@ -291,15 +153,7 @@
     }
 
     canvas{width:100%; height:260px; display:block;}
-    .chartWrap{
-      padding:12px;
-      border:1px solid rgba(15,23,42,.10);
-      border-radius:14px;
-      background:
-        radial-gradient(600px 220px at 10% 0%, rgba(0,94,184,.10), transparent 65%),
-        linear-gradient(180deg, #fff, #fbfdff);
-      box-shadow: 0 10px 18px rgba(2,56,124,.06);
-    }
+    .chartWrap{padding:12px; border:1px solid var(--border); border-radius:12px; background:#fff;}
     .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
@@ -310,30 +164,22 @@
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(0,94,184,.18);
-      background:
-        linear-gradient(180deg, rgba(241,247,255,.95), rgba(215,233,255,.55));
+      border:1px solid var(--border);
+      background:#fff;
       font-size:12px;
       color:var(--ink);
-      box-shadow: 0 10px 18px rgba(2,56,124,.06);
     }
     .chip .x{
       width:18px; height:18px; border-radius:50%;
       display:inline-flex; align-items:center; justify-content:center;
-      border:1px solid rgba(0,94,184,.22);
-      background: rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.12);
+      background:#f3f4f6;
       font-weight:900;
       cursor:pointer;
       user-select:none;
     }
 
-    /* Mejoras visuales para selects tipo listbox */
-    select[size]{
-      background: linear-gradient(180deg, #fff, #fbfdff);
-    }
-
     @media (max-width: 1020px){
-      body{padding:14px;}
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
       .layout-bottom{grid-template-columns:1fr;}
@@ -664,18 +510,108 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // ISO catálogo base (puedes ampliar manualmente aquí)
+    // ISO catálogo completo ISO/IEC 27001:2022 (93 controles)
     const ISO_CATALOGO = [
+      // 5 Organizacionales
       { id:"5.1",  nombre:"Políticas de seguridad de la información" },
+      { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
+      { id:"5.3",  nombre:"Separación de funciones" },
+      { id:"5.4",  nombre:"Responsabilidades de gestión" },
+      { id:"5.5",  nombre:"Contacto con las autoridades" },
+      { id:"5.6",  nombre:"Contacto con grupos de interés especial" },
       { id:"5.7",  nombre:"Inteligencia de amenazas" },
-      { id:"5.15", nombre:"Control de acceso (política)" },
-      { id:"5.23", nombre:"Seguridad para uso de servicios en la nube" },
-      { id:"6.3",  nombre:"Concientización, educación y capacitación" },
-      { id:"7.4",  nombre:"Monitoreo de seguridad física" },
-      { id:"8.8",  nombre:"Gestión de vulnerabilidades" },
-      { id:"8.9",  nombre:"Gestión de configuración" },
-      { id:"8.13", nombre:"Respaldos (backups)" },
-      { id:"8.15", nombre:"Registro (logging)" },
+      { id:"5.8",  nombre:"Seguridad de la información en la gestión de proyectos" },
+      { id:"5.9",  nombre:"Inventario de información y otros activos asociados" },
+      { id:"5.10", nombre:"Uso aceptable de la información y otros activos asociados" },
+      { id:"5.11", nombre:"Devolución de activos" },
+      { id:"5.12", nombre:"Clasificación de la información" },
+      { id:"5.13", nombre:"Etiquetado de la información" },
+      { id:"5.14", nombre:"Transferencia de información" },
+      { id:"5.15", nombre:"Control de acceso" },
+      { id:"5.16", nombre:"Gestión de identidades" },
+      { id:"5.17", nombre:"Información de autenticación" },
+      { id:"5.18", nombre:"Derechos de acceso" },
+      { id:"5.19", nombre:"Seguridad de la información en las relaciones con los proveedores" },
+      { id:"5.20", nombre:"Abordar la seguridad de la información dentro de los acuerdos con proveedores" },
+      { id:"5.21", nombre:"Gestión de la seguridad de la información en la cadena de suministro de las TIC" },
+      { id:"5.22", nombre:"Seguimiento, revisión y gestión del cambio de los servicios de los proveedores" },
+      { id:"5.23", nombre:"Seguridad de la información para el uso de servicios en la nube" },
+      { id:"5.24", nombre:"Planificación y preparación de la gestión de incidentes de seguridad de la información" },
+      { id:"5.25", nombre:"Evaluación y decisión sobre eventos de seguridad de la información" },
+      { id:"5.26", nombre:"Respuesta a incidentes de seguridad de la información" },
+      { id:"5.27", nombre:"Aprender de los incidentes de seguridad de la información" },
+      { id:"5.28", nombre:"Recopilación de pruebas" },
+      { id:"5.29", nombre:"Seguridad de la información durante interrupciones" },
+      { id:"5.30", nombre:"Preparación de las TIC para la continuidad de las actividades" },
+      { id:"5.31", nombre:"Requisitos legales, legales, reglamentarios y contractuales" },
+      { id:"5.32", nombre:"Derechos de propiedad intelectual" },
+      { id:"5.33", nombre:"Protección de registros" },
+      { id:"5.34", nombre:"Privacidad y protección de la PII" },
+      { id:"5.35", nombre:"Revisión independiente de la seguridad de la información" },
+      { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
+      { id:"5.37", nombre:"Procedimientos operativos documentados" },
+
+      // 6 Personas
+      { id:"6.1", nombre:"Investigación" },
+      { id:"6.2", nombre:"Términos y condiciones de empleo" },
+      { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
+      { id:"6.4", nombre:"Proceso disciplinario" },
+      { id:"6.5", nombre:"Responsabilidades después de la terminación o cambio de empleo" },
+      { id:"6.6", nombre:"Acuerdos de confidencialidad o no divulgación" },
+      { id:"6.7", nombre:"Trabajo remoto" },
+      { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
+
+      // 7 Físicos
+      { id:"7.1",  nombre:"Perímetros de seguridad física" },
+      { id:"7.2",  nombre:"Entrada física" },
+      { id:"7.3",  nombre:"Asegurar oficinas, habitaciones e instalaciones" },
+      { id:"7.4",  nombre:"Supervisión de la seguridad física" },
+      { id:"7.5",  nombre:"Protección contra amenazas físicas y ambientales" },
+      { id:"7.6",  nombre:"Trabajar en áreas seguras" },
+      { id:"7.7",  nombre:"Escritorio limpio y pantalla limpia" },
+      { id:"7.8",  nombre:"Emplazamiento y protección de equipos" },
+      { id:"7.9",  nombre:"Seguridad de los bienes fuera de las instalaciones" },
+      { id:"7.10", nombre:"Medios de almacenamiento" },
+      { id:"7.11", nombre:"Servicios públicos de apoyo" },
+      { id:"7.12", nombre:"Seguridad del cableado" },
+      { id:"7.13", nombre:"Mantenimiento de equipos" },
+      { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
+
+      // 8 Tecnológicos
+      { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
+      { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
+      { id:"8.3",  nombre:"Restricción de acceso a la información" },
+      { id:"8.4",  nombre:"Acceso al código fuente" },
+      { id:"8.5",  nombre:"Autenticación segura" },
+      { id:"8.6",  nombre:"Gestión de la capacidad" },
+      { id:"8.7",  nombre:"Protección contra malware" },
+      { id:"8.8",  nombre:"Gestión de vulnerabilidades técnicas" },
+      { id:"8.9",  nombre:"Gestión de la configuración" },
+      { id:"8.10", nombre:"Eliminación de información" },
+      { id:"8.11", nombre:"Enmascaramiento de datos" },
+      { id:"8.12", nombre:"Prevención de fuga de datos" },
+      { id:"8.13", nombre:"Copia de seguridad de la información" },
+      { id:"8.14", nombre:"Redundancia de las instalaciones de procesamiento de información" },
+      { id:"8.15", nombre:"Registro" },
+      { id:"8.16", nombre:"Actividades de seguimiento" },
+      { id:"8.17", nombre:"Sincronización del reloj" },
+      { id:"8.18", nombre:"Uso de programas de utilidad privilegiados" },
+      { id:"8.19", nombre:"Instalación de software en sistemas operativos" },
+      { id:"8.20", nombre:"Seguridad de redes" },
+      { id:"8.21", nombre:"Seguridad de los servicios de red" },
+      { id:"8.22", nombre:"Segregación de redes" },
+      { id:"8.23", nombre:"Filtrado web" },
+      { id:"8.24", nombre:"Uso de la criptografía" },
+      { id:"8.25", nombre:"Ciclo de vida de desarrollo seguro" },
+      { id:"8.26", nombre:"Requisitos de seguridad de las aplicaciones" },
+      { id:"8.27", nombre:"Arquitectura de sistemas seguros y principios de ingeniería" },
+      { id:"8.28", nombre:"Codificación segura" },
+      { id:"8.29", nombre:"Pruebas de seguridad en desarrollo y aceptación" },
+      { id:"8.30", nombre:"Desarrollo externalizado" },
+      { id:"8.31", nombre:"Separación de entornos de desarrollo, prueba y producción" },
+      { id:"8.32", nombre:"Gestión del cambio" },
+      { id:"8.33", nombre:"Información de la prueba" },
+      { id:"8.34", nombre:"Protección de los sistemas de información durante las pruebas de auditoría" },
     ];
 
     // =========================
@@ -957,10 +893,10 @@
     }
 
     function nivelTag(nivel){
-      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.08); color:#166534;">Bajo</span>`;
-      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.10); color:#92400e;">Medio</span>`;
-      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(220,38,38,.25); background:rgba(220,38,38,.10); color:#7f1d1d;">Alto</span>`;
-      return `<span class="tag" style="border-color:rgba(124,58,237,.25); background:rgba(124,58,237,.10); color:#4c1d95;">Crítico</span>`;
+      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.06);">Bajo</span>`;
+      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.06);">Medio</span>`;
+      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(220,38,38,.25); background:rgba(220,38,38,.06);">Alto</span>`;
+      return `<span class="tag" style="border-color:rgba(124,58,237,.25); background:rgba(124,58,237,.06);">Crítico</span>`;
     }
 
     function renderTabla(){
@@ -1118,7 +1054,7 @@
 
       const maxVal = Math.max(1, ...data);
 
-      ctx.strokeStyle = "rgba(2,56,124,.22)";
+      ctx.strokeStyle = "rgba(0,0,0,.15)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(padL, padT);
@@ -1131,12 +1067,12 @@
       for (let s=0; s<=steps; s++){
         const val = Math.round((maxVal/steps)*s);
         const y = padT + h - (h * (val/maxVal));
-        ctx.strokeStyle = "rgba(2,56,124,.06)";
+        ctx.strokeStyle = "rgba(0,0,0,.06)";
         ctx.beginPath();
         ctx.moveTo(padL, y);
         ctx.lineTo(padL + w, y);
         ctx.stroke();
-        ctx.fillStyle = "rgba(15,23,42,.55)";
+        ctx.fillStyle = "rgba(0,0,0,.55)";
         ctx.fillText(String(val), 8, y+4);
       }
 
@@ -1152,10 +1088,10 @@
         ctx.fillStyle = colors[lab];
         ctx.fillRect(x, y, barW, barH);
 
-        ctx.fillStyle = "rgba(15,23,42,.75)";
+        ctx.fillStyle = "rgba(0,0,0,.70)";
         ctx.fillText(String(val), x + (barW/2) - 3, y - 6);
 
-        ctx.fillStyle = "rgba(15,23,42,.70)";
+        ctx.fillStyle = "rgba(0,0,0,.65)";
         ctx.fillText(lab, x + 6, padT + h + 22);
       });
 
@@ -1188,7 +1124,7 @@
       const cellW = w / 5;
       const cellH = h / 5;
 
-      ctx.fillStyle = "rgba(15,23,42,.80)";
+      ctx.fillStyle = "rgba(0,0,0,.75)";
       ctx.font = "13px Arial";
       ctx.fillText("Impacto (1 → 5)", padL + 10, padT - 4);
 
@@ -1196,7 +1132,7 @@
       ctx.translate(18, padT + h/2);
       ctx.rotate(-Math.PI/2);
       ctx.font = "13px Arial";
-      ctx.fillStyle = "rgba(15,23,42,.80)";
+      ctx.fillStyle = "rgba(0,0,0,.75)";
       ctx.fillText("Probabilidad (1 → 5)", 0, 0);
       ctx.restore();
 
@@ -1207,20 +1143,20 @@
           const y = padT + (5-p)*cellH;
 
           ctx.fillStyle = heatColor(base);
-          ctx.globalAlpha = 0.16;
+          ctx.globalAlpha = 0.18;
           ctx.fillRect(x, y, cellW, cellH);
           ctx.globalAlpha = 1;
 
-          ctx.strokeStyle = "rgba(2,56,124,.10)";
+          ctx.strokeStyle = "rgba(0,0,0,.10)";
           ctx.strokeRect(x, y, cellW, cellH);
 
-          ctx.fillStyle = "rgba(15,23,42,.55)";
+          ctx.fillStyle = "rgba(0,0,0,.55)";
           ctx.font = "12px Arial";
           ctx.fillText(String(base), x + 6, y + 16);
         }
       }
 
-      ctx.fillStyle = "rgba(15,23,42,.60)";
+      ctx.fillStyle = "rgba(0,0,0,.60)";
       ctx.font = "12px Arial";
       for (let i=1; i<=5; i++){
         const x = padL + (i-1)*cellW + cellW/2 - 3;
@@ -1239,21 +1175,21 @@
 
         ctx.beginPath();
         ctx.arc(x, y, Math.min(cellW, cellH)*0.20, 0, Math.PI*2);
-        ctx.fillStyle = "rgba(0,59,115,.85)";
+        ctx.fillStyle = "rgba(0,0,0,.75)";
         ctx.fill();
 
         ctx.beginPath();
         ctx.arc(x, y, Math.min(cellW, cellH)*0.28, 0, Math.PI*2);
-        ctx.strokeStyle = "rgba(255,255,255,.96)";
+        ctx.strokeStyle = "rgba(255,255,255,.95)";
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = "rgba(15,23,42,.80)";
+        ctx.fillStyle = "rgba(0,0,0,.75)";
         ctx.font = "12px Arial";
         const label = `ID: ${current.id} (P${p}×I${i})`;
         ctx.fillText(label, padL, canvas.height - 18);
       } else {
-        ctx.fillStyle = "rgba(15,23,42,.55)";
+        ctx.fillStyle = "rgba(0,0,0,.55)";
         ctx.font = "12px Arial";
         ctx.fillText("Calcula un riesgo para marcar su posición.", padL, canvas.height - 18);
       }

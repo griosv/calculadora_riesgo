@@ -7,124 +7,98 @@
 
   <style>
     :root{
-      /* ===== Paleta más azul (inspirada en el header de CONTPAQi ~ #4B63B4) ===== */
-      --brand:#4B63B4;          /* azul principal */
-      --brand-2:#2F4AA3;        /* azul más profundo */
-      --brand-dark:#233B86;     /* hover/bordes */
-      --brand-soft: rgba(75,99,180,.12);
-
-      --ink:#1F2A37;
-      --muted:#6B7280;
+      /* Azules inspirados en CONTPAQi (aprox por referencia visual) */
+      --brand:#0066B3;       /* azul principal */
+      --brand-dark:#004C8C;  /* azul profundo */
+      --accent:#00B2E3;      /* acento turquesa */
+      --ink:#0f172a;
+      --muted:#64748b;
 
       /* UI */
-      --bg:#eef3fb;            /* fondo más azulado */
+      --bg:#eef5fb;
       --card:#ffffff;
-      --text:#1f2937;
-      --border:rgba(17,24,39,.10);
+      --text:#0f172a;
+      --border:rgba(2, 30, 72, .12);
 
-      /* Estados (pedido) */
-      --good:#16a34a;  /* Bajo = verde */
-      --warn:#f59e0b;  /* Medio = ámbar */
-      --bad:#f97316;   /* Alto = naranja */
-      --crit:#dc2626;  /* Crítico = rojo */
+      /* Estados */
+      --good:#16a34a;   /* Bajo */
+      --warn:#f59e0b;   /* Medio (ámbar) */
+      --alto:#f97316;   /* Alto (naranja) */
+      --bad:#dc2626;    /* Crítico (rojo) */
+
+      --shadow: 0 10px 30px rgba(0, 76, 140, .10);
+      --shadow2: 0 2px 10px rgba(0,0,0,.06);
     }
 
-    *{
-      box-sizing:border-box;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    }
-
+    *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
     body{
-      margin:0;
-      min-height:100vh;
-      color:var(--text);
+      margin:0; min-height:100vh; color:var(--text);
       background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(75,99,180,.20), transparent 55%),
-        radial-gradient(900px 500px at 90% 10%, rgba(47,74,163,.18), transparent 50%),
-        linear-gradient(180deg, #eaf1ff 0%, var(--bg) 40%, #f7f9ff 100%);
-      padding:20px;
+        radial-gradient(1200px 600px at 20% -10%, rgba(0,178,227,.18), transparent 55%),
+        radial-gradient(900px 500px at 100% 10%, rgba(0,102,179,.20), transparent 55%),
+        linear-gradient(180deg, #e9f3fb, #f6fbff);
+      padding:18px;
     }
-
     .wrap{max-width:1280px; margin:0 auto;}
 
-    /* Top bar estilo “sitio” */
+    /* Barra superior */
     .topbar{
-      border-radius:16px;
-      overflow:hidden;
-      box-shadow: 0 12px 30px rgba(35,59,134,.18);
-      border:1px solid rgba(35,59,134,.18);
-      margin-bottom:14px;
-    }
-    .topbar-inner{
-      padding:16px 18px;
       background: linear-gradient(90deg, var(--brand-dark), var(--brand));
+      border-radius:18px;
+      padding:14px 16px;
       color:#fff;
+      box-shadow: var(--shadow);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:14px;
+      margin-bottom:14px;
     }
-    .brand-left{
-      display:flex; align-items:center; gap:12px;
-      min-width: 260px;
-    }
-    .logo-badge{
-      width:40px; height:40px;
-      border-radius:12px;
-      background: rgba(255,255,255,.16);
+    .brandLeft{display:flex; align-items:center; gap:12px;}
+    .logoMark{
+      width:40px;height:40px;border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.45), transparent 55%),
+                  linear-gradient(135deg, rgba(0,178,227,.95), rgba(255,255,255,.18));
       border:1px solid rgba(255,255,255,.22);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:900;
-      letter-spacing:.5px;
     }
-    .title-wrap h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-      line-height:1.2;
-      color:#fff;
-    }
-    .title-wrap .sub{
-      margin:3px 0 0;
-      opacity:.90;
-      font-size:12px;
-      line-height:1.35;
-      color:#fff;
-    }
-    .model-chip{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
-      font-size:12px;
-      opacity:.95;
-    }
-    .model-chip .chip{
-      padding:8px 10px;
+    .brandText{line-height:1.05;}
+    .brandText .t1{font-weight:900; letter-spacing:.3px; font-size:16px;}
+    .brandText .t2{opacity:.88; font-size:12px;}
+    .topbar .cta{
+      border:none;
       border-radius:999px;
-      background: rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.22);
+      padding:10px 14px;
+      font-weight:900;
+      color:#fff;
+      background: linear-gradient(90deg, rgba(0,178,227,.95), rgba(0,178,227,.70));
+      box-shadow: 0 8px 18px rgba(0,178,227,.25);
+      cursor:pointer;
       white-space:nowrap;
     }
+    .topbar .cta:hover{filter:brightness(1.03);}
+
+    header{margin:6px 0 12px;}
+    h1{margin:0; font-size:26px; color:var(--brand-dark); letter-spacing:.2px;}
+    .sub{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35;}
     .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(75,99,180,.35);
+      border:1px solid rgba(0,102,179,.22);
       border-radius:999px;
       padding:8px 12px;
-      background: rgba(255,255,255,.65);
-      backdrop-filter: blur(6px);
+      background: rgba(0,102,179,.06);
       white-space:nowrap;
-      box-shadow: 0 6px 16px rgba(35,59,134,.10);
     }
     .dot{width:10px;height:10px;border-radius:50%; background:#94a3b8;}
-    .pill strong{font-size:13px; color:var(--ink);}
+    .pill strong{font-size:13px;}
 
     .card{
-      background: rgba(255,255,255,.92);
+      background:var(--card);
       border:1px solid var(--border);
-      border-radius:16px;
+      border-radius:18px;
       padding:16px;
-      box-shadow:0 8px 24px rgba(17,24,39,.08);
-      backdrop-filter: blur(6px);
+      box-shadow: var(--shadow2);
     }
 
     .top-form{
@@ -159,13 +133,11 @@
       background:#fff;
       color:var(--text);
       outline:none;
-      box-shadow: 0 1px 0 rgba(17,24,39,.03);
     }
     textarea{min-height:88px; resize:vertical;}
-
     input:focus, select:focus, textarea:focus{
-      border-color: rgba(75,99,180,.70);
-      box-shadow: 0 0 0 4px rgba(75,99,180,.18);
+      border-color: rgba(0,102,179,.65);
+      box-shadow: 0 0 0 3px rgba(0,102,179,.14);
     }
 
     .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
@@ -176,79 +148,71 @@
       color:var(--ink);
       padding:10px 14px;
       border-radius:12px;
-      font-weight:800;
+      font-weight:900;
       font-size:13px;
-      transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
     }
-    button:active{transform: translateY(1px);}
-
     button.primary{
-      background: linear-gradient(180deg, rgba(75,99,180,.18), rgba(75,99,180,.06));
-      border-color: rgba(75,99,180,.45);
-      box-shadow: 0 10px 18px rgba(35,59,134,.10);
+      color:#fff;
+      border-color: rgba(0,102,179,.35);
+      background: linear-gradient(90deg, var(--brand-dark), var(--brand));
+      box-shadow: 0 10px 22px rgba(0,102,179,.22);
     }
-    button.primary:hover{
-      border-color: rgba(75,99,180,.62);
-      background: linear-gradient(180deg, rgba(75,99,180,.26), rgba(75,99,180,.10));
-      box-shadow: 0 14px 24px rgba(35,59,134,.14);
+    button.primary:hover{filter:brightness(1.03);}
+    button.accent{
+      color:#fff;
+      border-color: rgba(0,178,227,.35);
+      background: linear-gradient(90deg, rgba(0,178,227,.95), rgba(0,178,227,.70));
+      box-shadow: 0 10px 22px rgba(0,178,227,.18);
     }
-
-    button.muted{background:#f3f6ff; border-color: rgba(47,74,163,.20);}
+    button.muted{background:#f1f5f9;}
     button.danger{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06);}
 
-    .divider{height:1px; background:rgba(17,24,39,.10); margin:14px 0;}
+    .divider{height:1px; background:rgba(2,30,72,.10); margin:14px 0;}
     .small{font-size:12px; color:var(--muted); line-height:1.35;}
 
     .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
     .box{
-      border:1px solid rgba(47,74,163,.16);
-      border-radius:14px;
+      border:1px solid var(--border);
+      border-radius:16px;
       padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
-      box-shadow: 0 10px 18px rgba(35,59,134,.06);
+      background:#fff;
     }
     .box .t{color:var(--muted); font-size:12px;}
-    .box .v{margin-top:4px; font-size:22px; font-weight:900; color:var(--ink);}
+    .box .v{margin-top:4px; font-size:22px; font-weight:950; color:var(--ink);}
     .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
 
-    .bar{
-      height:12px;
-      border-radius:999px;
-      background:rgba(17,24,39,.08);
-      overflow:hidden;
-      border:1px solid rgba(47,74,163,.18);
-    }
+    .bar{height:12px; border-radius:999px; background:rgba(2,30,72,.08); overflow:hidden; border:1px solid var(--border);}
     .bar > div{height:100%; width:0%; background:var(--brand);}
 
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border:1px solid rgba(47,74,163,.18);
-      border-radius:14px;
+    /* Tabla con scroll vertical y horizontal */
+    .tableWrap{
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:auto;              /* horizontal + vertical */
+      max-height:420px;           /* scroll vertical */
       background:#fff;
     }
-    th, td{padding:10px 10px; border-bottom:1px solid rgba(17,24,39,.06); font-size:12px; vertical-align:top;}
+    table{
+      width:100%;
+      min-width:980px;            /* fuerza scroll horizontal si pantalla chica */
+      border-collapse:separate;
+      border-spacing:0;
+      background:#fff;
+    }
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(2,30,72,.06); font-size:12px; vertical-align:top;}
     th{
-      background: linear-gradient(180deg, rgba(75,99,180,.10), rgba(75,99,180,.05));
-      text-align:left;
-      color:var(--ink);
-      font-size:12px;
+      position:sticky; top:0; z-index:2;
+      background: linear-gradient(180deg, rgba(0,102,179,.10), rgba(0,102,179,.05));
+      text-align:left; color:var(--ink);
     }
     tr:last-child td{border-bottom:none;}
-
     .tag{
       display:inline-flex; align-items:center; gap:6px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      font-size:11px;
-      white-space:nowrap;
-      font-weight:700;
+      padding:4px 8px; border-radius:999px; border:1px solid var(--border);
+      font-size:11px; white-space:nowrap;
     }
 
     .layout-bottom{
@@ -259,34 +223,27 @@
     }
 
     canvas{width:100%; height:260px; display:block;}
-    .chartWrap{
-      padding:12px;
-      border:1px solid rgba(47,74,163,.18);
-      border-radius:14px;
-      background:#fff;
-      box-shadow: 0 10px 18px rgba(35,59,134,.06);
-    }
+    .chartWrap{padding:12px; border:1px solid var(--border); border-radius:16px; background:#fff;}
     .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
 
-    /* ISO seleccionados “chips” */
+    /* ISO chips */
     .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(47,74,163,.18);
-      background: rgba(75,99,180,.06);
+      border:1px solid var(--border);
+      background:#fff;
       font-size:12px;
       color:var(--ink);
-      box-shadow: 0 8px 14px rgba(35,59,134,.06);
     }
     .chip .x{
       width:18px; height:18px; border-radius:50%;
       display:inline-flex; align-items:center; justify-content:center;
-      border:1px solid rgba(17,24,39,.12);
-      background:#f3f4f6;
+      border:1px solid rgba(0,0,0,.12);
+      background:#f1f5f9;
       font-weight:900;
       cursor:pointer;
       user-select:none;
@@ -296,8 +253,6 @@
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
       .layout-bottom{grid-template-columns:1fr;}
-      .brand-left{min-width:unset;}
-      .model-chip{justify-content:flex-start;}
     }
   </style>
 </head>
@@ -305,24 +260,25 @@
 <body>
   <div class="wrap">
 
-    <!-- Barra superior -->
     <div class="topbar">
-      <div class="topbar-inner">
-        <div class="brand-left">
-          <div class="logo-badge">C</div>
-          <div class="title-wrap">
-            <h1>Calculadora de Riesgo</h1>
-            <div class="sub">Evaluación · Tratamiento · Concentrado · Gráficas</div>
-          </div>
-        </div>
-
-        <div class="model-chip">
-          <div class="chip mono">Base = P×I</div>
-          <div class="chip mono">Ajustado = Base×(1+CIA%)×Activo</div>
-          <div class="chip mono">Residual = Ajustado×FactorControles</div>
+      <div class="brandLeft">
+        <div class="logoMark" aria-hidden="true"></div>
+        <div class="brandText">
+          <div class="t1">Calculadora de Riesgo</div>
+          <div class="t2">Estilo azul CONTPAQi · 1 archivo HTML</div>
         </div>
       </div>
+      <button class="cta" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">Ir arriba</button>
     </div>
+
+    <header>
+      <h1>Calculadora de Riesgo</h1>
+      <div class="sub">
+        Modelo: <span class="mono">Base = P×I</span> ·
+        <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
+        <span class="mono">Residual = Ajustado×FactorControles</span>
+      </div>
+    </header>
 
     <!-- ID y descripción arriba -->
     <div class="card" style="margin-bottom:12px;">
@@ -434,7 +390,7 @@
             <label>Agregar control manual (opcional)</label>
             <input id="iso_manual" placeholder="Ej. 8.28 — Codificación segura / 5.15 — Control de acceso" />
             <div class="btns" style="margin-top:10px;">
-              <button type="button" onclick="agregarControlManual()">Agregar manual</button>
+              <button class="accent" type="button" onclick="agregarControlManual()">Agregar manual</button>
               <button class="muted" type="button" onclick="limpiarControlesISO()">Limpiar seleccionados</button>
             </div>
 
@@ -462,7 +418,7 @@
           <div class="hint">Resultados numéricos + clasificación.</div>
         </div>
 
-        <!-- Estatus ahora aquí adentro -->
+        <!-- Estatus adentro -->
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
           <div class="pill">
             <span class="dot" id="dot"></span>
@@ -502,7 +458,7 @@
           </div>
           <div class="box">
             <div class="t">Acción prioritaria</div>
-            <div class="v" style="font-size:14px; font-weight:900;" id="accion_prior">—</div>
+            <div class="v" style="font-size:14px; font-weight:950;" id="accion_prior">—</div>
             <div class="s">Definida con base en residual</div>
           </div>
         </div>
@@ -540,7 +496,7 @@
           <button class="danger" type="button" onclick="limpiarConcentrado()">Limpiar concentrado</button>
         </div>
 
-        <div style="overflow:auto;">
+        <div class="tableWrap">
           <table id="tabla_concentrado">
             <thead>
               <tr>
@@ -574,8 +530,8 @@
           <div class="chartLegend">
             <div class="legendItem"><span class="swatch" style="background:var(--good)"></span> Bajo</div>
             <div class="legendItem"><span class="swatch" style="background:var(--warn)"></span> Medio</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--bad)"></span> Alto</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--crit)"></span> Crítico</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--alto)"></span> Alto</div>
+            <div class="legendItem"><span class="swatch" style="background:var(--bad)"></span> Crítico</div>
           </div>
           <div class="small" style="margin-top:8px;" id="statsNiveles">—</div>
         </div>
@@ -636,19 +592,17 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // =========================
-    // ISO 27001:2022 - Catálogo completo (5.1 a 8.34)
-    // =========================
+    // ISO catálogo completo (5.1 a 8.34)
     const ISO_CATALOGO = [
-      { id:"5.1",  nombre:"Políticas de seguridad de la información" },
-      { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
-      { id:"5.3",  nombre:"Separación de funciones" },
-      { id:"5.4",  nombre:"Responsabilidades de gestión" },
-      { id:"5.5",  nombre:"Contacto con las autoridades" },
-      { id:"5.6",  nombre:"Contacto con grupos de interés especial" },
-      { id:"5.7",  nombre:"Inteligencia de amenazas" },
-      { id:"5.8",  nombre:"Seguridad de la información en la gestión de proyectos" },
-      { id:"5.9",  nombre:"Inventario de información y otros activos asociados" },
+      { id:"5.1", nombre:"Políticas de seguridad de la información" },
+      { id:"5.2", nombre:"Funciones y responsabilidades de seguridad de la información" },
+      { id:"5.3", nombre:"Separación de funciones" },
+      { id:"5.4", nombre:"Responsabilidades de gestión" },
+      { id:"5.5", nombre:"Contacto con las autoridades" },
+      { id:"5.6", nombre:"Contacto con grupos de interés especial" },
+      { id:"5.7", nombre:"Inteligencia de amenazas" },
+      { id:"5.8", nombre:"Seguridad de la información en la gestión de proyectos" },
+      { id:"5.9", nombre:"Inventario de información y otros activos asociados" },
       { id:"5.10", nombre:"Uso aceptable de la información y otros activos asociados" },
       { id:"5.11", nombre:"Devolución de activos" },
       { id:"5.12", nombre:"Clasificación de la información" },
@@ -678,39 +632,39 @@
       { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
       { id:"5.37", nombre:"Procedimientos operativos documentados" },
 
-      { id:"6.1",  nombre:"Investigación" },
-      { id:"6.2",  nombre:"Términos y condiciones de empleo" },
-      { id:"6.3",  nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
-      { id:"6.4",  nombre:"Proceso disciplinario" },
-      { id:"6.5",  nombre:"Responsabilidades después de la terminación o cambio de empleo" },
-      { id:"6.6",  nombre:"Acuerdos de confidencialidad o no divulgación" },
-      { id:"6.7",  nombre:"Trabajo remoto" },
-      { id:"6.8",  nombre:"Informe de eventos de seguridad de la información" },
+      { id:"6.1", nombre:"Investigación" },
+      { id:"6.2", nombre:"Términos y condiciones de empleo" },
+      { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
+      { id:"6.4", nombre:"Proceso disciplinario" },
+      { id:"6.5", nombre:"Responsabilidades después de la terminación o cambio de empleo" },
+      { id:"6.6", nombre:"Acuerdos de confidencialidad o no divulgación" },
+      { id:"6.7", nombre:"Trabajo remoto" },
+      { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
 
-      { id:"7.1",  nombre:"Perímetros de seguridad física" },
-      { id:"7.2",  nombre:"Entrada física" },
-      { id:"7.3",  nombre:"Asegurar oficinas, habitaciones e instalaciones" },
-      { id:"7.4",  nombre:"Supervisión de la seguridad física" },
-      { id:"7.5",  nombre:"Protección contra amenazas físicas y ambientales" },
-      { id:"7.6",  nombre:"Trabajar en áreas seguras" },
-      { id:"7.7",  nombre:"Escritorio limpio y pantalla limpia" },
-      { id:"7.8",  nombre:"Emplazamiento y protección de equipos" },
-      { id:"7.9",  nombre:"Seguridad de los bienes fuera de las instalaciones" },
+      { id:"7.1", nombre:"Perímetros de seguridad física" },
+      { id:"7.2", nombre:"Entrada física" },
+      { id:"7.3", nombre:"Asegurar oficinas, habitaciones e instalaciones" },
+      { id:"7.4", nombre:"Supervisión de la seguridad física" },
+      { id:"7.5", nombre:"Protección contra amenazas físicas y ambientales" },
+      { id:"7.6", nombre:"Trabajar en áreas seguras" },
+      { id:"7.7", nombre:"Escritorio limpio y pantalla limpia" },
+      { id:"7.8", nombre:"Emplazamiento y protección de equipos" },
+      { id:"7.9", nombre:"Seguridad de los bienes fuera de las instalaciones" },
       { id:"7.10", nombre:"Medios de almacenamiento" },
       { id:"7.11", nombre:"Servicios públicos de apoyo" },
       { id:"7.12", nombre:"Seguridad del cableado" },
       { id:"7.13", nombre:"Mantenimiento de equipos" },
       { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
 
-      { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
-      { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
-      { id:"8.3",  nombre:"Restricción de acceso a la información" },
-      { id:"8.4",  nombre:"Acceso al código fuente" },
-      { id:"8.5",  nombre:"Autenticación segura" },
-      { id:"8.6",  nombre:"Gestión de la capacidad" },
-      { id:"8.7",  nombre:"Protección contra malware" },
-      { id:"8.8",  nombre:"Gestión de vulnerabilidades técnicas" },
-      { id:"8.9",  nombre:"Gestión de la configuración" },
+      { id:"8.1", nombre:"Dispositivos de punto final de usuario" },
+      { id:"8.2", nombre:"Derechos de acceso privilegiado" },
+      { id:"8.3", nombre:"Restricción de acceso a la información" },
+      { id:"8.4", nombre:"Acceso al código fuente" },
+      { id:"8.5", nombre:"Autenticación segura" },
+      { id:"8.6", nombre:"Gestión de la capacidad" },
+      { id:"8.7", nombre:"Protección contra malware" },
+      { id:"8.8", nombre:"Gestión de vulnerabilidades técnicas" },
+      { id:"8.9", nombre:"Gestión de la configuración" },
       { id:"8.10", nombre:"Eliminación de información" },
       { id:"8.11", nombre:"Enmascaramiento de datos" },
       { id:"8.12", nombre:"Prevención de fuga de datos" },
@@ -775,16 +729,16 @@
     function getByN(arr, n){ return arr.find(x => x.n === n); }
     function getByKey(arr, k){ return arr.find(x => x.key === k); }
 
-    function setDotColor(kind){
+    function setDotColorByNivel(nivel){
       const dot = document.getElementById("dot");
       const fill = document.getElementById("fill");
       const styles = getComputedStyle(document.documentElement);
 
       let color = "#94a3b8";
-      if (kind === "good") color = styles.getPropertyValue("--good").trim();
-      if (kind === "warn") color = styles.getPropertyValue("--warn").trim();
-      if (kind === "bad")  color = styles.getPropertyValue("--bad").trim();   // Alto = naranja
-      if (kind === "crit") color = styles.getPropertyValue("--crit").trim();  // Crítico = rojo
+      if (nivel === "Bajo")   color = styles.getPropertyValue("--good").trim();
+      if (nivel === "Medio")  color = styles.getPropertyValue("--warn").trim();
+      if (nivel === "Alto")   color = styles.getPropertyValue("--alto").trim();
+      if (nivel === "Crítico")color = styles.getPropertyValue("--bad").trim();
 
       dot.style.background = color;
       fill.style.background = color;
@@ -880,7 +834,7 @@
     // =========================
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return {
-        nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"good",
+        nivel:"Bajo", accion:"Aceptar / Revisar periódicamente",
         rec:[
           "Aceptar el riesgo y documentarlo en el registro de riesgos.",
           "Definir revisión periódica (por ejemplo, trimestral).",
@@ -888,7 +842,7 @@
         ]
       };
       if (scoreResidual <= 25) return {
-        nivel:"Medio", accion:"Monitorear / Revisar", sem:"warn",
+        nivel:"Medio", accion:"Monitorear / Revisar",
         rec:[
           "Documentar el riesgo y asignar responsable.",
           "Definir mejoras rápidas a controles existentes (quick wins).",
@@ -896,16 +850,16 @@
         ]
       };
       if (scoreResidual <= 50) return {
-        nivel:"Alto", accion:"Mitigar (prioritario)", sem:"bad",
+        nivel:"Alto", accion:"Mitigar (prioritario)",
         rec:[
           "Definir plan de tratamiento con acciones, responsables y fechas.",
-          "Fortalecer controles de acceso (MFA, privilegios mínimos, segregación).",
+          "Integrar MFA, privilegios mínimos y segregación de funciones.",
           "Implementar cifrado y monitoreo (logging, alertas).",
           "Mejorar continuidad (respaldos, pruebas de restauración, DR)."
         ]
       };
       return {
-        nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
+        nivel:"Crítico", accion:"Acción inmediata (escalar)",
         rec:[
           "Escalar de inmediato a dirección/gerencia y al responsable del SGSI.",
           "Aplicar controles compensatorios urgentes para reducir exposición.",
@@ -963,7 +917,7 @@
       document.getElementById("nivel").textContent = `Clasificación: ${c.nivel}`;
       document.getElementById("accion_prior").textContent = c.accion;
       document.getElementById("estado").textContent = c.accion;
-      setDotColor(c.sem);
+      setDotColorByNivel(c.nivel);
 
       const ul = document.getElementById("recs");
       ul.innerHTML = "";
@@ -1017,10 +971,10 @@
     }
 
     function nivelTag(nivel){
-      if (nivel === "Bajo")   return `<span class="tag" style="border-color:rgba(22,163,74,.25);  background:rgba(22,163,74,.08);">Bajo</span>`;
-      if (nivel === "Medio")  return `<span class="tag" style="border-color:rgba(245,158,11,.28); background:rgba(245,158,11,.10);">Medio</span>`;
-      if (nivel === "Alto")   return `<span class="tag" style="border-color:rgba(249,115,22,.30); background:rgba(249,115,22,.10);">Alto</span>`;
-      return                  `<span class="tag" style="border-color:rgba(220,38,38,.28); background:rgba(220,38,38,.10);">Crítico</span>`;
+      if (nivel === "Bajo") return `<span class="tag" style="border-color:rgba(22,163,74,.25); background:rgba(22,163,74,.06);">Bajo</span>`;
+      if (nivel === "Medio") return `<span class="tag" style="border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.06);">Medio</span>`;
+      if (nivel === "Alto") return `<span class="tag" style="border-color:rgba(249,115,22,.25); background:rgba(249,115,22,.06);">Alto</span>`;
+      return `<span class="tag" style="border-color:rgba(220,38,38,.25); background:rgba(220,38,38,.06);">Crítico</span>`;
     }
 
     function renderTabla(){
@@ -1163,8 +1117,8 @@
       const colors = {
         Bajo: styles.getPropertyValue("--good").trim(),
         Medio: styles.getPropertyValue("--warn").trim(),
-        Alto: styles.getPropertyValue("--bad").trim(),
-        Crítico: styles.getPropertyValue("--crit").trim(),
+        Alto: styles.getPropertyValue("--alto").trim(),
+        Crítico: styles.getPropertyValue("--bad").trim(),
       };
 
       const labels = ["Bajo","Medio","Alto","Crítico"];
@@ -1228,11 +1182,13 @@
     // Heatmap 5x5
     // =========================
     function heatColor(base){
+      // Mapa basado en Base=P*I (1..25)
+      // 1-5 Bajo, 6-10 Medio, 11-15 Alto (naranja), 16-25 Crítico (rojo)
       const styles = getComputedStyle(document.documentElement);
-      if (base <= 5)  return styles.getPropertyValue("--good").trim();  // verde
-      if (base <= 10) return styles.getPropertyValue("--warn").trim();  // ámbar
-      if (base <= 15) return styles.getPropertyValue("--bad").trim();   // naranja (alto)
-      return styles.getPropertyValue("--crit").trim();                  // rojo (crítico)
+      if (base <= 5)  return styles.getPropertyValue("--good").trim();
+      if (base <= 10) return styles.getPropertyValue("--warn").trim();
+      if (base <= 15) return styles.getPropertyValue("--alto").trim();
+      return styles.getPropertyValue("--bad").trim();
     }
 
     function renderHeatmap(current){
@@ -1338,7 +1294,8 @@
       document.getElementById("out_detalle").textContent = "—";
       document.getElementById("recs").innerHTML = "";
       document.getElementById("estado").textContent = "Sin calcular";
-      setDotColor("none");
+      document.getElementById("dot").style.background = "#94a3b8";
+      document.getElementById("fill").style.background = getComputedStyle(document.documentElement).getPropertyValue("--brand").trim();
       ultimoResultado = null;
       renderHeatmap(null);
     }

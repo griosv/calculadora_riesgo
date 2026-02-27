@@ -1,552 +1,411 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de Riesgo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Riesgo</title>
 
-  <style>
-    :root{
-      /* Azul del banner (aprox) */
-      --brand:#445DB1;
-      --brand-dark:#344A96;
-      --brand-900:#25366f;
-      --brand-soft:rgba(68,93,177,.10);
-      --brand-softer:rgba(68,93,177,.06);
+<style>
+:root{
+  --brand:#445DB1;
+  --brand-dark:#344A96;
+  --brand-soft:rgba(68,93,177,.10);
+  --brand-bg:#f3f6fb;
 
-      --ink:#1f2937;
-      --muted:#6b7280;
+  --good:#16a34a;
+  --warn:#f59e0b;
+  --bad:#dc2626;
+  --crit:#7c3aed;
 
-      /* UI */
-      --bg:#f3f6fb; /* ligeramente azulado */
-      --card:#ffffff;
-      --text:#111827;
-      --border:rgba(17,24,39,.10);
+  --border:rgba(0,0,0,.08);
+}
 
-      /* Estados */
-      --good:#16a34a;
-      --warn:#f59e0b;
-      --bad:#dc2626;
-      --crit:#7c3aed;
-    }
+body{
+  margin:0;
+  background:var(--brand-bg);
+  font-family:Segoe UI, Arial;
+  padding:20px;
+}
 
-    *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-    body{margin:0; min-height:100vh; color:var(--text); background:var(--bg); padding:20px;}
-    .wrap{max-width:1280px; margin:0 auto;}
+.wrap{max-width:1300px;margin:auto;}
 
-    /* ===== HEADER MÁS AZUL (estilo barra) ===== */
-    header{
-      margin-bottom:14px;
-      background:linear-gradient(90deg, var(--brand), var(--brand-dark));
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:16px;
-      padding:16px 18px;
-      box-shadow:0 10px 26px rgba(37,54,111,.18);
-    }
-    h1{margin:0; font-size:28px; color:#fff; letter-spacing:.2px;}
-    .sub{margin:6px 0 0; color:rgba(255,255,255,.85); font-size:13px; line-height:1.35;}
-    .sub .mono{color:rgba(255,255,255,.92);}
+header{
+  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+  color:white;
+  padding:16px;
+  border-radius:16px;
+  margin-bottom:16px;
+}
 
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(68,93,177,.35);
-      border-radius:999px;
-      padding:8px 12px;
-      background: linear-gradient(180deg, rgba(68,93,177,.16), rgba(68,93,177,.08));
-      white-space:nowrap;
-      box-shadow:0 2px 10px rgba(68,93,177,.10);
-    }
-    .dot{width:10px;height:10px;border-radius:50%; background:var(--brand);}
-    .pill strong{font-size:13px; color:var(--brand-900);}
+h1{margin:0;}
+.sub{font-size:13px;opacity:.9;}
 
-    /* ===== CARDS con acento azul ===== */
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:16px;
-      box-shadow:0 8px 20px rgba(17,24,39,.06);
-      position:relative;
-      overflow:hidden;
-    }
-    .card:before{
-      content:"";
-      position:absolute;
-      left:0; top:0;
-      width:100%; height:4px;
-      background:linear-gradient(90deg, var(--brand), var(--brand-dark));
-    }
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  border-top:4px solid var(--brand);
+}
 
-    .top-form{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-bottom:12px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:16px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-    }
+.layout-bottom{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:16px;
+  margin-top:16px;
+}
 
-    .section-title{
-      display:flex; justify-content:space-between; align-items:baseline; gap:10px;
-      margin-bottom:10px;
-    }
-    .section-title h2{margin:0; font-size:16px; color:var(--brand-900);}
-    .hint{color:var(--muted); font-size:12px; line-height:1.35;}
+@media(max-width:1000px){
+  .grid,.layout-bottom{grid-template-columns:1fr;}
+}
 
-    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
-    .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;}
-    label{display:block; color:var(--ink); font-size:12px; margin-bottom:6px;}
+label{font-size:12px;font-weight:600;}
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  margin-top:4px;
+}
+textarea{min-height:70px;}
 
-    input, select, textarea{
-      width:100%;
-      padding:11px 12px;
-      border-radius:12px;
-      border:1px solid rgba(68,93,177,.20);
-      background:#fff;
-      color:var(--text);
-      outline:none;
-      box-shadow:0 1px 0 rgba(17,24,39,.02);
-    }
-    textarea{min-height:88px; resize:vertical;}
-    input:focus, select:focus, textarea:focus{
-      border-color: rgba(68,93,177,.70);
-      box-shadow: 0 0 0 4px rgba(68,93,177,.18);
-    }
+button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
 
-    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
-    button{
-      cursor:pointer;
-      border:1px solid rgba(68,93,177,.22);
-      background:#fff;
-      color:var(--brand-900);
-      padding:10px 14px;
-      border-radius:12px;
-      font-weight:800;
-      font-size:13px;
-      transition: transform .06s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
-    }
-    button:active{transform: translateY(1px);}
-    /* ===== BOTONES MÁS AZULES ===== */
-    button.primary{
-      background: linear-gradient(90deg, var(--brand), var(--brand-dark));
-      border-color: rgba(255,255,255,.0);
-      color:#fff;
-      box-shadow:0 10px 18px rgba(68,93,177,.18);
-    }
-    button.primary:hover{
-      background: linear-gradient(90deg, var(--brand-dark), var(--brand));
-      box-shadow:0 12px 22px rgba(68,93,177,.22);
-    }
-    button.muted{
-      background: linear-gradient(180deg, #ffffff, #f1f5ff);
-      color:var(--brand-900);
-      border-color: rgba(68,93,177,.18);
-    }
-    button.danger{
-      border-color: rgba(220,38,38,.25);
-      background: rgba(220,38,38,.06);
-      color:#b91c1c;
-    }
+button.primary{
+  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+  color:white;
+}
 
-    .divider{height:1px; background:rgba(68,93,177,.18); margin:14px 0;}
-    .small{font-size:12px; color:var(--muted); line-height:1.35;}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+button.muted{background:#eef2ff;}
+button.danger{background:#fee2e2;}
 
-    .kpi{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
-    .box{
-      border:1px solid rgba(68,93,177,.16);
-      border-radius:14px;
-      padding:12px;
-      background: linear-gradient(180deg, #fff, var(--brand-softer));
-      box-shadow:0 6px 16px rgba(68,93,177,.08);
-    }
-    .box .t{color:var(--muted); font-size:12px;}
-    .box .v{margin-top:4px; font-size:22px; font-weight:900; color:var(--brand-900);}
-    .box .s{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35;}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
 
-    .bar{
-      height:12px; border-radius:999px;
-      background:rgba(68,93,177,.12);
-      overflow:hidden;
-      border:1px solid rgba(68,93,177,.20);
-    }
-    .bar > div{height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--brand-dark));}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
 
-    ul{margin:8px 0 0 18px; padding:0;}
-    li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
+.box{
+  background:var(--brand-soft);
+  padding:12px;
+  border-radius:12px;
+}
 
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border:1px solid rgba(68,93,177,.18);
-      border-radius:14px;
-      background:#fff;
-      box-shadow:0 10px 18px rgba(17,24,39,.05);
-    }
-    th, td{
-      padding:10px 10px;
-      border-bottom:1px solid rgba(68,93,177,.10);
-      font-size:12px;
-      vertical-align:top;
-    }
-    th{
-      background: linear-gradient(180deg, rgba(68,93,177,.14), rgba(68,93,177,.06));
-      text-align:left;
-      color:var(--brand-900);
-      font-size:12px;
-      border-bottom:1px solid rgba(68,93,177,.18);
-    }
-    tr:last-child td{border-bottom:none;}
+.bar{
+  height:12px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+.bar div{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+}
 
-    .tag{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(68,93,177,.18);
-      background: rgba(68,93,177,.06);
-      font-size:11px; white-space:nowrap;
-      color:var(--brand-900);
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+th{
+  background:var(--brand-soft);
+  padding:8px;
+  text-align:left;
+}
+td{
+  padding:8px;
+  border-bottom:1px solid var(--border);
+}
 
-    .layout-bottom{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-    }
-
-    canvas{width:100%; height:260px; display:block;}
-    .chartWrap{
-      padding:12px;
-      border:1px solid rgba(68,93,177,.18);
-      border-radius:14px;
-      background: linear-gradient(180deg, #fff, var(--brand-softer));
-      box-shadow:0 8px 18px rgba(68,93,177,.08);
-    }
-    .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
-    .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
-    .swatch{width:10px; height:10px; border-radius:3px;}
-
-    /* ISO seleccionados “chips” */
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(68,93,177,.18);
-      background: linear-gradient(180deg, #fff, rgba(68,93,177,.05));
-      font-size:12px;
-      color:var(--brand-900);
-    }
-    .chip .x{
-      width:18px; height:18px; border-radius:50%;
-      display:inline-flex; align-items:center; justify-content:center;
-      border:1px solid rgba(68,93,177,.22);
-      background: rgba(68,93,177,.10);
-      font-weight:900;
-      cursor:pointer;
-      user-select:none;
-      color:var(--brand-900);
-    }
-
-    @media (max-width: 1020px){
-      .top-form{grid-template-columns: 1fr;}
-      .grid{grid-template-columns:1fr;}
-      .layout-bottom{grid-template-columns:1fr;}
-    }
-  </style>
+canvas{width:100%;height:260px;}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Calculadora de Riesgo</h1>
-      <div class="sub">
-        Modelo: <span class="mono">Base = P×I</span> ·
-        <span class="mono">Ajustado = Base×(1+CIA%)×Activo</span> ·
-        <span class="mono">Residual = Ajustado×FactorControles</span>
-      </div>
-    </header>
+<div class="wrap">
 
-    <!-- ID y descripción arriba -->
-    <div class="card" style="margin-bottom:12px;">
-      <div class="section-title">
-        <h2>Identificación del riesgo</h2>
-        <div class="hint">ID obligatorio. Descripción opcional.</div>
-      </div>
+<header>
+<h1>Calculadora de Riesgo</h1>
+<div class="sub">
+Base = P×I · Ajustado = Base×(1+CIA%)×Activo · Residual = Ajustado×Controles
+</div>
+</header>
 
-      <div class="top-form">
-        <div>
-          <label>ID del riesgo *</label>
-          <input id="risk_id" placeholder="Ej. R-2026-001" />
-          <div class="small">Usa un folio único.</div>
-        </div>
-        <div>
-          <label>Área / Proceso (opcional)</label>
-          <input id="area" placeholder="Ej. TI / Desarrollo" />
-        </div>
-      </div>
+<div class="grid">
 
-      <div>
-        <label>Descripción del riesgo (opcional)</label>
-        <textarea id="desc" placeholder="Ej. Acceso no autorizado por falta de MFA..."></textarea>
-      </div>
-    </div>
+<div class="card">
+<label>ID del riesgo *</label>
+<input id="risk_id">
 
-    <div class="grid">
-      <!-- Entradas -->
-      <div class="card">
-        <div class="section-title">
-          <h2>Entradas</h2>
-          <div class="hint">Selecciona criterios y presiona <b>Calcular</b>.</div>
-        </div>
+<label style="margin-top:10px;">Descripción</label>
+<textarea id="desc"></textarea>
 
-        <div class="row">
-          <div>
-            <label>Probabilidad</label>
-            <select id="prob"></select>
-            <div class="small" id="prob_det"></div>
-          </div>
-          <div>
-            <label>Impacto</label>
-            <select id="impacto"></select>
-            <div class="small" id="impacto_det"></div>
-          </div>
-        </div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+<div>
+<label>Probabilidad</label>
+<select id="prob"></select>
+</div>
+<div>
+<label>Impacto</label>
+<select id="impacto"></select>
+</div>
+</div>
 
-        <div class="divider"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;">
+<div>
+<label>Confidencialidad</label>
+<select id="cia_conf"></select>
+</div>
+<div>
+<label>Integridad</label>
+<select id="cia_int"></select>
+</div>
+<div>
+<label>Disponibilidad</label>
+<select id="cia_disp"></select>
+</div>
+</div>
 
-        <div class="section-title">
-          <h2>Modificador CIA</h2>
-          <div class="hint">Suma porcentajes. Ejemplo: Alto+Alto+Alto = <b>+90%</b>.</div>
-        </div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+<div>
+<label>Valor Activo</label>
+<select id="valor_activo"></select>
+</div>
+<div>
+<label>Controles existentes</label>
+<select id="controles"></select>
+</div>
+</div>
 
-        <div class="row3">
-          <div>
-            <label>Confidencialidad</label>
-            <select id="cia_conf"></select>
-          </div>
-          <div>
-            <label>Integridad</label>
-            <select id="cia_int"></select>
-          </div>
-          <div>
-            <label>Disponibilidad</label>
-            <select id="cia_disp"></select>
-          </div>
-        </div>
+<div class="btns">
+<button class="primary" onclick="calcular()">Calcular</button>
+<button class="primary" onclick="agregar()">Agregar al concentrado</button>
+<button class="muted" onclick="limpiar()">Limpiar</button>
+</div>
+</div>
 
-        <div class="divider"></div>
+<div class="card">
+<h3>Resultados</h3>
 
-        <div class="row">
-          <div>
-            <label>Valor del activo</label>
-            <select id="valor_activo"></select>
-            <div class="small">Aumenta el riesgo según criticidad del activo.</div>
-          </div>
-          <div>
-            <label>Controles existentes</label>
-            <select id="controles"></select>
-            <div class="small">Reduce el riesgo según madurez/fortaleza de controles.</div>
-          </div>
-        </div>
+<div class="kpi">
+<div class="box">
+Base: <b id="base">—</b>
+</div>
+<div class="box">
+Residual: <b id="residual">—</b>
+</div>
+</div>
 
-        <div class="divider"></div>
+<div style="margin-top:10px;">
+<div style="display:flex;justify-content:space-between;font-size:12px;">
+<span>Nivel</span><span id="nivel">—</span>
+</div>
+<div class="bar"><div id="fill"></div></div>
+</div>
 
-        <!-- ISO: lista + agregar + manual -->
-        <div class="section-title">
-          <h2>Controles ISO/IEC 27001:2022</h2>
-          <div class="hint">Elige de la lista o agrega uno manual.</div>
-        </div>
+</div>
 
-        <div class="row">
-          <div>
-            <label>Buscar control</label>
-            <input id="iso_search" placeholder="Ej. 8.8 o 'vulnerabilidad'..." />
-            <div class="small">Tip: escribe “5.”, “6.”, “7.” u “8.” para filtrar por sección.</div>
+</div>
 
-            <div style="margin-top:10px;">
-              <label>Lista de controles</label>
-              <select id="iso_catalogo" size="9"></select>
-              <div class="btns" style="margin-top:10px;">
-                <button class="primary" type="button" onclick="agregarControlDesdeLista()">Agregar control</button>
-              </div>
-            </div>
-          </div>
+<div class="layout-bottom">
 
-          <div>
-            <label>Agregar control manual (opcional)</label>
-            <input id="iso_manual" placeholder="Ej. 8.28 — Codificación segura / 5.15 — Control de acceso" />
-            <div class="btns" style="margin-top:10px;">
-              <button type="button" onclick="agregarControlManual()">Agregar manual</button>
-              <button class="muted" type="button" onclick="limpiarControlesISO()">Limpiar seleccionados</button>
-            </div>
+<div class="card">
+<h3>Concentrado</h3>
+<div class="btns">
+<button onclick="exportarCSV()">Exportar CSV</button>
+<button onclick="exportarExcel()">Exportar Excel</button>
+<button class="danger" onclick="limpiarConcentrado()">Limpiar</button>
+</div>
 
-            <div class="box" style="margin-top:10px;">
-              <div class="t">Controles seleccionados</div>
-              <div class="small">Da clic en “×” para quitar un control.</div>
-              <div class="chips" id="iso_chips"></div>
-            </div>
-          </div>
-        </div>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Residual</th>
+<th>Nivel</th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
+</div>
 
-        <div class="divider"></div>
+<div class="card">
+<h3>Gráfica</h3>
+<canvas id="chart"></canvas>
+</div>
 
-        <div class="btns">
-          <button class="primary" type="button" onclick="calcular()">Calcular</button>
-          <button class="primary" type="button" onclick="agregarAlConcentrado()">Agregar al concentrado</button>
-          <button class="muted" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
-        </div>
-      </div>
+</div>
 
-      <!-- Resultados -->
-      <div class="card">
-        <div class="section-title">
-          <h2>Resultados</h2>
-          <div class="hint">Resultados numéricos + clasificación.</div>
-        </div>
+</div>
 
-        <!-- Estatus ahora aquí adentro -->
-        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
-          <div class="pill">
-            <span class="dot" id="dot"></span>
-            <strong id="estado">Sin calcular</strong>
-          </div>
-        </div>
+<script>
+// =====================
+// CONFIGURACIÓN
+// =====================
+const PROB = [1,2,3,4,5];
+const CIA = {Ninguno:0, Bajo:.1, Medio:.2, Alto:.3};
+const ACTIVO = {Bajo:1, Medio:1.2, Alto:1.3, Critico:1.5};
+const CONTROLES = {Ninguno:1, Parcial:.8, Moderado:.6, Fuerte:.4};
 
-        <div class="kpi">
-          <div class="box">
-            <div class="t">Riesgo base (P×I)</div>
-            <div class="v" id="score_base">—</div>
-            <div class="s">Rango: 1 a 25</div>
-          </div>
-          <div class="box">
-            <div class="t">Riesgo ajustado</div>
-            <div class="v" id="score_ajustado">—</div>
-            <div class="s">Incluye CIA y activo</div>
-          </div>
-        </div>
+let concentrado = [];
 
-        <div class="box" style="margin-top:10px;">
-          <div class="t">Modificadores</div>
-          <div class="s">
-            CIA: <b id="mod_cia">—</b> &nbsp;|&nbsp;
-            Activo: <b id="mod_activo">—</b> &nbsp;|&nbsp;
-            Controles: <b id="mod_controles">—</b>
-          </div>
-        </div>
+function fillSelect(id, arr){
+  const sel = document.getElementById(id);
+  sel.innerHTML="";
+  arr.forEach(v=>{
+    const op=document.createElement("option");
+    op.value=v;
+    op.textContent=v;
+    sel.appendChild(op);
+  });
+}
 
-        <div class="divider"></div>
+function fillSelectObj(id,obj){
+  const sel=document.getElementById(id);
+  sel.innerHTML="";
+  Object.keys(obj).forEach(k=>{
+    const op=document.createElement("option");
+    op.value=k;
+    op.textContent=k;
+    sel.appendChild(op);
+  });
+}
 
-        <div class="kpi">
-          <div class="box">
-            <div class="t">Riesgo residual</div>
-            <div class="v" id="score_residual">—</div>
-            <div class="s" id="nivel">Clasificación: —</div>
-          </div>
-          <div class="box">
-            <div class="t">Acción prioritaria</div>
-            <div class="v" style="font-size:14px; font-weight:900;" id="accion_prior">—</div>
-            <div class="s">Definida con base en residual</div>
-          </div>
-        </div>
+fillSelect("prob",PROB);
+fillSelect("impacto",PROB);
+fillSelectObj("cia_conf",CIA);
+fillSelectObj("cia_int",CIA);
+fillSelectObj("cia_disp",CIA);
+fillSelectObj("valor_activo",ACTIVO);
+fillSelectObj("controles",CONTROLES);
 
-        <div style="margin-top:12px;">
-          <div class="small" style="display:flex;justify-content:space-between;margin-bottom:6px;">
-            <span>Indicador visual</span>
-            <span id="pct">0%</span>
-          </div>
-          <div class="bar"><div id="fill"></div></div>
-          <div class="hint" id="out_detalle" style="margin-top:10px;">—</div>
-        </div>
+function clasificar(v){
+  if(v<=10)return "Bajo";
+  if(v<=25)return "Medio";
+  if(v<=50)return "Alto";
+  return "Crítico";
+}
 
-        <div class="divider"></div>
+function calcular(){
+  const p=Number(prob.value);
+  const i=Number(impacto.value);
+  const base=p*i;
 
-        <div class="section-title">
-          <h2>Recomendaciones</h2>
-          <div class="hint">Sugerencias generales.</div>
-        </div>
-        <ul id="recs"></ul>
-      </div>
-    </div>
+  const ciaPct = CIA[cia_conf.value] + CIA[cia_int.value] + CIA[cia_disp.value];
+  const activoMult = ACTIVO[valor_activo.value];
+  const ctrlMult = CONTROLES[controles.value];
 
-    <!-- Abajo: concentrado + export + gráficas -->
-    <div class="layout-bottom">
-      <div class="card">
-        <div class="section-title">
-          <h2>Concentrado de riesgos</h2>
-          <div class="hint">Se llena con “Agregar al concentrado”.</div>
-        </div>
+  const ajustado = base*(1+ciaPct)*activoMult;
+  const residual = ajustado*ctrlMult;
 
-        <div class="btns" style="margin-bottom:10px;">
-          <button class="muted" type="button" onclick="exportarCSV()">Exportar CSV</button>
-          <button class="muted" type="button" onclick="exportarExcelXLS()">Exportar Excel (.xls)</button>
-          <button class="danger" type="button" onclick="limpiarConcentrado()">Limpiar concentrado</button>
-        </div>
+  baseEl.textContent=base.toFixed(2);
+  residualEl.textContent=residual.toFixed(2);
 
-        <div style="overflow:auto;">
-          <table id="tabla_concentrado">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Área</th>
-                <th>Descripción</th>
-                <th>Prob</th>
-                <th>Impacto</th>
-                <th>Residual</th>
-                <th>Nivel</th>
-                <th>Acción</th>
-                <th>ISO</th>
-              </tr>
-            </thead>
-            <tbody id="tbl_body">
-              <tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  const nivel=clasificar(residual);
+  nivelEl.textContent=nivel;
 
-      <div class="card">
-        <div class="section-title">
-          <h2>Gráficas</h2>
-          <div class="hint">Nivel del concentrado + mapa de calor 5×5 (evaluación).</div>
-        </div>
+  fill.style.width=Math.min(100,(residual/75)*100)+"%";
 
-        <div class="chartWrap" style="margin-bottom:12px;">
-          <div class="small" style="margin-bottom:6px;"><b>1) Conteo por nivel (concentrado)</b></div>
-          <canvas id="chartNiveles" width="700" height="260"></canvas>
-          <div class="chartLegend">
-            <div class="legendItem"><span class="swatch" style="background:var(--good)"></span> Bajo</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--warn)"></span> Medio</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--bad)"></span> Alto</div>
-            <div class="legendItem"><span class="swatch" style="background:var(--crit)"></span> Crítico</div>
-          </div>
-          <div class="small" style="margin-top:8px;" id="statsNiveles">—</div>
-        </div>
+  ultimo = {
+    id:risk_id.value,
+    residual:residual,
+    nivel:nivel
+  };
+}
 
-        <div class="chartWrap">
-          <div class="small" style="margin-bottom:6px;"><b>2) Mapa de calor 5×5 (Probabilidad × Impacto)</b></div>
-          <canvas id="chartHeatmap" width="700" height="320"></canvas>
-          <div class="small" style="margin-top:8px;">
-            Marca: <b>riesgo actual</b> (último calculado).
-          </div>
-        </div>
-      </div>
-    </div>
+const baseEl=document.getElementById("base");
+const residualEl=document.getElementById("residual");
+const nivelEl=document.getElementById("nivel");
+const fill=document.getElementById("fill");
 
-  </div>
+let ultimo=null;
 
-  <script>
-    /* ====== TU SCRIPT VA EXACTAMENTE AQUÍ (sin cambios) ======
-       Pega tu mismo JS completo tal como lo tienes.
-       Yo no lo edité en esta versión para no romper nada.
-    */
-  </script>
+function agregar(){
+  if(!ultimo)return alert("Calcula primero");
+  concentrado.push(ultimo);
+  render();
+}
+
+function render(){
+  const tb=document.getElementById("tabla");
+  tb.innerHTML="";
+  concentrado.forEach(r=>{
+    tb.innerHTML+=`<tr><td>${r.id}</td><td>${r.residual.toFixed(2)}</td><td>${r.nivel}</td></tr>`;
+  });
+  renderGrafica();
+}
+
+function limpiar(){
+  risk_id.value="";
+  desc.value="";
+}
+
+function limpiarConcentrado(){
+  concentrado=[];
+  render();
+}
+
+function exportarCSV(){
+  if(concentrado.length===0)return;
+  let csv="ID,Residual,Nivel\n";
+  concentrado.forEach(r=>{
+    csv+=`${r.id},${r.residual},${r.nivel}\n`;
+  });
+  const blob=new Blob([csv]);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="riesgos.csv";
+  a.click();
+}
+
+function exportarExcel(){
+  if(concentrado.length===0)return;
+  let html="<table><tr><th>ID</th><th>Residual</th><th>Nivel</th></tr>";
+  concentrado.forEach(r=>{
+    html+=`<tr><td>${r.id}</td><td>${r.residual}</td><td>${r.nivel}</td></tr>`;
+  });
+  html+="</table>";
+  const blob=new Blob([html],{type:"application/vnd.ms-excel"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="riesgos.xls";
+  a.click();
+}
+
+function renderGrafica(){
+  const ctx=chart.getContext("2d");
+  ctx.clearRect(0,0,chart.width,chart.height);
+
+  const counts={Bajo:0,Medio:0,Alto:0,Crítico:0};
+  concentrado.forEach(r=>counts[r.nivel]++);
+
+  const labels=["Bajo","Medio","Alto","Crítico"];
+  const colors=["#16a34a","#f59e0b","#dc2626","#7c3aed"];
+
+  const max=Math.max(...Object.values(counts),1);
+  const barW=60;
+  labels.forEach((l,i)=>{
+    const val=counts[l];
+    const h=(val/max)*200;
+    ctx.fillStyle=colors[i];
+    ctx.fillRect(50+i*100,250-h,barW,h);
+    ctx.fillStyle="#000";
+    ctx.fillText(l,50+i*100,270);
+    ctx.fillText(val,50+i*100,240-h);
+  });
+}
+</script>
+
 </body>
 </html>

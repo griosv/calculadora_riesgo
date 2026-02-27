@@ -1,3 +1,5 @@
+
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -237,25 +239,6 @@
       user-select:none;
     }
 
-    /* ISO catálogo: scroll vertical y horizontal */
-    .iso-scroll{
-      overflow:auto;              /* horizontal + vertical */
-      max-height:260px;           /* vertical (coincide con size=10 aprox) */
-      border-radius:14px;
-      border:1px solid var(--border);
-      background:#fff;
-    }
-    /* Para habilitar scroll horizontal: el select debe ser más ancho que el contenedor */
-    #iso_catalogo{
-      display:block;
-      width:max-content;          /* se ajusta al contenido */
-      min-width:720px;            /* fuerza scroll horizontal cuando la columna es angosta */
-      border:none;                /* el borde lo pone el contenedor */
-      padding:10px 12px;
-      outline:none;
-    }
-    #iso_catalogo:focus{ box-shadow:none; }
-
     @media (max-width: 1020px){
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
@@ -386,9 +369,7 @@
 
             <div style="margin-top:10px;">
               <label>Lista de controles</label>
-              <div class="iso-scroll">
-                <select id="iso_catalogo" size="10"></select>
-              </div>
+              <select id="iso_catalogo" size="10"></select>
               <div class="btns" style="margin-top:10px;">
                 <button class="primary" type="button" onclick="agregarControlDesdeLista()">Agregar control</button>
               </div>
@@ -602,9 +583,10 @@
     ];
 
     // =========================
-    // ISO catálogo COMPLETO (5.1 a 8.34)
+    // ISO catálogo COMPLETO (lo que me pasaste) 5.1 a 8.34
     // =========================
     const ISO_CATALOGO = [
+      // 5.x
       { id:"5.1",  nombre:"Políticas de seguridad de la información" },
       { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
       { id:"5.3",  nombre:"Separación de funciones" },
@@ -643,6 +625,7 @@
       { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
       { id:"5.37", nombre:"Procedimientos operativos documentados" },
 
+      // 6.x
       { id:"6.1", nombre:"Investigación" },
       { id:"6.2", nombre:"Términos y condiciones de empleo" },
       { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
@@ -652,6 +635,7 @@
       { id:"6.7", nombre:"Trabajo remoto" },
       { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
 
+      // 7.x
       { id:"7.1", nombre:"Perímetros de seguridad física" },
       { id:"7.2", nombre:"Entrada física" },
       { id:"7.3", nombre:"Asegurar oficinas, habitaciones e instalaciones" },
@@ -667,6 +651,7 @@
       { id:"7.13", nombre:"Mantenimiento de equipos" },
       { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
 
+      // 8.x
       { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
       { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
       { id:"8.3",  nombre:"Restricción de acceso a la información" },
@@ -842,6 +827,7 @@
 
     // =========================
     // Clasificación y recomendaciones
+    // (Alto = naranja / Crítico = rojo)
     // =========================
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return {
@@ -1193,6 +1179,7 @@
     // Heatmap 5x5
     // =========================
     function heatColor(base){
+      // Mapa por base P×I (1..25)
       const styles = getComputedStyle(document.documentElement);
       if (base <= 5)  return styles.getPropertyValue("--low").trim();
       if (base <= 10) return styles.getPropertyValue("--med").trim();

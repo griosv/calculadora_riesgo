@@ -522,7 +522,7 @@
   </div>
 
   <script>
-   const API_URL = "https://script.google.com/macros/s/AKfycbzDjQy-zwH-0YqVmUClrpwJ0p9lYBCqGdtzS64VNvItbRSjLiJNDobQZR0C5fyd5Y9Q/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzDjQy-zwH-0YqVmUClrpwJ0p9lYBCqGdtzS64VNvItbRSjLiJNDobQZR0C5fyd5Y9Q/exec";
     // =========================
     // Criterios (ES)
     // =========================
@@ -1187,11 +1187,55 @@
     // =========================
     // Envío a Google Sheets (Apps Script Web App)
     // =========================
-    async function enviarAGoogleSheets(){
-      if (!ultimoResultado){
-        alert("Primero calcula el riesgo.");
-        return;
-      }
+    function enviarAGoogleSheets(){
+  if (!ultimoResultado){
+    alert("Primero calcula el riesgo.");
+    return;
+  }
+
+  const payload = {
+    id: ultimoResultado.id,
+    area: ultimoResultado.area || "",
+    descripcion: ultimoResultado.desc || "",
+    probabilidad: ultimoResultado.prob,
+    impacto: ultimoResultado.impacto,
+    riesgo_base: ultimoResultado.base,
+    riesgo_ajustado: ultimoResultado.ajustado,
+    riesgo_residual: ultimoResultado.residual,
+    nivel: ultimoResultado.nivel,
+    accion: ultimoResultado.accion,
+    iso: (ultimoResultado.iso || []).join("; "),
+    fecha: new Date().toISOString()
+  };
+
+  let iframe = document.getElementById("hidden_iframe");
+  if (!iframe){
+    iframe = document.createElement("iframe");
+    iframe.name = "hidden_iframe";
+    iframe.id = "hidden_iframe";
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+  }
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = API_URL;
+  form.target = "hidden_iframe";
+
+  Object.entries(payload).forEach(([k,v])=>{
+    const input=document.createElement("input");
+    input.type="hidden";
+    input.name=k;
+    input.value=String(v ?? "");
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+
+  alert("✅ Riesgo enviado a Google Sheets.");
+}
 
       const payload = {
         id: ultimoResultado.id,

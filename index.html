@@ -7,29 +7,41 @@
 
   <style>
     :root{
-      --brand:#0057B8;
-      --brand-dark:#004A92;
-      --brand-ink:#0B2A4A;
-      --accent:#7FBBED;
+      /* Azules estilo CONTPAQi (aprox. por referencia visual) */
+      --brand:#0057B8;        /* azul principal */
+      --brand-dark:#004A92;   /* azul oscuro */
+      --brand-ink:#0B2A4A;    /* azul tinta */
+      --brand-soft:#EAF2FF;   /* fondo azul claro */
+      --accent:#7FBBED;       /* azul claro (botón tipo “Quiero ser Distribuidor”) */
 
       --ink:#1F2A37;
       --muted:#6B7280;
 
+      /* UI */
       --bg:#F4F8FF;
       --card:#ffffff;
       --text:#111827;
       --border:rgba(2, 6, 23, .10);
 
-      --low:#16a34a;
-      --med:#fbbf24;
-      --high:#f97316;
-      --crit:#dc2626;
+      /* Estados (ajuste pedido)
+         - Alto = NARANJA
+         - Crítico = ROJO
+      */
+      --low:#16a34a;     /* Bajo */
+      --med:#fbbf24;     /* Medio (amarillo/ámbar) */
+      --high:#f97316;    /* Alto (naranja) */
+      --crit:#dc2626;    /* Crítico (rojo) */
     }
 
     *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
     body{margin:0; min-height:100vh; color:var(--text); background: radial-gradient(1200px 500px at 10% 0%, rgba(0,87,184,.18), transparent 55%), var(--bg);}
 
-    .topbar{height:56px;background: linear-gradient(90deg, var(--brand-dark), var(--brand));box-shadow: 0 6px 18px rgba(0,0,0,.10);}
+    .topbar{
+      height:56px;
+      background: linear-gradient(90deg, var(--brand-dark), var(--brand));
+      box-shadow: 0 6px 18px rgba(0,0,0,.10);
+    }
+
     .wrap{max-width:1280px; margin:0 auto; padding:18px 18px 28px;}
     header{margin:14px 0 14px;}
 
@@ -45,19 +57,25 @@
     .sub{margin:0; color:var(--muted); font-size:13px; line-height:1.35;}
     .sub .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
 
-    .cta{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    .cta{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
     .cta .badge{
       display:inline-flex; align-items:center; gap:8px;
-      padding:9px 12px; border-radius:999px;
+      padding:9px 12px;
+      border-radius:999px;
       border:1px solid rgba(0,87,184,.25);
       background: rgba(0,87,184,.08);
-      color:var(--brand-ink); font-size:12px; white-space:nowrap;
+      color:var(--brand-ink);
+      font-size:12px;
+      white-space:nowrap;
     }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid rgba(0,87,184,.22);
-      border-radius:999px; padding:8px 12px;
+      border-radius:999px;
+      padding:8px 12px;
       background: rgba(0,87,184,.06);
       white-space:nowrap;
     }
@@ -81,10 +99,23 @@
       opacity:.95;
     }
 
-    .top-form{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;}
-    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:14px;}
+    .top-form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-bottom:12px;
+    }
 
-    .section-title{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+
+    .section-title{
+      display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+      margin-bottom:10px;
+    }
     .section-title h2{margin:0; font-size:16px; color:var(--ink);}
     .hint{color:var(--muted); font-size:12px; line-height:1.35;}
 
@@ -153,25 +184,39 @@
     ul{margin:8px 0 0 18px; padding:0;}
     li{color:var(--muted); margin:6px 0; font-size:12px; line-height:1.35;}
 
-    .table-scroll{overflow:auto; max-height:360px; border-radius:14px; border:1px solid var(--border); background:#fff;}
+    /* Tabla: scroll vertical y horizontal */
+    .table-scroll{
+      overflow:auto;                 /* horizontal y vertical */
+      max-height:360px;              /* vertical */
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+    }
     table{width:100%; min-width:980px; border-collapse:separate; border-spacing:0;}
     th, td{padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:12px; vertical-align:top; white-space:nowrap;}
     th{position:sticky; top:0; z-index:1; background:linear-gradient(180deg, rgba(0,87,184,.10), rgba(255,255,255,.98)); text-align:left; color:var(--brand-ink); font-size:12px;}
     tr:last-child td{border-bottom:none;}
-    td.wrapcell{white-space:normal; min-width:260px;}
+    td.wrapcell{white-space:normal; min-width:260px;} /* para descripción */
     .tag{
       display:inline-flex; align-items:center; gap:6px;
       padding:4px 8px; border-radius:999px; border:1px solid var(--border);
       font-size:11px; white-space:nowrap;
     }
 
-    .layout-bottom{margin-top:14px; display:grid; grid-template-columns: 1.1fr .9fr; gap:14px;}
+    .layout-bottom{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+
     canvas{width:100%; height:260px; display:block;}
     .chartWrap{padding:12px; border:1px solid rgba(0,87,184,.12); border-radius:14px; background: linear-gradient(180deg, rgba(0,87,184,.04), #fff);}
     .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
     .legendItem{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
     .swatch{width:10px; height:10px; border-radius:3px;}
 
+    /* ISO seleccionados “chips” */
     .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
@@ -223,6 +268,7 @@
       </div>
     </header>
 
+    <!-- ID y descripción arriba -->
     <div class="card" style="margin-bottom:12px;">
       <div class="section-title">
         <h2>Identificación del riesgo</h2>
@@ -248,6 +294,7 @@
     </div>
 
     <div class="grid">
+      <!-- Entradas -->
       <div class="card">
         <div class="section-title">
           <h2>Entradas</h2>
@@ -275,9 +322,18 @@
         </div>
 
         <div class="row3">
-          <div><label>Confidencialidad</label><select id="cia_conf"></select></div>
-          <div><label>Integridad</label><select id="cia_int"></select></div>
-          <div><label>Disponibilidad</label><select id="cia_disp"></select></div>
+          <div>
+            <label>Confidencialidad</label>
+            <select id="cia_conf"></select>
+          </div>
+          <div>
+            <label>Integridad</label>
+            <select id="cia_int"></select>
+          </div>
+          <div>
+            <label>Disponibilidad</label>
+            <select id="cia_disp"></select>
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -297,6 +353,7 @@
 
         <div class="divider"></div>
 
+        <!-- ISO: lista + agregar + manual -->
         <div class="section-title">
           <h2>Controles ISO/IEC 27001:2022</h2>
           <div class="hint">Elige de la lista o agrega uno manual.</div>
@@ -342,12 +399,14 @@
         </div>
       </div>
 
+      <!-- Resultados -->
       <div class="card">
         <div class="section-title">
           <h2>Resultados</h2>
           <div class="hint">Resultados numéricos + clasificación.</div>
         </div>
 
+        <!-- Estatus aquí adentro -->
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
           <div class="pill">
             <span class="dot" id="dot"></span>
@@ -411,6 +470,7 @@
       </div>
     </div>
 
+    <!-- Abajo: concentrado + export + gráficas -->
     <div class="layout-bottom">
       <div class="card">
         <div class="section-title">
@@ -467,7 +527,9 @@
         <div class="chartWrap">
           <div class="small" style="margin-bottom:6px;"><b>2) Mapa de calor 5×5 (Probabilidad × Impacto)</b></div>
           <canvas id="chartHeatmap" width="700" height="320"></canvas>
-          <div class="small" style="margin-top:8px;">Marca: <b>riesgo actual</b> (último calculado).</div>
+          <div class="small" style="margin-top:8px;">
+            Marca: <b>riesgo actual</b> (último calculado).
+          </div>
         </div>
       </div>
     </div>
@@ -479,21 +541,22 @@
     // Criterios (ES)
     // =========================
     const PROBABILIDAD = [
-      { n: 1, label: "1 - Raro",        extra: "(> 12 meses)",  detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo más de doce meses." },
-      { n: 2, label: "2 - Improbable",  extra: "(8–12 meses)",  detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo entre ocho a doce meses." },
-      { n: 3, label: "3 - Posible",     extra: "(< 6 meses)",   detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor a seis meses." },
-      { n: 4, label: "4 - Probable",    extra: "(1–3 meses)",   detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo entre uno y tres meses." },
-      { n: 5, label: "5 - Casi Seguro", extra: "(≤ 30 días)",   detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor o igual a un mes (30 días)." },
+      { n: 1, label: "1 - Raro", detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo más de doce meses." },
+      { n: 2, label: "2 - Improbable", detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo entre ocho a doce meses." },
+      { n: 3, label: "3 - Posible", detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor a seis meses." },
+      { n: 4, label: "4 - Probable", detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo entre uno y tres meses." },
+      { n: 5, label: "5 - Casi Seguro", detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor o igual a un mes (30 días)." },
     ];
 
     const IMPACTO = [
-      { n: 1, label: "1 - Insignificante", extra:"(< 1 día, <10%)", detalle: "Impacto operativo mínimo con retrasos menores a un día y afectación inferior al 10%. La privacidad se ve comprometida a nivel individual sin daño a la marca ni desviaciones normativas detectables." },
-      { n: 2, label: "2 - Menor",          extra:"(1–2 días, ≤30%)", detalle: "Capacidad operativa reducida hasta un 30% con retrasos de 1 a 2 días. Existe una afectación local a grupos pequeños y el daño reputacional es limitado, derivando en infracciones administrativas leves." },
-      { n: 3, label: "3 - Moderado",       extra:"(≥ 3 días, cientos)", detalle: "Operación severamente afectada con retrasos iguales o superiores a 3 días. Se registra la pérdida de cuentas clave, afectando a cientos de personas y resultando en un incumplimiento explícito de políticas o normas internas." },
-      { n: 4, label: "4 - Mayor",          extra:"(procesos críticos)", detalle: "Detención de procesos críticos del negocio que comprometen los objetivos principales. Se produce una pérdida de confianza masiva con miles de afectados, escalando a sanciones legales severas o demandas judiciales." },
-      { n: 5, label: "5 - Catastrófico",   extra:"(colapso total)", detalle: "Inviabilidad total de la operación y colapso del negocio. El daño a la marca es irreversible con millones de personas afectadas, conllevando multas críticas, sanciones penales o la revocación definitiva de licencias de operación." },
+      { n: 1, label: "1 - Insignificante", detalle: "Impacto operativo mínimo con retrasos menores a un día y afectación inferior al 10%. La privacidad se ve comprometida a nivel individual sin daño a la marca ni desviaciones normativas detectables." },
+      { n: 2, label: "2 - Menor", detalle: "Capacidad operativa reducida hasta un 30% con retrasos de 1 a 2 días. Existe una afectación local a grupos pequeños y el daño reputacional es limitado, derivando en infracciones administrativas leves." },
+      { n: 3, label: "3 - Moderado", detalle: "Operación severamente afectada con retrasos iguales o superiores a 3 días. Se registra la pérdida de cuentas clave, afectando a cientos de personas y resultando en un incumplimiento explícito de políticas o normas internas." },
+      { n: 4, label: "4 - Mayor", detalle: "Detención de procesos críticos del negocio que comprometen los objetivos principales. Se produce una pérdida de confianza masiva con miles de afectados, escalando a sanciones legales severas o demandas judiciales." },
+      { n: 5, label: "5 - Catastrófico", detalle: "Inviabilidad total de la operación y colapso del negocio. El daño a la marca es irreversible con millones de personas afectadas, conllevando multas críticas, sanciones penales o la revocación definitiva de licencias de operación." },
     ];
 
+    // Ninguno=0%, Bajo=10%, Medio=20%, Alto=30%
     const CIA = [
       { key: "Ninguno", label: "Ninguno", pct: 0.00 },
       { key: "Bajo",    label: "Bajo",    pct: 0.10 },
@@ -517,8 +580,11 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-    // ISO catálogo (igual que el anterior; lo dejo completo para que no te falte nada)
+    // =========================
+    // ISO catálogo COMPLETO (lo que me pasaste) 5.1 a 8.34
+    // =========================
     const ISO_CATALOGO = [
+      // 5.x
       { id:"5.1",  nombre:"Políticas de seguridad de la información" },
       { id:"5.2",  nombre:"Funciones y responsabilidades de seguridad de la información" },
       { id:"5.3",  nombre:"Separación de funciones" },
@@ -557,6 +623,7 @@
       { id:"5.36", nombre:"Cumplimiento de políticas, reglas y estándares de seguridad de la información" },
       { id:"5.37", nombre:"Procedimientos operativos documentados" },
 
+      // 6.x
       { id:"6.1", nombre:"Investigación" },
       { id:"6.2", nombre:"Términos y condiciones de empleo" },
       { id:"6.3", nombre:"Sensibilización, educación y formación en materia de seguridad de la información" },
@@ -566,6 +633,7 @@
       { id:"6.7", nombre:"Trabajo remoto" },
       { id:"6.8", nombre:"Informe de eventos de seguridad de la información" },
 
+      // 7.x
       { id:"7.1", nombre:"Perímetros de seguridad física" },
       { id:"7.2", nombre:"Entrada física" },
       { id:"7.3", nombre:"Asegurar oficinas, habitaciones e instalaciones" },
@@ -581,6 +649,7 @@
       { id:"7.13", nombre:"Mantenimiento de equipos" },
       { id:"7.14", nombre:"Eliminación o reutilización segura del equipo" },
 
+      // 8.x
       { id:"8.1",  nombre:"Dispositivos de punto final de usuario" },
       { id:"8.2",  nombre:"Derechos de acceso privilegiado" },
       { id:"8.3",  nombre:"Restricción de acceso a la información" },
@@ -617,17 +686,23 @@
       { id:"8.34", nombre:"Protección de los sistemas de información durante las pruebas de auditoría" },
     ];
 
+    // =========================
+    // Estado
+    // =========================
     let ultimoResultado = null;
     let concentrado = [];
-    let isoSeleccionados = [];
+    let isoSeleccionados = []; // array de strings
 
+    // =========================
+    // Helpers
+    // =========================
     function fillSelectByN(selId, arr){
       const sel = document.getElementById(selId);
       sel.innerHTML = "";
       arr.forEach(o=>{
         const op = document.createElement("option");
         op.value = o.n;
-        op.textContent = o.extra ? `${o.label} ${o.extra}` : o.label;
+        op.textContent = o.label;
         sel.appendChild(op);
       });
       sel.value = arr[2]?.n ?? arr[0]?.n ?? 1;
@@ -672,6 +747,9 @@
         .replaceAll("'","&#039;");
     }
 
+    // =========================
+    // ISO UI
+    // =========================
     function renderCatalogoISO(filtro=""){
       const sel = document.getElementById("iso_catalogo");
       const q = (filtro || "").toLowerCase().trim();
@@ -745,6 +823,10 @@
       });
     }
 
+    // =========================
+    // Clasificación y recomendaciones
+    // (Alto = naranja / Crítico = rojo)
+    // =========================
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return {
         nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"low",
@@ -782,9 +864,15 @@
       };
     }
 
+    // =========================
+    // Cálculo
+    // =========================
     function calcular(){
       const id = document.getElementById("risk_id").value.trim();
-      if (!id){ alert("Por favor ingresa el ID del riesgo (obligatorio)."); return; }
+      if (!id){
+        alert("Por favor ingresa el ID del riesgo (obligatorio).");
+        return;
+      }
 
       const area = document.getElementById("area").value.trim();
       const desc = document.getElementById("desc").value.trim();
@@ -828,7 +916,11 @@
 
       const ul = document.getElementById("recs");
       ul.innerHTML = "";
-      c.rec.forEach(t=>{ const li=document.createElement("li"); li.textContent=t; ul.appendChild(li); });
+      c.rec.forEach(t=>{
+        const li = document.createElement("li");
+        li.textContent = t;
+        ul.appendChild(li);
+      });
 
       const max = 75;
       const pct = Math.max(0, Math.min(100, Math.round((residual / max) * 100)));
@@ -853,8 +945,14 @@
       renderHeatmap(ultimoResultado);
     }
 
+    // =========================
+    // Concentrado
+    // =========================
     function agregarAlConcentrado(){
-      if (!ultimoResultado){ alert("Primero calcula un riesgo (botón Calcular)."); return; }
+      if (!ultimoResultado){
+        alert("Primero calcula un riesgo (botón Calcular).");
+        return;
+      }
 
       const ya = concentrado.some(r => r.id === ultimoResultado.id);
       if (ya){
@@ -880,7 +978,9 @@
         tbody.innerHTML = `<tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>`;
         return;
       }
+
       const rows = [...concentrado].sort((a,b)=> b.residual - a.residual);
+
       tbody.innerHTML = rows.map(r => `
         <tr>
           <td class="mono">${escapeHtml(r.id)}</td>
@@ -903,16 +1003,29 @@
       renderNiveles();
     }
 
+    // =========================
+    // Exportar CSV y Excel .xls
+    // =========================
     function exportarCSV(){
-      if (concentrado.length === 0){ alert("No hay datos para exportar."); return; }
+      if (concentrado.length === 0){
+        alert("No hay datos para exportar.");
+        return;
+      }
       const headers = ["ID","Área","Descripción","Probabilidad","Impacto","Base","Ajustado","Residual","Nivel","Acción","ISO"];
       const lines = [headers.join(",")];
 
       concentrado.forEach(r=>{
         const row = [
-          r.id, r.area || "",
+          r.id,
+          r.area || "",
           (r.desc || "").replaceAll("\n"," ").replaceAll("\r"," "),
-          r.prob, r.impacto, r.base, r.ajustado, r.residual, r.nivel, r.accion,
+          r.prob,
+          r.impacto,
+          r.base,
+          r.ajustado,
+          r.residual,
+          r.nivel,
+          r.accion,
           (r.iso || []).join(";")
         ].map(v => `"${String(v).replaceAll('"','""')}"`);
         lines.push(row.join(","));
@@ -921,13 +1034,20 @@
       const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8;"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url; a.download = "concentrado_riesgos.csv";
-      document.body.appendChild(a); a.click(); a.remove();
+      a.href = url;
+      a.download = "concentrado_riesgos.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
       URL.revokeObjectURL(url);
     }
 
     function exportarExcelXLS(){
-      if (concentrado.length === 0){ alert("No hay datos para exportar."); return; }
+      if (concentrado.length === 0){
+        alert("No hay datos para exportar.");
+        return;
+      }
+
       const tabla = document.getElementById("tabla_concentrado").outerHTML;
 
       const html = `
@@ -961,11 +1081,17 @@
       const blob = new Blob([html], {type:"application/vnd.ms-excel;charset=utf-8;"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url; a.download = "concentrado_riesgos.xls";
-      document.body.appendChild(a); a.click(); a.remove();
+      a.href = url;
+      a.download = "concentrado_riesgos.xls";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
       URL.revokeObjectURL(url);
     }
 
+    // =========================
+    // Gráfica niveles
+    // =========================
     function contarPorNivel(){
       const c = { Bajo:0, Medio:0, Alto:0, Crítico:0 };
       concentrado.forEach(r => {
@@ -1047,7 +1173,11 @@
         `Total: ${total} | Bajo: ${counts.Bajo} | Medio: ${counts.Medio} | Alto: ${counts.Alto} | Crítico: ${counts["Crítico"]}`;
     }
 
+    // =========================
+    // Heatmap 5x5
+    // =========================
     function heatColor(base){
+      // Mapa por base P×I (1..25)
       const styles = getComputedStyle(document.documentElement);
       if (base <= 5)  return styles.getPropertyValue("--low").trim();
       if (base <= 10) return styles.getPropertyValue("--med").trim();
@@ -1139,6 +1269,9 @@
       }
     }
 
+    // =========================
+    // Limpieza
+    // =========================
     function limpiarResultados(){
       document.getElementById("prob_det").textContent = "";
       document.getElementById("impacto_det").textContent = "";
@@ -1183,45 +1316,37 @@
       limpiarResultados();
     }
 
-   <script>
+    // =========================
+    // INIT
+    // =========================
+    fillSelectByN("prob", PROBABILIDAD);
+    fillSelectByN("impacto", IMPACTO);
+    fillSelectByKey("cia_conf", CIA, "Alto");
+    fillSelectByKey("cia_int", CIA, "Alto");
+    fillSelectByKey("cia_disp", CIA, "Alto");
+    fillSelectByKey("valor_activo", VALOR_ACTIVO, "Crítico/Esencial para la Misión");
+    fillSelectByKey("controles", CONTROLES_EXISTENTES, "No Especificado");
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjk1K5m4WIBRp93K0G8MWomoHn6w_juQEmFAcwD-7-aiTF7hAjGIiyXat_u02rToD-/exec";
+    document.getElementById("prob").addEventListener("change", ()=> {
+      const pObj = getByN(PROBABILIDAD, Number(document.getElementById("prob").value));
+      document.getElementById("prob_det").textContent = pObj?.detalle || "";
+    });
+    document.getElementById("impacto").addEventListener("change", ()=> {
+      const iObj = getByN(IMPACTO, Number(document.getElementById("impacto").value));
+      document.getElementById("impacto_det").textContent = iObj?.detalle || "";
+    });
 
-function guardarEnSheets(){
+    document.getElementById("iso_search").addEventListener("input", (e)=>{
+      renderCatalogoISO(e.target.value);
+    });
 
-if(!ultimoResultado){
-alert("Primero calcula el riesgo");
-return;
-}
+    renderCatalogoISO("");
+    renderISOChips();
 
-const data = {
-id: ultimoResultado.id,
-area: ultimoResultado.area,
-descripcion: ultimoResultado.desc,
-probabilidad: ultimoResultado.prob,
-impacto: ultimoResultado.impacto,
-base: ultimoResultado.base,
-ajustado: ultimoResultado.ajustado,
-residual: ultimoResultado.residual,
-nivel: ultimoResultado.nivel,
-accion: ultimoResultado.accion,
-iso: ultimoResultado.iso.join("; ")
-};
-
-fetch(GOOGLE_SCRIPT_URL,{
-method:"POST",
-mode:"no-cors",
-headers:{
-"Content-Type":"application/json"
-},
-body: JSON.stringify(data)
-});
-
-alert("Riesgo guardado en Google Sheets");
-
-}
-
-</script>
+    renderTabla();
+    renderNiveles();
+    renderHeatmap(null);
+    limpiarResultados();
   </script>
 </body>
 </html>

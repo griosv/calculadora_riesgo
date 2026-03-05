@@ -383,7 +383,6 @@
           <button class="primary" type="button" onclick="calcular()">Calcular</button>
           <button class="primary" type="button" onclick="agregarAlConcentrado()">Agregar al concentrado</button>
           <button class="muted" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
-          <button class="primary" type="button" onclick="enviarAGoogleSheets()">Registrar en Google Sheets</button>
         </div>
       </div>
 
@@ -522,7 +521,6 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzDjQy-zwH-0YqVmUClrpwJ0p9lYBCqGdtzS64VNvItbRSjLiJNDobQZR0C5fyd5Y9Q/exec";
     // =========================
     // Criterios (ES)
     // =========================
@@ -1181,109 +1179,6 @@
       limpiarControlesISO();
 
       limpiarResultados();
-    }
-
-
-    // =========================
-    // Envío a Google Sheets (Apps Script Web App)
-    // =========================
-    function enviarAGoogleSheets(){
-  if (!ultimoResultado){
-    alert("Primero calcula el riesgo.");
-    return;
-  }
-
-  const payload = {
-    id: ultimoResultado.id,
-    area: ultimoResultado.area || "",
-    descripcion: ultimoResultado.desc || "",
-    probabilidad: ultimoResultado.prob,
-    impacto: ultimoResultado.impacto,
-    riesgo_base: ultimoResultado.base,
-    riesgo_ajustado: ultimoResultado.ajustado,
-    riesgo_residual: ultimoResultado.residual,
-    nivel: ultimoResultado.nivel,
-    accion: ultimoResultado.accion,
-    iso: (ultimoResultado.iso || []).join("; "),
-    fecha: new Date().toISOString()
-  };
-
-  let iframe = document.getElementById("hidden_iframe");
-  if (!iframe){
-    iframe = document.createElement("iframe");
-    iframe.name = "hidden_iframe";
-    iframe.id = "hidden_iframe";
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-  }
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = API_URL;
-  form.target = "hidden_iframe";
-
-  Object.entries(payload).forEach(([k,v])=>{
-    const input=document.createElement("input");
-    input.type="hidden";
-    input.name=k;
-    input.value=String(v ?? "");
-    form.appendChild(input);
-  });
-
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
-
-  alert("✅ Riesgo enviado a Google Sheets.");
-}
-
-      const payload = {
-        id: ultimoResultado.id,
-        area: ultimoResultado.area || "",
-        descripcion: ultimoResultado.desc || "",
-        probabilidad: ultimoResultado.prob,
-        impacto: ultimoResultado.impacto,
-        riesgo_base: ultimoResultado.base,
-        riesgo_ajustado: ultimoResultado.ajustado,
-        riesgo_residual: ultimoResultado.residual,
-        nivel: ultimoResultado.nivel,
-        accion: ultimoResultado.accion,
-        iso: (ultimoResultado.iso || []).join("; "),
-        fecha: new Date().toISOString()
-      };
-
-      // Intento 1: POST JSON (recomendado). Puede requerir CORS en Apps Script.
-      try{
-        const resp = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        // Si el script responde JSON, lo intentamos leer (si no, ignoramos)
-        let text = "";
-        try { text = await resp.text(); } catch(e){}
-
-        if (!resp.ok){
-          throw new Error("HTTP " + resp.status + " " + (text || ""));
-        }
-
-        alert("✅ Riesgo registrado en Google Sheets.");
-        return;
-
-      }catch(err){
-        console.warn("POST falló, intentando GET...", err);
-      }
-
-      // Intento 2 (fallback): GET con querystring (suele funcionar aunque no haya CORS para POST)
-      try{
-        const qs = new URLSearchParams(payload).toString();
-        await fetch(API_URL + "?" + qs, { method: "GET", mode: "no-cors" });
-        alert("✅ Riesgo enviado (fallback GET). Revisa Google Sheets.");
-      }catch(err2){
-        console.error(err2);
-        alert("❌ No se pudo enviar a Google Sheets. Revisa permisos/CORS del Apps Script.");
-      }
     }
 
     // INIT

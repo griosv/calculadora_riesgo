@@ -831,35 +831,35 @@
       if (scoreResidual <= 10) return {
         nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"low",
         rec:[
-          "Aceptar el riesgo y documentarlo en el registro de riesgos.",
-          "Definir revisión periódica (por ejemplo, trimestral).",
-          "Mantener evidencias mínimas de monitoreo."
+          "Aceptar y documentar.",
+          "Supervisar en siguientes ejercicios si no aumentó el riesgo.",
+        
         ]
       };
       if (scoreResidual <= 25) return {
         nivel:"Medio", accion:"Monitorear / Revisar", sem:"med",
         rec:[
-          "Documentar el riesgo y asignar responsable.",
-          "Definir mejoras rápidas a controles existentes (quick wins).",
-          "Monitorear indicadores y revisar en comité o seguimiento mensual."
+          "Aceptar el riesgo",
+          "Identificar si se pueden generar algunas tareas para monitorearlo, inclusive mitigarlo.",
+          "Documentarlo en la matriz de riesgo."
+          "Seguimiento semestral para identificar que no aumente el riesgo."
         ]
       };
       if (scoreResidual <= 50) return {
         nivel:"Alto", accion:"Mitigar (prioritario)", sem:"high",
         rec:[
           "Definir plan de tratamiento con acciones, responsables y fechas.",
-          "Fortalecer controles de acceso (MFA, privilegios mínimos, segregación).",
-          "Implementar cifrado y monitoreo (logging, alertas).",
-          "Mejorar continuidad (respaldos, pruebas de restauración, DR)."
+          "No es necesario generar análisis de causa raíz, sin embargo, si un plan que mitigue el riesgo."
+          "Monitorear el riesgo de manera semestral para validar no suba."
         ]
       };
       return {
         nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
         rec:[
-          "Escalar de inmediato a dirección/gerencia y al responsable del SGSI.",
-          "Aplicar controles compensatorios urgentes para reducir exposición.",
-          "Considerar detener/evitar la actividad hasta tratar el riesgo.",
-          "Seguimiento diario hasta estabilizar."
+          "Escalar a dirección/SGSI",
+          "Controles compensatorios urgentes",
+          "Considerar detener/evitar actividad",
+          "Aplicar proceso de planes de tratamiento , identificando la raíz del riesgo y generando plan de mitigación."
         ]
       };
     }

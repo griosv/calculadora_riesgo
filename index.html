@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -382,7 +383,6 @@
           <button class="primary" type="button" onclick="calcular()">Calcular</button>
           <button class="primary" type="button" onclick="agregarAlConcentrado()">Agregar al concentrado</button>
           <button class="muted" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
-          <button class="primary" type="button" onclick="enviarAGoogleSheets()">Registrar en Google Sheets</button>
         </div>
       </div>
 
@@ -521,7 +521,6 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzjk1K5m4WIBRp93K0G8MWomoHn6w_juQEmFAcwD-7-aiTF7hAjGIiyXat_u02rToD-/exec";
     // =========================
     // Criterios (ES)
     // =========================
@@ -799,13 +798,13 @@
 
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return { nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"low",
-        rec:["Aceptar y documentar,"Supervisar en siguientes ejercicios si no aumentó el riesgo."] };
+        rec:["Aceptar el riesgo y documentarlo en el registro de riesgos.","Definir revisión periódica (por ejemplo, trimestral).","Mantener evidencias mínimas de monitoreo."] };
       if (scoreResidual <= 25) return { nivel:"Medio", accion:"Monitorear / Revisar", sem:"med",
-        rec:["Aceptar el riesgo","Identificar si se pueden generar algunas tareas para monitorearlo, inclusive mitigarlo.","Documentarlo en la matriz de riesgo", "Seguimiento semestral para identificar que no suba"] };
+        rec:["Documentar el riesgo y asignar responsable.","Definir mejoras rápidas a controles existentes (quick wins).","Monitorear indicadores y revisar en comité o seguimiento mensual."] };
       if (scoreResidual <= 50) return { nivel:"Alto", accion:"Mitigar (prioritario)", sem:"high",
-        rec:["No es necesario generar análisis de causa raíz, sin embargo, si un plan que mitigue el riesgo.","Monitorear el riesgo de manera semestral para validar que no suba."] };
+        rec:["Definir plan de tratamiento con acciones, responsables y fechas.","Fortalecer controles de acceso (MFA, privilegios mínimos, segregación).","Implementar cifrado y monitoreo (logging, alertas).","Mejorar continuidad (respaldos, pruebas de restauración, DR)."] };
       return { nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
-        rec:["EEscalar a dirección/SGSI.","Controles compensatorios urgentes.","Considerar detener/evitar actividad","Aplicar proceso de planes de tratamiento , identificando la raíz del riesgo y generando plan de mitigación."] };
+        rec:["Escalar de inmediato a dirección/gerencia y al responsable del SGSI.","Aplicar controles compensatorios urgentes para reducir exposición.","Considerar detener/evitar la actividad hasta tratar el riesgo.","Seguimiento diario hasta estabilizar."] };
     }
 
     function calcular(){
@@ -1180,65 +1179,6 @@
       limpiarControlesISO();
 
       limpiarResultados();
-    }
-
-
-    // =========================
-    // Envío a Google Sheets (Apps Script Web App)
-    // =========================
-    async function enviarAGoogleSheets(){
-      if (!ultimoResultado){
-        alert("Primero calcula el riesgo.");
-        return;
-      }
-
-      const payload = {
-        id: ultimoResultado.id,
-        area: ultimoResultado.area || "",
-        descripcion: ultimoResultado.desc || "",
-        probabilidad: ultimoResultado.prob,
-        impacto: ultimoResultado.impacto,
-        riesgo_base: ultimoResultado.base,
-        riesgo_ajustado: ultimoResultado.ajustado,
-        riesgo_residual: ultimoResultado.residual,
-        nivel: ultimoResultado.nivel,
-        accion: ultimoResultado.accion,
-        iso: (ultimoResultado.iso || []).join("; "),
-        fecha: new Date().toISOString()
-      };
-
-      // Intento 1: POST JSON (recomendado). Puede requerir CORS en Apps Script.
-      try{
-        const resp = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        // Si el script responde JSON, lo intentamos leer (si no, ignoramos)
-        let text = "";
-        try { text = await resp.text(); } catch(e){}
-
-        if (!resp.ok){
-          throw new Error("HTTP " + resp.status + " " + (text || ""));
-        }
-
-        alert("✅ Riesgo registrado en Google Sheets.");
-        return;
-
-      }catch(err){
-        console.warn("POST falló, intentando GET...", err);
-      }
-
-      // Intento 2 (fallback): GET con querystring (suele funcionar aunque no haya CORS para POST)
-      try{
-        const qs = new URLSearchParams(payload).toString();
-        await fetch(API_URL + "?" + qs, { method: "GET", mode: "no-cors" });
-        alert("✅ Riesgo enviado (fallback GET). Revisa Google Sheets.");
-      }catch(err2){
-        console.error(err2);
-        alert("❌ No se pudo enviar a Google Sheets. Revisa permisos/CORS del Apps Script.");
-      }
     }
 
     // INIT

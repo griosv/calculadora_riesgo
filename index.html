@@ -1210,6 +1210,38 @@
     renderNiveles();
     renderHeatmap(null);
     limpiarResultados();
+
+    <script>
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjk1K5m4WIBRp93K0G8MWomoHn6w_juQEmFAcwD-7-aiTF7hAjGIiyXat_u02rToD-/exec";
+
+function guardarRiesgo(){
+
+const data = {
+riesgo: document.getElementById("riesgo").value,
+probabilidad: document.getElementById("probabilidad").value,
+impacto: document.getElementById("impacto").value,
+cia: document.getElementById("cia").value,
+activo: document.getElementById("activo").value,
+base: document.getElementById("riesgoBase").value,
+ajustado: document.getElementById("riesgoAjustado").value,
+residual: document.getElementById("riesgoResidual").value
+};
+
+fetch(GOOGLE_SCRIPT_URL,{
+method:"POST",
+mode:"no-cors",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify(data)
+});
+
+alert("Riesgo guardado en la base de datos");
+
+}
+
+</script>
   </script>
 </body>
 </html>

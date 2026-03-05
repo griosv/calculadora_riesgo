@@ -798,13 +798,13 @@
 
     function clasificar(scoreResidual){
       if (scoreResidual <= 10) return { nivel:"Bajo", accion:"Aceptar / Revisar periódicamente", sem:"low",
-        rec:["Aceptar el riesgo y documentarlo","Supervisar en siguientes ejercicios si no aumentó el riesgo."] };
+        rec:["Aceptar el riesgo y documentarlo.","Supervisar en siguientes ejercicios si no aumentó el riesgo."] };
       if (scoreResidual <= 25) return { nivel:"Medio", accion:"Monitorear / Revisar", sem:"med",
-        rec:["Aceptar el riesgo","Identificar si se pueden generar algunas tareas para monitorearlo, inclusive mitigarlo. ","Documentarlo en la matriz de riesgo", "Seguimiento semestral para identificar que no suba"] };
+        rec:["Aceptar el riesgo.","Identificar si se pueden generar algunas tareas para monitorearlo, inclusive mitigarlo. ","Documentarlo en la matriz de riesgo.", "Seguimiento semestral para identificar que no suba."] };
       if (scoreResidual <= 50) return { nivel:"Alto", accion:"Mitigar (prioritario)", sem:"high",
-        rec:["Definir plan de tratamiento con acciones, responsables y fechas.","No es necesario generar análisis de causa raíz, sin embargo, si un plan que mitigue el riesgo.","Monitorear el riesgo de manera semestral para validar no suba."] };
+        rec:["Definir plan de tratamiento con acciones, responsables y fechas.","No es necesario generar análisis de causa raíz, sin embargo, si un plan que mitigue el riesgo.","Monitorear el riesgo de manera semestral para validar que no suba."] };
       return { nivel:"Crítico", accion:"Acción inmediata (escalar)", sem:"crit",
-        rec:["Escalar a dirección/SGSI","Controles compensatorios urgentes.","Considerar detener/evitar actividad","Aplicar proceso de planes de tratamiento , identificando la raíz del riesgo y generando plan de mitigación."] };
+        rec:["Escalar a dirección/SGSI","Controles compensatorios urgentes.","Considerar detener/evitar actividad","Aplicar proceso de planes de tratamiento, identificando la raíz del riesgo y generando plan de mitigación."] };
     }
 
     function calcular(){

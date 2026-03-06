@@ -420,10 +420,17 @@
                 <div class="tooltip" role="tooltip">
                   <div class="tt-title">Ejemplos (Confidencialidad)</div>
                   <p class="tt-body">
-                    • Exposición de datos personales (PII), nómina, expedientes.<br>
-                    • Filtración de credenciales/llaves API/tokens.<br>
-                    • Acceso no autorizado a contratos, precios, estrategia comercial.<br>
-                    • Fuga de información de clientes/proveedores.
+                    <b>Alto</b><br>
+                    • RFC/CURP/NSS expuestos (empleados o clientes).<br>
+                    • Nómina: salarios, cuentas bancarias, deducciones.<br>
+                    • Identificaciones/expedientes personales filtrados.<br><br>
+                    <b>Medio</b><br>
+                    • Estados financieros internos / pólizas contables.<br>
+                    • Contratos con clientes/proveedores o condiciones comerciales.<br>
+                    • Reportes internos con información sensible del negocio.<br><br>
+                    <b>Bajo</b><br>
+                    • Manuales/procedimientos internos sin datos sensibles.<br>
+                    • Información institucional o pública (sitio web, comunicados).
                   </p>
                 </div>
               </div>
@@ -439,10 +446,17 @@
                 <div class="tooltip" role="tooltip">
                   <div class="tt-title">Ejemplos (Integridad)</div>
                   <p class="tt-body">
-                    • Alteración de saldos, pedidos, facturas o inventario.<br>
-                    • Cambios no autorizados en configuración/sistemas.<br>
-                    • Manipulación de reportes/KPIs/indicadores.<br>
-                    • Inserción o modificación de registros (fraude, errores).
+                    <b>Alto</b><br>
+                    • Alteración de pólizas contables (impacta estados financieros).<br>
+                    • Cambio de CFDI/facturas registradas o montos por cobrar/pagar.<br>
+                    • Modificación de nómina o cuentas bancarias de proveedores.<br><br>
+                    <b>Medio</b><br>
+                    • Registros duplicados/incompletos (se corrigen con conciliación).<br>
+                    • Errores en datos de cliente/proveedor (RFC, razón social, domicilio).<br>
+                    • Inconsistencias en reportes administrativos o financieros.<br><br>
+                    <b>Bajo</b><br>
+                    • Error en formato de reportes exportados (PDF/Excel) sin afectar origen.<br>
+                    • Archivos temporales o reportes regenerables modificados/eliminados.
                   </p>
                 </div>
               </div>
@@ -458,10 +472,17 @@
                 <div class="tooltip" role="tooltip">
                   <div class="tt-title">Ejemplos (Disponibilidad)</div>
                   <p class="tt-body">
-                    • Caída de sistemas críticos (ERP, portal, POS).<br>
-                    • Ransomware/DoS que impide operar.<br>
-                    • Interrupción de red, nube o servicios de terceros.<br>
-                    • Pérdida de respaldos o fallas de recuperación.
+                    <b>Alto</b><br>
+                    • No se puede facturar CFDI / operar contabilidad o nómina.<br>
+                    • BD contable fuera de servicio (operación se interrumpe).<br>
+                    • Clientes/usuarios sin acceso a sus datos o productos.<br><br>
+                    <b>Medio</b><br>
+                    • Operación parcial: consulta sí, pero no registro/procesamiento.<br>
+                    • Caídas intermitentes o lentitud severa; quejas de clientes.<br>
+                    • Módulos clave inestables pero con alternativa temporal.<br><br>
+                    <b>Bajo</b><br>
+                    • Reporte automático no disponible (se hace manual).<br>
+                    • Módulo secundario caído sin afectar operación crítica.
                   </p>
                 </div>
               </div>

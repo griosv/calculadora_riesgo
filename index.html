@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -236,6 +235,82 @@
       user-select:none;
     }
 
+    /* ✅ Tooltip "?" para CIA */
+    .label-with-help{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px; /* reemplaza el margin del label normal */
+    }
+    .label-with-help label{
+      margin:0; /* porque ya lo controla el contenedor */
+    }
+    .help{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .help-btn{
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      border:1px solid rgba(0,87,184,.35);
+      background: rgba(0,87,184,.08);
+      color: var(--brand-ink);
+      font-weight:900;
+      font-size:12px;
+      line-height:1;
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .help-btn:focus{
+      outline:none;
+      box-shadow: 0 0 0 3px rgba(0,87,184,.18);
+    }
+    .tooltip{
+      position:absolute;
+      left:0;
+      top:26px;
+      width:min(320px, 72vw);
+      background:#fff;
+      border:1px solid rgba(2,6,23,.14);
+      border-radius:12px;
+      box-shadow:0 18px 45px rgba(2,6,23,.14);
+      padding:10px 12px;
+      z-index:50;
+      display:none;
+    }
+    .tooltip::before{
+      content:"";
+      position:absolute;
+      top:-7px; left:12px;
+      width:12px; height:12px;
+      background:#fff;
+      border-left:1px solid rgba(2,6,23,.14);
+      border-top:1px solid rgba(2,6,23,.14);
+      transform:rotate(45deg);
+    }
+    .tooltip .tt-title{
+      font-weight:900;
+      color:var(--brand-ink);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .tooltip .tt-body{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+      margin:0;
+    }
+    /* Hover desktop */
+    .help:hover .tooltip{ display:block; }
+    /* Modo "abierto" para móvil (toggle) */
+    .help.open .tooltip{ display:block; }
+
     @media (max-width: 1020px){
       .top-form{grid-template-columns: 1fr;}
       .grid{grid-template-columns:1fr;}
@@ -315,13 +390,66 @@
 
         <div class="section-title">
           <h2>¿Qué impacto tendría este riesgo en la información?</h2>
-          <div class="hint"></b>.</div>
+          <div class="hint">Usa “?” para ver ejemplos rápidos.</div>
         </div>
 
         <div class="row3">
-          <div><label>Confidencialidad</label><select id="cia_conf"></select></div>
-          <div><label>Integridad</label><select id="cia_int"></select></div>
-          <div><label>Disponibilidad</label><select id="cia_disp"></select></div>
+          <div>
+            <div class="label-with-help">
+              <label for="cia_conf">Confidencialidad</label>
+              <div class="help" data-help="conf">
+                <button class="help-btn" type="button" aria-label="Ejemplos de Confidencialidad" aria-expanded="false">?</button>
+                <div class="tooltip" role="tooltip">
+                  <div class="tt-title">Ejemplos (Confidencialidad)</div>
+                  <p class="tt-body">
+                    • Exposición de datos personales (PII), nómina, expedientes.<br>
+                    • Filtración de credenciales/llaves API/tokens.<br>
+                    • Acceso no autorizado a contratos, precios, estrategia comercial.<br>
+                    • Fuga de información de clientes/proveedores.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <select id="cia_conf"></select>
+          </div>
+
+          <div>
+            <div class="label-with-help">
+              <label for="cia_int">Integridad</label>
+              <div class="help" data-help="int">
+                <button class="help-btn" type="button" aria-label="Ejemplos de Integridad" aria-expanded="false">?</button>
+                <div class="tooltip" role="tooltip">
+                  <div class="tt-title">Ejemplos (Integridad)</div>
+                  <p class="tt-body">
+                    • Alteración de saldos, pedidos, facturas o inventario.<br>
+                    • Cambios no autorizados en configuración/sistemas.<br>
+                    • Manipulación de reportes/KPIs/indicadores.<br>
+                    • Inserción o modificación de registros (fraude, errores).
+                  </p>
+                </div>
+              </div>
+            </div>
+            <select id="cia_int"></select>
+          </div>
+
+          <div>
+            <div class="label-with-help">
+              <label for="cia_disp">Disponibilidad</label>
+              <div class="help" data-help="disp">
+                <button class="help-btn" type="button" aria-label="Ejemplos de Disponibilidad" aria-expanded="false">?</button>
+                <div class="tooltip" role="tooltip">
+                  <div class="tt-title">Ejemplos (Disponibilidad)</div>
+                  <p class="tt-body">
+                    • Caída de sistemas críticos (ERP, portal, POS).<br>
+                    • Ransomware/DoS que impide operar.<br>
+                    • Interrupción de red, nube o servicios de terceros.<br>
+                    • Pérdida de respaldos o fallas de recuperación.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <select id="cia_disp"></select>
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -1181,6 +1309,41 @@
       limpiarResultados();
     }
 
+    // ✅ Tooltips: click/tap para móvil (abre/cierra)
+    function initHelpTooltips(){
+      const helps = Array.from(document.querySelectorAll(".help"));
+
+      helps.forEach(h=>{
+        const btn = h.querySelector(".help-btn");
+        if (!btn) return;
+
+        btn.addEventListener("click", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+
+          const isOpen = h.classList.contains("open");
+          helps.forEach(x => {
+            x.classList.remove("open");
+            const b = x.querySelector(".help-btn");
+            if (b) b.setAttribute("aria-expanded","false");
+          });
+
+          if (!isOpen){
+            h.classList.add("open");
+            btn.setAttribute("aria-expanded","true");
+          }
+        });
+      });
+
+      document.addEventListener("click", ()=>{
+        helps.forEach(x => {
+          x.classList.remove("open");
+          const b = x.querySelector(".help-btn");
+          if (b) b.setAttribute("aria-expanded","false");
+        });
+      });
+    }
+
     // INIT
     fillSelectByN("prob", PROBABILIDAD);
     fillSelectByN("impacto", IMPACTO);
@@ -1208,6 +1371,9 @@
     renderNiveles();
     renderHeatmap(null);
     limpiarResultados();
+
+    // ✅ activar tooltips
+    initHelpTooltips();
   </script>
 </body>
 </html>

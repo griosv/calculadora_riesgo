@@ -89,7 +89,7 @@
       padding:16px;
       box-shadow:0 10px 26px rgba(2,6,23,.06);
       position:relative;
-      overflow:hidden;
+      overflow:visible; /* ✅ antes estaba hidden; esto cortaba/encimaba tooltips */
     }
     .card::before{
       content:"";
@@ -240,10 +240,10 @@
       display:flex;
       align-items:center;
       gap:8px;
-      margin-bottom:6px; /* reemplaza el margin del label normal */
+      margin-bottom:6px;
     }
     .label-with-help label{
-      margin:0; /* porque ya lo controla el contenedor */
+      margin:0;
     }
     .help{
       position:relative;
@@ -273,15 +273,15 @@
     }
     .tooltip{
       position:absolute;
+      top:30px;
       left:0;
-      top:26px;
-      width:min(320px, 72vw);
+      width:min(280px, 65vw);
       background:#fff;
       border:1px solid rgba(2,6,23,.14);
       border-radius:12px;
       box-shadow:0 18px 45px rgba(2,6,23,.14);
       padding:10px 12px;
-      z-index:50;
+      z-index:9999;   /* ✅ arriba de todo */
       display:none;
     }
     .tooltip::before{
@@ -306,6 +306,17 @@
       line-height:1.35;
       margin:0;
     }
+
+    /* ✅ Evitar encimado según columna (CIA está en row3) */
+    .row3 > div:nth-child(2) .tooltip{
+      left:50%;
+      transform:translateX(-50%);
+    }
+    .row3 > div:last-child .tooltip{
+      left:auto;
+      right:0;
+    }
+
     /* Hover desktop */
     .help:hover .tooltip{ display:block; }
     /* Modo "abierto" para móvil (toggle) */
@@ -316,6 +327,13 @@
       .grid{grid-template-columns:1fr;}
       .layout-bottom{grid-template-columns:1fr;}
       .cta{justify-content:flex-start;}
+
+      /* En móvil, que todos abran centrados para no salirse */
+      .row3 > div .tooltip{
+        left:50% !important;
+        right:auto !important;
+        transform:translateX(-50%) !important;
+      }
     }
   </style>
 </head>
@@ -660,7 +678,6 @@
       { n: 5, label: "5 - Casi Seguro", extra: "(≤ 30 días)",   detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor o igual a un mes (30 días)." },
     ];
 
-    // ✅ Impacto con "extra" (resumen corto) para el dropdown
     const IMPACTO = [
       { n: 1, label: "1 - Insignificante", extra: "(<1 día, <10%)",
         detalle: "Impacto operativo mínimo con retrasos menores a un día y afectación inferior al 10%. La privacidad se ve comprometida a nivel individual sin daño a la marca ni desviaciones normativas detectables." },
@@ -1309,7 +1326,7 @@
       limpiarResultados();
     }
 
-    // ✅ Tooltips: click/tap para móvil (abre/cierra)
+    // ✅ Tooltips: click/tap para móvil (abre/cierra) + cerrar al hacer clic fuera
     function initHelpTooltips(){
       const helps = Array.from(document.querySelectorAll(".help"));
 

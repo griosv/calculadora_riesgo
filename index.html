@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -7,7 +8,7 @@
 
   <style>
     :root{
-      /* Azules estilo CONTPAQi (aprox. por referencia visual) */
+      /* Azules(aprox. por referencia visual) */
       --brand:#0057B8;
       --brand-dark:#004A92;
       --brand-ink:#0B2A4A;
@@ -439,6 +440,26 @@
         <label>Descripción del riesgo (opcional)</label>
         <textarea id="desc" placeholder="Ej. Acceso no autorizado por falta de MFA..."></textarea>
       </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">
+        <h2>Identificación y agrupación de activos y datos personales</h2>
+        <div class="hint">Selecciona el tipo de activo o dato relacionado con el riesgo.</div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Tipo de activo / dato *</label>
+          <select id="activo_tipo"></select>
+          <div class="small" id="activo_tipo_det">—</div>
+        </div>
+        <div id="activo_otro_wrap" style="display:none;">
+          <label>Otro tipo de activo / dato *</label>
+          <input id="activo_otro" placeholder="Escribe el tipo de activo o dato" />
+          <div class="small">Se agregará manualmente al concentrado.</div>
+        </div>
+      </div>
     </div>
 
     <div class="grid">
@@ -699,6 +720,8 @@
                 <th>ID</th>
                 <th>Área</th>
                 <th>Descripción</th>
+                <th>Tipo activo/dato</th>
+                <th>Descripción tipo</th>
                 <th>Prob</th>
                 <th>Impacto</th>
                 <th>Residual</th>
@@ -708,7 +731,7 @@
               </tr>
             </thead>
             <tbody id="tbl_body">
-              <tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>
+              <tr><td colspan="11" class="small">Aún no has agregado riesgos al concentrado.</td></tr>
             </tbody>
           </table>
         </div>
@@ -786,6 +809,21 @@
       { key: "Débil/Parcial", label: "Débil / Parcial", factor: 0.8 },
       { key: "Moderado", label: "Moderado", factor: 0.6 },
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
+    ];
+
+
+    const TIPOS_ACTIVO_DATO = [
+      { key:"Aplicativo", label:"Aplicativo", desc:"Aplicación o servicio Web, publicados en los servidores." },
+      { key:"Información / Documentación", label:"Información / Documentación", desc:"Es toda aquella información electrónica o en papel necesaria para seguir con los procesos y políticas, así como de consulta por medio de guías, procedimientos, manuales." },
+      { key:"Hardware", label:"Hardware", desc:"Dispositivos físicos tales como router, switch, laptop, servidores y firewall, necesarios para el consumo y administración de datos desde y hacia los Centros de Datos." },
+      { key:"Software", label:"Software", desc:"Aplicaciones instaladas en los servidores y equipos de colaboradores necesarias para llevar a cabo las funciones diarias, como sistema operativo, suite de oficina, antivirus y conexiones VPN." },
+      { key:"Servicios", label:"Servicios", desc:"Suministros necesarios para llevar una operación diaria, como luz, agua e Internet." },
+      { key:"Servicios de datos en la Nube", label:"Servicios de datos en la Nube", desc:"Componentes en la nube, principalmente para el almacenamiento de datos, necesarios para la operación." },
+      { key:"Plataforma como servicio en la Nube", label:"Plataforma como servicio en la Nube", desc:"Componentes PaaS gestionados principalmente por el proveedor, necesarios para la operación en la nube." },
+      { key:"Instalaciones", label:"Instalaciones", desc:"Lugares físicos necesarios para llevar a cabo la operación diaria y hospedar los Centros de Datos, cuando aplique." },
+      { key:"Personal", label:"Personal", desc:"Son todos aquellos colaboradores que tienen un convenio laboral firmado." },
+      { key:"Bases de datos", label:"Bases de datos", desc:"Información almacenada en bases de datos." },
+      { key:"Otro", label:"Otro", desc:"Tipo agregado manualmente por el usuario." },
     ];
 
     const ISO_CATALOGO = [
@@ -915,6 +953,42 @@
       sel.value = defaultKey ?? arr[0]?.key ?? "";
     }
 
+
+    function fillActivoDatoSelect(){
+      const sel = document.getElementById("activo_tipo");
+      sel.innerHTML = "";
+      TIPOS_ACTIVO_DATO.forEach(o=>{
+        const op = document.createElement("option");
+        op.value = o.key;
+        op.textContent = o.label;
+        sel.appendChild(op);
+      });
+      sel.value = "Aplicativo";
+      actualizarActivoDatoDetalle();
+    }
+
+    function actualizarActivoDatoDetalle(){
+      const tipo = document.getElementById("activo_tipo").value;
+      const obj = getByKey(TIPOS_ACTIVO_DATO, tipo);
+      const wrapOtro = document.getElementById("activo_otro_wrap");
+      const det = document.getElementById("activo_tipo_det");
+      const esOtro = tipo === "Otro";
+
+      wrapOtro.style.display = esOtro ? "block" : "none";
+      det.textContent = obj?.desc || "—";
+    }
+
+    function obtenerActivoDato(){
+      const tipoSel = document.getElementById("activo_tipo").value;
+      const obj = getByKey(TIPOS_ACTIVO_DATO, tipoSel);
+      if (tipoSel === "Otro"){
+        const manual = document.getElementById("activo_otro").value.trim();
+        if (!manual){ alert("Por favor escribe el otro tipo de activo o dato."); return null; }
+        return { tipo: manual, descripcionTipo: "Tipo agregado manualmente por el usuario." };
+      }
+      return { tipo: obj?.label || tipoSel, descripcionTipo: obj?.desc || "—" };
+    }
+
     function getByN(arr, n){ return arr.find(x => x.n === n); }
     function getByKey(arr, k){ return arr.find(x => x.key === k); }
 
@@ -1032,6 +1106,8 @@
 
       const area = document.getElementById("area").value.trim();
       const desc = document.getElementById("desc").value.trim();
+      const activoDato = obtenerActivoDato();
+      if (!activoDato) return;
 
       const p = Number(document.getElementById("prob").value);
       const i = Number(document.getElementById("impacto").value);
@@ -1081,10 +1157,12 @@
 
       const isoTxt = isoSeleccionados.join("; ");
       document.getElementById("out_detalle").textContent =
-        `ID: ${id} | Área: ${area || "—"} | Base: ${p}×${i}=${base.toFixed(2)} | CIA: +${Math.round(ciaPct*100)}% | Activo: ${multActivo.toFixed(1)}x | Controles: ${factorCtrl.toFixed(1)} | Residual: ${residual.toFixed(2)} | ISO: ${isoTxt || "—"}`;
+        `ID: ${id} | Área: ${area || "—"} | Activo/dato: ${activoDato.tipo} | Base: ${p}×${i}=${base.toFixed(2)} | CIA: +${Math.round(ciaPct*100)}% | Activo: ${multActivo.toFixed(1)}x | Controles: ${factorCtrl.toFixed(1)} | Residual: ${residual.toFixed(2)} | ISO: ${isoTxt || "—"}`;
 
       ultimoResultado = {
         id, area, desc,
+        activoTipo: activoDato.tipo,
+        activoDescripcion: activoDato.descripcionTipo,
         prob:p, impacto:i,
         base:Number(base.toFixed(2)),
         ajustado:Number(ajustado.toFixed(2)),
@@ -1119,7 +1197,7 @@
     function renderTabla(){
       const tbody = document.getElementById("tbl_body");
       if (concentrado.length === 0){
-        tbody.innerHTML = `<tr><td colspan="9" class="small">Aún no has agregado riesgos al concentrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="small">Aún no has agregado riesgos al concentrado.</td></tr>`;
         return;
       }
 
@@ -1129,6 +1207,8 @@
           <td class="mono">${escapeHtml(r.id)}</td>
           <td>${escapeHtml(r.area || "—")}</td>
           <td class="wrapcell">${escapeHtml(r.desc || "—")}</td>
+          <td>${escapeHtml(r.activoTipo || "—")}</td>
+          <td class="wrapcell">${escapeHtml(r.activoDescripcion || "—")}</td>
           <td class="mono">${r.prob}</td>
           <td class="mono">${r.impacto}</td>
           <td class="mono">${r.residual.toFixed(2)}</td>
@@ -1148,10 +1228,10 @@
 
     function exportarCSV(){
       if (concentrado.length === 0){ alert("No hay datos para exportar."); return; }
-      const headers = ["ID","Área","Descripción","Probabilidad","Impacto","Base","Ajustado","Residual","Nivel","Acción","ISO"];
+      const headers = ["ID","Área","Descripción","Tipo activo/dato","Descripción tipo","Probabilidad","Impacto","Base","Ajustado","Residual","Nivel","Acción","ISO"];
       const lines = [headers.join(",")];
       concentrado.forEach(r=>{
-        const row = [r.id,r.area||"",(r.desc||"").replaceAll("\n"," ").replaceAll("\r"," "),r.prob,r.impacto,r.base,r.ajustado,r.residual,r.nivel,r.accion,(r.iso||[]).join(";")]
+        const row = [r.id,r.area||"",(r.desc||"").replaceAll("\n"," ").replaceAll("\r"," "),r.activoTipo||"",r.activoDescripcion||"",r.prob,r.impacto,r.base,r.ajustado,r.residual,r.nivel,r.accion,(r.iso||[]).join(";")]
           .map(v => `"${String(v).replaceAll('"','""')}"`);
         lines.push(row.join(","));
       });
@@ -1424,6 +1504,9 @@
       document.getElementById("risk_id").value = "";
       document.getElementById("area").value = "";
       document.getElementById("desc").value = "";
+      document.getElementById("activo_tipo").value = "Aplicativo";
+      document.getElementById("activo_otro").value = "";
+      actualizarActivoDatoDetalle();
 
       document.getElementById("prob").value = 3;
       document.getElementById("impacto").value = 3;
@@ -1479,6 +1562,7 @@
 
     fillSelectByN("prob", PROBABILIDAD);
     fillSelectByN("impacto", IMPACTO);
+    fillActivoDatoSelect();
     fillSelectByKey("cia_conf", CIA, "Alto");
     fillSelectByKey("cia_int", CIA, "Alto");
     fillSelectByKey("cia_disp", CIA, "Alto");
@@ -1494,6 +1578,8 @@
       const iObj = getByN(IMPACTO, Number(document.getElementById("impacto").value));
       document.getElementById("impacto_det").textContent = iObj?.detalle || "";
     });
+
+    document.getElementById("activo_tipo").addEventListener("change", actualizarActivoDatoDetalle);
 
     document.getElementById("iso_search").addEventListener("input", (e)=>{
       renderCatalogoISO(e.target.value);

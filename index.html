@@ -7,7 +7,7 @@
 
   <style>
     :root{
-      /* Azules estilo CONTPAQi (aprox. por referencia visual) */
+      /* Azules estilo CONTPAQi */
       --brand:#0057B8;
       --brand-dark:#004A92;
       --brand-ink:#0B2A4A;
@@ -357,7 +357,6 @@
       margin:0;
     }
 
-    
     /* ===== AJUSTE TOOLTIPS ESTABLE ===== */
 
     .label-with-help{
@@ -847,7 +846,6 @@
       { key: "Fuerte/Integral", label: "Fuerte / Integral", factor: 0.4 },
     ];
 
-
     const TIPOS_ACTIVO_DATO = [
       { key:"Aplicativo", label:"Aplicativo", desc:"Aplicación o servicio Web, publicados en los servidores." },
       { key:"Información / Documentación", label:"Información / Documentación", desc:"Es toda aquella información electrónica o en papel necesaria para seguir con los procesos y políticas, así como de consulta por medio de guías, procedimientos, manuales." },
@@ -988,7 +986,6 @@
       });
       sel.value = defaultKey ?? arr[0]?.key ?? "";
     }
-
 
     function fillActivoDatoSelect(){
       const sel = document.getElementById("activo_tipo");

@@ -351,18 +351,32 @@
         <div class="divider"></div>
 
         <div class="box" style="margin-top:10px;">
-          <div class="t">Gestión de estado, respaldos y consolidado general</div>
+          <div class="t">Gestión de estado y consolidado general</div>
           <div class="small">
-            Usa esta sección para guardar el avance, importar/exportar respaldos o consultar el consolidado central.
+            Usa esta sección para guardar el avance, enviar el riesgo a la base central, exportar el consolidado general o iniciar una plantilla nueva.
           </div>
-          <div class="btns" style="margin-top:10px;">
-            <button class="primary" type="button" onclick="guardarEstado()">Guardar estado</button>
-            <button class="muted" type="button" onclick="exportarEstado()">Exportar respaldo</button>
-            <input type="file" id="archivo_importar_estado" accept=".json,application/json" style="display:none;" onchange="importarEstado(event)" />
-            <button class="muted" type="button" onclick="document.getElementById('archivo_importar_estado').click()">Importar respaldo</button>
-            <button class="muted" type="button" onclick="importarConsolidadoGeneral()">Importar consolidado general</button>
-            <button class="primary" type="button" onclick="exportarConsolidadoGeneral()">Exportar consolidado general</button>
-            <button class="danger" type="button" onclick="nuevoLimpiarPlantilla()">Nuevo / limpiar</button>
+
+          <div class="row3" style="margin-top:10px;">
+            <div>
+              <button class="primary" type="button" onclick="guardarEstado()">Guardar estado</button>
+              <div class="small" style="margin-top:6px;">
+                Guarda el avance actual y, si la API está configurada, envía el riesgo a la base central.
+              </div>
+            </div>
+
+            <div>
+              <button class="primary" type="button" onclick="exportarConsolidadoGeneral()">Exportar consolidado general</button>
+              <div class="small" style="margin-top:6px;">
+                Descarga en Excel todos los riesgos registrados en la base central.
+              </div>
+            </div>
+
+            <div>
+              <button class="danger" type="button" onclick="nuevoLimpiarPlantilla()">Nuevo / limpiar</button>
+              <div class="small" style="margin-top:6px;">
+                Limpia la captura actual y deja la calculadora lista para iniciar un nuevo riesgo.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -980,80 +994,6 @@
       } catch(err){
         console.error(err);
         alert("El estado quedó guardado localmente, pero no se pudo enviar a la base central. Revisa la conexión o la API de Azure.");
-      }
-    }
-
-    function exportarEstado(){
-      const guardado = localStorage.getItem(STORAGE_KEY_ESTADO);
-      const estado = guardado ? JSON.parse(guardado) : obtenerEstadoActual();
-      const blob = new Blob([JSON.stringify(estado, null, 2)], { type:"application/json;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const fecha = new Date().toISOString().slice(0,10);
-      a.href = url;
-      a.download = `respaldo_calculadora_riesgos_${fecha}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function importarEstado(event){
-      const archivo = event.target.files && event.target.files[0];
-      if (!archivo) return;
-
-      const lector = new FileReader();
-      lector.onload = function(e){
-        try{
-          const estado = JSON.parse(e.target.result);
-          aplicarEstado(estado);
-          localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(estado));
-          alert("Respaldo importado correctamente.");
-        } catch(err){
-          alert("No se pudo importar el archivo. Verifica que sea un JSON válido de la calculadora.");
-        } finally {
-          event.target.value = "";
-        }
-      };
-      lector.readAsText(archivo);
-    }
-
-    async function importarConsolidadoGeneral(){
-      if (!API_CONFIGURADA){
-        alert("Para importar el consolidado general debes configurar API_BASE_URL con la URL de Azure Function.");
-        return;
-      }
-
-      try{
-        const resp = await fetch(`${API_BASE_URL}/riesgos`);
-        if (!resp.ok){
-          const txt = await resp.text();
-          throw new Error(txt || "Error al consultar consolidado");
-        }
-        const data = await resp.json();
-        const registros = Array.isArray(data) ? data : (data.riesgos || []);
-        concentrado = registros.map(r => ({
-          id: r.id || "",
-          area: r.area || "",
-          desc: r.desc || "",
-          activoTipo: r.activoTipo || "",
-          activoDescripcion: r.activoDescripcion || "",
-          prob: Number(r.prob || 0),
-          impacto: Number(r.impacto || 0),
-          base: Number(r.base || 0),
-          ajustado: Number(r.ajustado || 0),
-          residual: Number(r.residual || 0),
-          nivel: r.nivel || "",
-          accion: r.accion || "",
-          iso: Array.isArray(r.iso) ? r.iso : []
-        }));
-        renderTabla();
-        renderNiveles();
-        localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(obtenerEstadoActual()));
-        alert(`Consolidado general importado correctamente. Registros cargados: ${concentrado.length}`);
-      } catch(err){
-        console.error(err);
-        alert("No se pudo importar el consolidado general. Revisa la API de Azure.");
       }
     }
 

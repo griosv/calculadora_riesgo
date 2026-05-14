@@ -347,6 +347,24 @@
             </tbody>
           </table>
         </div>
+
+        <div class="divider"></div>
+
+        <div class="box" style="margin-top:10px;">
+          <div class="t">Gestión de estado, respaldos y consolidado general</div>
+          <div class="small">
+            Usa esta sección para guardar el avance, importar/exportar respaldos o consultar el consolidado central.
+          </div>
+          <div class="btns" style="margin-top:10px;">
+            <button class="primary" type="button" onclick="guardarEstado()">Guardar estado</button>
+            <button class="muted" type="button" onclick="exportarEstado()">Exportar respaldo</button>
+            <input type="file" id="archivo_importar_estado" accept=".json,application/json" style="display:none;" onchange="importarEstado(event)" />
+            <button class="muted" type="button" onclick="document.getElementById('archivo_importar_estado').click()">Importar respaldo</button>
+            <button class="muted" type="button" onclick="importarConsolidadoGeneral()">Importar consolidado general</button>
+            <button class="primary" type="button" onclick="exportarConsolidadoGeneral()">Exportar consolidado general</button>
+            <button class="danger" type="button" onclick="nuevoLimpiarPlantilla()">Nuevo / limpiar</button>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -378,7 +396,10 @@
     </div>
   </div>
 
-  <script>const PROBABILIDAD = [
+  <script>const API_BASE_URL = "https://TU-AZURE-FUNCTION.azurewebsites.net/api";
+    const API_CONFIGURADA = !API_BASE_URL.includes("TU-AZURE-FUNCTION");
+
+    const PROBABILIDAD = [
       { n: 1, label: "1 - Raro",        extra: "(> 12 meses)",  detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo más de doce meses." },
       { n: 2, label: "2 - Improbable",  extra: "(8–12 meses)",  detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo entre ocho a doce meses." },
       { n: 3, label: "3 - Posible",     extra: "(< 6 meses)",   detalle: "Se presentan incidentes de seguridad asociados al escenario de riesgo en una ventana de tiempo menor a seis meses." },
@@ -828,6 +849,235 @@
       `).join("");
     }
 
+    const STORAGE_KEY_ESTADO = "calculadora_riesgos_estado_v1";
+
+    function obtenerFormularioActual(){
+      return {
+        risk_id: document.getElementById("risk_id").value,
+        area: document.getElementById("area").value,
+        desc: document.getElementById("desc").value,
+        activo_tipo: document.getElementById("activo_tipo").value,
+        activo_otro: document.getElementById("activo_otro").value,
+        prob: document.getElementById("prob").value,
+        impacto: document.getElementById("impacto").value,
+        cia_conf: document.getElementById("cia_conf").value,
+        cia_int: document.getElementById("cia_int").value,
+        cia_disp: document.getElementById("cia_disp").value,
+        valor_activo: document.getElementById("valor_activo").value,
+        controles: document.getElementById("controles").value,
+        iso_search: document.getElementById("iso_search").value,
+        iso_manual: document.getElementById("iso_manual").value
+      };
+    }
+
+    function obtenerEstadoActual(){
+      return {
+        version: "1.0",
+        tipo: "calculadora_riesgos_estado",
+        fechaGuardado: new Date().toISOString(),
+        formulario: obtenerFormularioActual(),
+        isoSeleccionados: [...isoSeleccionados],
+        ultimoResultado: ultimoResultado ? { ...ultimoResultado, iso:[...(ultimoResultado.iso || [])] } : null,
+        concentrado: concentrado.map(r => ({ ...r, iso:[...(r.iso || [])] }))
+      };
+    }
+
+    function aplicarEstado(estado){
+      if (!estado || typeof estado !== "object"){
+        alert("El archivo no contiene un estado válido.");
+        return;
+      }
+
+      const f = estado.formulario || {};
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val !== undefined && val !== null) el.value = val;
+      };
+
+      setVal("risk_id", f.risk_id);
+      setVal("area", f.area);
+      setVal("desc", f.desc);
+      setVal("activo_tipo", f.activo_tipo || "Aplicativo");
+      setVal("activo_otro", f.activo_otro || "");
+      actualizarActivoDatoDetalle();
+
+      setVal("prob", f.prob || 3);
+      setVal("impacto", f.impacto || 3);
+      setVal("cia_conf", f.cia_conf || "Alto");
+      setVal("cia_int", f.cia_int || "Alto");
+      setVal("cia_disp", f.cia_disp || "Alto");
+      setVal("valor_activo", f.valor_activo || "Crítico/Esencial para la Misión");
+      setVal("controles", f.controles || "No Especificado");
+      setVal("iso_search", f.iso_search || "");
+      setVal("iso_manual", f.iso_manual || "");
+
+      isoSeleccionados = Array.isArray(estado.isoSeleccionados) ? [...estado.isoSeleccionados] : [];
+      ultimoResultado = estado.ultimoResultado || null;
+      concentrado = Array.isArray(estado.concentrado) ? estado.concentrado.map(r => ({ ...r, iso:[...(r.iso || [])] })) : [];
+
+      renderCatalogoISO(document.getElementById("iso_search").value || "");
+      renderISOChips();
+      renderTabla();
+      renderNiveles();
+
+      if (ultimoResultado){
+        document.getElementById("score_base").textContent = Number(ultimoResultado.base || 0).toFixed(2);
+        document.getElementById("score_ajustado").textContent = Number(ultimoResultado.ajustado || 0).toFixed(2);
+        document.getElementById("score_residual").textContent = Number(ultimoResultado.residual || 0).toFixed(2);
+        document.getElementById("nivel").textContent = `Clasificación: ${ultimoResultado.nivel || "—"}`;
+        document.getElementById("accion_prior").textContent = ultimoResultado.accion || "—";
+        document.getElementById("estado").textContent = ultimoResultado.accion || "Sin calcular";
+        const c = clasificar(Number(ultimoResultado.residual || 0));
+        setDotColor(c.sem);
+        const max = 75;
+        const pct = Math.max(0, Math.min(100, Math.round((Number(ultimoResultado.residual || 0) / max) * 100)));
+        document.getElementById("pct").textContent = pct + "%";
+        document.getElementById("fill").style.width = pct + "%";
+        document.getElementById("recs").innerHTML = "";
+        c.rec.forEach(t=>{ const li=document.createElement("li"); li.textContent=t; document.getElementById("recs").appendChild(li); });
+        document.getElementById("out_detalle").textContent = `ID: ${ultimoResultado.id || "—"} | Área: ${ultimoResultado.area || "—"} | Activo/dato: ${ultimoResultado.activoTipo || "—"} | Residual: ${Number(ultimoResultado.residual || 0).toFixed(2)} | ISO: ${(ultimoResultado.iso || []).join("; ") || "—"}`;
+        renderHeatmap(ultimoResultado);
+      } else {
+        limpiarResultados();
+      }
+    }
+
+    async function guardarEstado(){
+      const estado = obtenerEstadoActual();
+      localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(estado));
+
+      if (!API_CONFIGURADA){
+        alert("Estado guardado en este navegador. Para guardar en la base central, configura API_BASE_URL con la URL de Azure Function.");
+        return;
+      }
+
+      if (!ultimoResultado){
+        alert("Estado guardado localmente. Para enviarlo a la base central primero calcula el riesgo.");
+        return;
+      }
+
+      try{
+        const usuario = localStorage.getItem("calculadora_riesgos_usuario") || prompt("Nombre de quien registra el riesgo:", "") || "No especificado";
+        localStorage.setItem("calculadora_riesgos_usuario", usuario);
+
+        const resp = await fetch(`${API_BASE_URL}/guardar-riesgo`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            riesgo: ultimoResultado,
+            estado: estado,
+            usuario: usuario,
+            fechaGuardado: new Date().toISOString()
+          })
+        });
+
+        if (!resp.ok){
+          const txt = await resp.text();
+          throw new Error(txt || "Error al guardar en base central");
+        }
+
+        alert("Estado guardado correctamente y riesgo enviado a la base central.");
+      } catch(err){
+        console.error(err);
+        alert("El estado quedó guardado localmente, pero no se pudo enviar a la base central. Revisa la conexión o la API de Azure.");
+      }
+    }
+
+    function exportarEstado(){
+      const guardado = localStorage.getItem(STORAGE_KEY_ESTADO);
+      const estado = guardado ? JSON.parse(guardado) : obtenerEstadoActual();
+      const blob = new Blob([JSON.stringify(estado, null, 2)], { type:"application/json;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const fecha = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = `respaldo_calculadora_riesgos_${fecha}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importarEstado(event){
+      const archivo = event.target.files && event.target.files[0];
+      if (!archivo) return;
+
+      const lector = new FileReader();
+      lector.onload = function(e){
+        try{
+          const estado = JSON.parse(e.target.result);
+          aplicarEstado(estado);
+          localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(estado));
+          alert("Respaldo importado correctamente.");
+        } catch(err){
+          alert("No se pudo importar el archivo. Verifica que sea un JSON válido de la calculadora.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      lector.readAsText(archivo);
+    }
+
+    async function importarConsolidadoGeneral(){
+      if (!API_CONFIGURADA){
+        alert("Para importar el consolidado general debes configurar API_BASE_URL con la URL de Azure Function.");
+        return;
+      }
+
+      try{
+        const resp = await fetch(`${API_BASE_URL}/riesgos`);
+        if (!resp.ok){
+          const txt = await resp.text();
+          throw new Error(txt || "Error al consultar consolidado");
+        }
+        const data = await resp.json();
+        const registros = Array.isArray(data) ? data : (data.riesgos || []);
+        concentrado = registros.map(r => ({
+          id: r.id || "",
+          area: r.area || "",
+          desc: r.desc || "",
+          activoTipo: r.activoTipo || "",
+          activoDescripcion: r.activoDescripcion || "",
+          prob: Number(r.prob || 0),
+          impacto: Number(r.impacto || 0),
+          base: Number(r.base || 0),
+          ajustado: Number(r.ajustado || 0),
+          residual: Number(r.residual || 0),
+          nivel: r.nivel || "",
+          accion: r.accion || "",
+          iso: Array.isArray(r.iso) ? r.iso : []
+        }));
+        renderTabla();
+        renderNiveles();
+        localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(obtenerEstadoActual()));
+        alert(`Consolidado general importado correctamente. Registros cargados: ${concentrado.length}`);
+      } catch(err){
+        console.error(err);
+        alert("No se pudo importar el consolidado general. Revisa la API de Azure.");
+      }
+    }
+
+    function exportarConsolidadoGeneral(){
+      if (!API_CONFIGURADA){
+        alert("Para exportar el consolidado general debes configurar API_BASE_URL con la URL de Azure Function.");
+        return;
+      }
+      window.open(`${API_BASE_URL}/exportar-consolidado`, "_blank");
+    }
+
+    function nuevoLimpiarPlantilla(){
+      if (!confirm("¿Deseas borrar el estado guardado en este navegador y comenzar con una plantilla nueva?")) return;
+      localStorage.removeItem(STORAGE_KEY_ESTADO);
+      concentrado = [];
+      isoSeleccionados = [];
+      ultimoResultado = null;
+      limpiarFormulario();
+      renderTabla();
+      renderNiveles();
+      renderHeatmap(null);
+      alert("Plantilla nueva lista para capturar otro riesgo.");
+    }
+
     function limpiarConcentrado(){
       if (!confirm("¿Seguro que deseas borrar todo el concentrado?")) return;
       concentrado = [];
@@ -1206,6 +1456,15 @@
     renderNiveles();
     renderHeatmap(null);
     limpiarResultados();
+
+    const estadoGuardadoInicial = localStorage.getItem(STORAGE_KEY_ESTADO);
+    if (estadoGuardadoInicial){
+      try{
+        aplicarEstado(JSON.parse(estadoGuardadoInicial));
+      } catch(e){
+        localStorage.removeItem(STORAGE_KEY_ESTADO);
+      }
+    }
 
     initHelpTooltips();</script>
 </body>
